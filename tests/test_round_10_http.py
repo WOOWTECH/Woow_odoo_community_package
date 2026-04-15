@@ -2,7 +2,7 @@
 """Round 10: 前端 HTTP 端點與 View 渲染測試"""
 import xmlrpc.client, json, sys, re, requests
 
-URL = 'http://localhost:9097'
+URL = 'http://localhost:9098'
 DB = 'odoocommunitypackage'
 results = []
 

@@ -2,7 +2,7 @@
 """Round 9: 批次操作與效能測試"""
 import xmlrpc.client, json, sys, time
 
-URL = 'http://localhost:9097'
+URL = 'http://localhost:9098'
 DB = 'odoocommunitypackage'
 common = xmlrpc.client.ServerProxy(f'{URL}/xmlrpc/2/common')
 uid = common.authenticate(DB, 'admin', 'admin', {})

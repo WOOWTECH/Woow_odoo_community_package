@@ -10,12 +10,12 @@
     {
       "test": "web_login_success",
       "status": "PASS",
-      "detail": "status=200, url=http://localhost:9097/web, csrf=found"
+      "detail": "status=200, url=http://localhost:9098/web, csrf=found"
     },
     {
       "test": "web_main_accessible",
       "status": "PASS",
-      "detail": "status=200, url=http://localhost:9097/web"
+      "detail": "status=200, url=http://localhost:9098/web"
     },
     {
       "test": "view_exists_community_parcel_view_form",

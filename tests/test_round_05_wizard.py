@@ -2,7 +2,7 @@
 """Round 5: Wizard 快速登記測試"""
 import xmlrpc.client, json, sys
 
-URL = 'http://localhost:9097'
+URL = 'http://localhost:9098'
 DB = 'odoocommunitypackage'
 common = xmlrpc.client.ServerProxy(f'{URL}/xmlrpc/2/common')
 uid = common.authenticate(DB, 'admin', 'admin', {})

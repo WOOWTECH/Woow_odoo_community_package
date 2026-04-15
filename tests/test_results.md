@@ -3,8 +3,11 @@
 **Module:** `community_parcel` (Odoo 18 CE)
 **Date:** 2026-04-15
 **Environment:** Podman container, Odoo 18 CE, PostgreSQL 16
-**Endpoint:** `http://localhost:9097`
+**Endpoint:** `http://localhost:9098`
 **Database:** `odoocommunitypackage`
+**DB Container:** `odoo-communitypackage-db`
+**Web Container:** `odoo-communitypackage-web`
+**DB Credentials:** `odoocommunitypackage / odoocommunitypackage`
 
 ---
 

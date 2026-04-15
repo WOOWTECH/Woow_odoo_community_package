@@ -2,13 +2,13 @@
 """
 Round 1: API 基礎 CRUD 測試
 測試 community.parcel / community.storage / community.office / res.partner 擴展
-透過 XML-RPC 對 localhost:9097 進行測試
+透過 XML-RPC 對 localhost:9098 進行測試
 """
 import xmlrpc.client
 import json
 import sys
 
-URL = 'http://localhost:9097'
+URL = 'http://localhost:9098'
 DB = 'odoocommunitypackage'
 USER = 'admin'
 PASS = 'admin'

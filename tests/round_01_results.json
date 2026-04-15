@@ -5,7 +5,7 @@
     {
       "test": "partner_create_with_extension_fields",
       "status": "PASS",
-      "detail": "id=48, is_resident=True, unit_address=C棟-301"
+      "detail": "id=46, is_resident=True, unit_address=C棟-301"
     },
     {
       "test": "partner_read_extension_fields",
@@ -25,7 +25,7 @@
     {
       "test": "office_create",
       "status": "PASS",
-      "detail": "id=4, name=TEST-R1-管理室B, building=TEST大樓B"
+      "detail": "id=3, name=TEST-R1-管理室B, building=TEST大樓B"
     },
     {
       "test": "office_read",
@@ -40,12 +40,12 @@
     {
       "test": "office_unlink",
       "status": "PASS",
-      "detail": "Deleted id=5"
+      "detail": "Deleted id=4"
     },
     {
       "test": "parcel_create",
       "status": "PASS",
-      "detail": "id=10, name=PKL/0010, state=draft"
+      "detail": "id=7, name=PKL/0007, state=draft"
     },
     {
       "test": "parcel_create_letter_type",
@@ -65,12 +65,12 @@
     {
       "test": "parcel_read",
       "status": "PASS",
-      "detail": "Read barcode=TEST-R1-BC002, name=PKL/0010"
+      "detail": "Read barcode=TEST-R1-BC002, name=PKL/0007"
     },
     {
       "test": "parcel_search_read",
       "status": "PASS",
-      "detail": "Found 6 TEST-R1 parcels"
+      "detail": "Found 4 TEST-R1 parcels"
     },
     {
       "test": "parcel_write",
@@ -80,17 +80,17 @@
     {
       "test": "parcel_unlink",
       "status": "PASS",
-      "detail": "Deleted id=14"
+      "detail": "Deleted id=11"
     },
     {
       "test": "storage_create",
       "status": "PASS",
-      "detail": "id=7, name=STG/0007, state=pending"
+      "detail": "id=5, name=STG/0005, state=pending"
     },
     {
       "test": "storage_read",
       "status": "PASS",
-      "detail": "Read: STG/0007, desc=TEST-R1 寄放測試物品B"
+      "detail": "Read: STG/0005, desc=TEST-R1 寄放測試物品B"
     },
     {
       "test": "storage_write",
@@ -100,7 +100,7 @@
     {
       "test": "storage_unlink",
       "status": "PASS",
-      "detail": "Deleted id=8"
+      "detail": "Deleted id=6"
     }
   ],
   "summary": {

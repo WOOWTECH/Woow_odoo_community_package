@@ -20,7 +20,7 @@
     {
       "test": "staff_can_create_parcel",
       "status": "PASS",
-      "detail": "Staff created parcel id=57"
+      "detail": "Staff created parcel id=27"
     },
     {
       "test": "staff_can_write_parcel",
@@ -35,12 +35,12 @@
     {
       "test": "manager_full_crud",
       "status": "PASS",
-      "detail": "Manager full CRUD OK, created+deleted id=58"
+      "detail": "Manager full CRUD OK, created+deleted id=28"
     },
     {
       "test": "staff_storage_read_write_create",
       "status": "PASS",
-      "detail": "Staff storage RW OK: STG/0017"
+      "detail": "Staff storage RW OK: STG/0010"
     },
     {
       "test": "staff_cannot_delete_storage",
