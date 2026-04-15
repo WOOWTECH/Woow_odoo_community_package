@@ -5,7 +5,7 @@
     {
       "test": "empty_barcode_create",
       "status": "PASS",
-      "detail": "Created id=16, name=PKL/0016, barcode=False"
+      "detail": "Created id=120, name=PKL/0121, barcode=False"
     },
     {
       "test": "empty_note_create",
@@ -45,7 +45,7 @@
     {
       "test": "duplicate_barcode_allowed",
       "status": "PASS",
-      "detail": "Created 2+ parcels with same barcode: count=2"
+      "detail": "Created 2+ parcels with same barcode: count=4"
     },
     {
       "test": "missing_required_resident_id",

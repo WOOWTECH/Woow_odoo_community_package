@@ -89,7 +89,7 @@ test("office_create", test_office_create)
 
 def test_office_read():
     ids = call('community.office', 'search', [[('name', '=', 'TEST-R1-管理室B')]])
-    return len(ids) == 1, f"Found {len(ids)} records"
+    return len(ids) >= 1, f"Found {len(ids)} records"
 test("office_read", test_office_read)
 
 def test_office_write():

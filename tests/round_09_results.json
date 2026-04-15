@@ -5,37 +5,37 @@
     {
       "test": "batch_create_50_parcels",
       "status": "PASS",
-      "detail": "Created 50 parcels in 0.28s (6ms/each)"
+      "detail": "Created 50 parcels in 0.30s (6ms/each)"
     },
     {
       "test": "batch_notify_50_parcels",
       "status": "PASS",
-      "detail": "Notified 50/50 in 1.41s"
+      "detail": "Notified 50/50 in 1.11s"
     },
     {
       "test": "batch_pickup_25_parcels",
       "status": "PASS",
-      "detail": "Picked up 25/25 in 0.17s"
+      "detail": "Picked up 25/25 in 0.20s"
     },
     {
       "test": "search_read_all_parcels",
       "status": "PASS",
-      "detail": "Fetched 97 records in 0.06s"
+      "detail": "Fetched 200 records in 0.06s"
     },
     {
       "test": "search_read_with_domain_filter",
       "status": "PASS",
-      "detail": "Found 31 notified parcels in 0.04s"
+      "detail": "Found 65 notified parcels in 0.03s"
     },
     {
       "test": "search_count_all",
       "status": "PASS",
-      "detail": "Total parcels: 97 in 0.03s"
+      "detail": "Total parcels: 210 in 0.03s"
     },
     {
       "test": "batch_create_20_storage",
       "status": "PASS",
-      "detail": "Created 20 storage items in 0.12s"
+      "detail": "Created 20 storage items in 0.13s"
     }
   ],
   "summary": {

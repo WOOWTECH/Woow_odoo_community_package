@@ -89,7 +89,7 @@ class CommunityParcel(models.Model):
 
     # ── Kanban group_expand ──────────────────────────────────
     @api.model
-    def _expand_states(self, states, domain, order):
+    def _expand_states(self, states, domain):
         return [key for key, _val in self._fields['state'].selection]
 
     # ── Computed ─────────────────────────────────────────────
