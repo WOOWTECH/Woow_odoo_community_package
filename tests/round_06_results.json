@@ -1,0 +1,41 @@
+{
+  "round": 6,
+  "title": "Mail Template 通知",
+  "results": [
+    {
+      "test": "arrival_template_exists",
+      "status": "PASS",
+      "detail": "name=包裹到件通知, subject=【社區通知】您有包裹到件 - {{ object.name }}"
+    },
+    {
+      "test": "overdue_template_exists",
+      "status": "PASS",
+      "detail": "name=包裹逾期提醒, subject=【社區提醒】您的包裹已逾期未取 - {{ object.name }}"
+    },
+    {
+      "test": "action_notify_creates_message",
+      "status": "PASS",
+      "detail": "state=notified, new messages=2"
+    },
+    {
+      "test": "action_overdue_creates_message",
+      "status": "PASS",
+      "detail": "state=overdue, new messages=2"
+    },
+    {
+      "test": "arrival_template_has_required_fields",
+      "status": "PASS",
+      "detail": "Template refs: ['object.name', 'object.resident_id.name', 'object.barcode', 'object.parcel_type']"
+    },
+    {
+      "test": "overdue_template_has_required_fields",
+      "status": "PASS",
+      "detail": "Template refs: ['object.name', 'object.notified_date']"
+    }
+  ],
+  "summary": {
+    "pass": 6,
+    "fail": 0,
+    "total": 6
+  }
+}

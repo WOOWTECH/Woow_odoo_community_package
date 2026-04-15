@@ -1,0 +1,111 @@
+{
+  "round": 10,
+  "title": "前端 HTTP 端點",
+  "results": [
+    {
+      "test": "web_login_reachable",
+      "status": "PASS",
+      "detail": "status=200, has login form=True"
+    },
+    {
+      "test": "web_login_success",
+      "status": "PASS",
+      "detail": "status=200, url=http://localhost:9097/web, csrf=found"
+    },
+    {
+      "test": "web_main_accessible",
+      "status": "PASS",
+      "detail": "status=200, url=http://localhost:9097/web"
+    },
+    {
+      "test": "view_exists_community_parcel_view_form",
+      "status": "PASS",
+      "detail": "Parcel Form: model=community.parcel, type=form"
+    },
+    {
+      "test": "view_exists_community_parcel_view_tree",
+      "status": "PASS",
+      "detail": "Parcel List: model=community.parcel, type=list"
+    },
+    {
+      "test": "view_exists_community_parcel_view_kanban",
+      "status": "PASS",
+      "detail": "Parcel Kanban: model=community.parcel, type=kanban"
+    },
+    {
+      "test": "view_exists_community_parcel_view_search",
+      "status": "PASS",
+      "detail": "Parcel Search: model=community.parcel, type=search"
+    },
+    {
+      "test": "view_exists_community_storage_view_form",
+      "status": "PASS",
+      "detail": "Storage Form: model=community.storage, type=form"
+    },
+    {
+      "test": "view_exists_community_storage_view_tree",
+      "status": "PASS",
+      "detail": "Storage List: model=community.storage, type=list"
+    },
+    {
+      "test": "view_exists_community_storage_view_kanban",
+      "status": "PASS",
+      "detail": "Storage Kanban: model=community.storage, type=kanban"
+    },
+    {
+      "test": "view_exists_community_storage_view_search",
+      "status": "PASS",
+      "detail": "Storage Search: model=community.storage, type=search"
+    },
+    {
+      "test": "view_exists_community_office_view_form",
+      "status": "PASS",
+      "detail": "Office Form: model=community.office, type=form"
+    },
+    {
+      "test": "view_exists_community_office_view_tree",
+      "status": "PASS",
+      "detail": "Office List: model=community.office, type=list"
+    },
+    {
+      "test": "action_exists_action_community_parcel",
+      "status": "PASS",
+      "detail": "All Parcels: model=community.parcel, modes=list,kanban,form"
+    },
+    {
+      "test": "action_exists_action_community_storage",
+      "status": "PASS",
+      "detail": "All Storage: model=community.storage, modes=list,kanban,form"
+    },
+    {
+      "test": "action_exists_action_community_office",
+      "status": "PASS",
+      "detail": "Offices: model=community.office, modes=list,form"
+    },
+    {
+      "test": "dashboard_action_parcel_today",
+      "status": "PASS",
+      "detail": "Today Parcels: found (res_id=173)"
+    },
+    {
+      "test": "dashboard_action_parcel_uncollected",
+      "status": "PASS",
+      "detail": "Uncollected: found (res_id=174)"
+    },
+    {
+      "test": "dashboard_action_parcel_overdue",
+      "status": "PASS",
+      "detail": "Overdue: found (res_id=175)"
+    },
+    {
+      "test": "root_menu_exists",
+      "status": "PASS",
+      "detail": "Found 1 menu items"
+    }
+  ],
+  "summary": {
+    "pass": 20,
+    "fail": 0,
+    "total": 20
+  }
+}

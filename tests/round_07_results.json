@@ -1,0 +1,36 @@
+{
+  "round": 7,
+  "title": "Cron 逾期排程",
+  "results": [
+    {
+      "test": "cron_job_exists_and_active",
+      "status": "PASS",
+      "detail": "name=檢查逾期包裹, active=True, interval=1 days"
+    },
+    {
+      "test": "cron_marks_overdue_after_7_days",
+      "status": "PASS",
+      "detail": "state=overdue (should be overdue after 8 days)"
+    },
+    {
+      "test": "cron_skips_within_7_days",
+      "status": "PASS",
+      "detail": "state=notified (should remain notified)"
+    },
+    {
+      "test": "cron_skips_picked_up_parcels",
+      "status": "PASS",
+      "detail": "state=picked_up (should remain picked_up)"
+    },
+    {
+      "test": "cron_skips_returned_parcels",
+      "status": "PASS",
+      "detail": "state=returned (should remain returned)"
+    }
+  ],
+  "summary": {
+    "pass": 5,
+    "fail": 0,
+    "total": 5
+  }
+}

@@ -1,0 +1,71 @@
+{
+  "round": 3,
+  "title": "邊界條件與異常",
+  "results": [
+    {
+      "test": "empty_barcode_create",
+      "status": "PASS",
+      "detail": "Created id=46, name=PKL/0046, barcode=False"
+    },
+    {
+      "test": "empty_note_create",
+      "status": "PASS",
+      "detail": "Created, note=False"
+    },
+    {
+      "test": "long_barcode_200_chars",
+      "status": "PASS",
+      "detail": "barcode length=200"
+    },
+    {
+      "test": "illegal_draft_to_pickup",
+      "status": "PASS",
+      "detail": "Blocked: <Fault 2: '只有「已通知」或「逾期」的包裹才能確認取件。'>"
+    },
+    {
+      "test": "illegal_draft_to_return",
+      "status": "PASS",
+      "detail": "Blocked: <Fault 2: '只有「已通知」或「逾期」的包裹才能退回。'>"
+    },
+    {
+      "test": "illegal_draft_to_overdue",
+      "status": "PASS",
+      "detail": "Blocked: <Fault 2: '只有「已通知」的包裹才能標記逾期。'>"
+    },
+    {
+      "test": "illegal_picked_to_notify",
+      "status": "PASS",
+      "detail": "Blocked: <Fault 2: '只有「待通知」的包裹才能發送通知。'>"
+    },
+    {
+      "test": "illegal_returned_to_pickup",
+      "status": "PASS",
+      "detail": "Blocked: <Fault 2: '只有「已通知」或「逾期」的包裹才能確認取件。'>"
+    },
+    {
+      "test": "duplicate_barcode_allowed",
+      "status": "PASS",
+      "detail": "Created 2+ parcels with same barcode: count=6"
+    },
+    {
+      "test": "missing_required_resident_id",
+      "status": "PASS",
+      "detail": "Blocked: missing resident_id"
+    },
+    {
+      "test": "storage_illegal_pending_to_ready",
+      "status": "PASS",
+      "detail": "Blocked: <Fault 2: '只有「保管中」的物品才能標記為待取件。'>"
+    },
+    {
+      "test": "storage_illegal_pending_to_done",
+      "status": "PASS",
+      "detail": "Blocked: <Fault 2: '只有「待取件」的物品才能完成交付。'>"
+    }
+  ],
+  "summary": {
+    "pass": 12,
+    "fail": 0,
+    "total": 12
+  }
+}

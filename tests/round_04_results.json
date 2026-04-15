@@ -1,0 +1,56 @@
+{
+  "round": 4,
+  "title": "安全性與權限",
+  "results": [
+    {
+      "test": "no_group_cannot_read_parcel",
+      "status": "PASS",
+      "detail": "Blocked: AccessError"
+    },
+    {
+      "test": "no_group_cannot_create_parcel",
+      "status": "PASS",
+      "detail": "Blocked: AccessError"
+    },
+    {
+      "test": "staff_can_read_parcel",
+      "status": "PASS",
+      "detail": "Staff can read: found 5 parcels"
+    },
+    {
+      "test": "staff_can_create_parcel",
+      "status": "PASS",
+      "detail": "Staff created parcel id=57"
+    },
+    {
+      "test": "staff_can_write_parcel",
+      "status": "PASS",
+      "detail": "Staff can write: note=Staff updated"
+    },
+    {
+      "test": "staff_cannot_delete_parcel",
+      "status": "PASS",
+      "detail": "Blocked: Staff cannot delete"
+    },
+    {
+      "test": "manager_full_crud",
+      "status": "PASS",
+      "detail": "Manager full CRUD OK, created+deleted id=58"
+    },
+    {
+      "test": "staff_storage_read_write_create",
+      "status": "PASS",
+      "detail": "Staff storage RW OK: STG/0017"
+    },
+    {
+      "test": "staff_cannot_delete_storage",
+      "status": "PASS",
+      "detail": "Blocked: Staff cannot delete storage"
+    }
+  ],
+  "summary": {
+    "pass": 9,
+    "fail": 0,
+    "total": 9
+  }
+}

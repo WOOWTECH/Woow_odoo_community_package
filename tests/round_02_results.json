@@ -1,0 +1,36 @@
+{
+  "round": 2,
+  "title": "狀態機完整流程",
+  "results": [
+    {
+      "test": "parcel_draft_notified_picked_up",
+      "status": "PASS",
+      "detail": "state=picked_up, pickup_date=2026-04-15 01:29:23, picked_by=[2, 'Mitchell Admin']"
+    },
+    {
+      "test": "parcel_draft_notified_overdue_picked_up",
+      "status": "PASS",
+      "detail": "state=picked_up"
+    },
+    {
+      "test": "parcel_draft_notified_returned",
+      "status": "PASS",
+      "detail": "state=returned"
+    },
+    {
+      "test": "parcel_draft_notified_overdue_returned",
+      "status": "PASS",
+      "detail": "state=returned"
+    },
+    {
+      "test": "storage_pending_storing_ready_done",
+      "status": "PASS",
+      "detail": "state=done, actual_pickup=2026-04-15 01:29:24"
+    }
+  ],
+  "summary": {
+    "pass": 5,
+    "fail": 0,
+    "total": 5
+  }
+}

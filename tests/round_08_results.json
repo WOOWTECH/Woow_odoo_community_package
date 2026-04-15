@@ -1,0 +1,56 @@
+{
+  "round": 8,
+  "title": "資料完整性與關聯",
+  "results": [
+    {
+      "test": "related_field_unit_address_sync",
+      "status": "PASS",
+      "detail": "unit_address=E棟-501"
+    },
+    {
+      "test": "sequence_continuity_pkl",
+      "status": "PASS",
+      "detail": "PKL/0078 → PKL/0079, diff=1"
+    },
+    {
+      "test": "sequence_continuity_stg",
+      "status": "PASS",
+      "detail": "STG/0018 → STG/0019, diff=1"
+    },
+    {
+      "test": "many2one_resident_integrity",
+      "status": "PASS",
+      "detail": "resident_id=[46, 'TEST-R1-住戶A']"
+    },
+    {
+      "test": "many2one_office_integrity",
+      "status": "PASS",
+      "detail": "office_id=[1, 'A棟管理室']"
+    },
+    {
+      "test": "is_overdue_false_for_draft",
+      "status": "PASS",
+      "detail": "state=draft, is_overdue=False"
+    },
+    {
+      "test": "is_overdue_true_for_overdue_state",
+      "status": "PASS",
+      "detail": "state=overdue, is_overdue=True"
+    },
+    {
+      "test": "is_overdue_false_after_pickup",
+      "status": "PASS",
+      "detail": "state=picked_up, is_overdue=False"
+    },
+    {
+      "test": "state_change_tracked_in_chatter",
+      "status": "PASS",
+      "detail": "Tracking messages found: 1"
+    }
+  ],
+  "summary": {
+    "pass": 9,
+    "fail": 0,
+    "total": 9
+  }
+}

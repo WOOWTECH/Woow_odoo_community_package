@@ -1,0 +1,111 @@
+{
+  "round": 1,
+  "title": "API 基礎 CRUD",
+  "results": [
+    {
+      "test": "partner_create_with_extension_fields",
+      "status": "PASS",
+      "detail": "id=48, is_resident=True, unit_address=C棟-301"
+    },
+    {
+      "test": "partner_read_extension_fields",
+      "status": "PASS",
+      "detail": "Found: TEST-R1-住戶B, unit=C棟-301"
+    },
+    {
+      "test": "partner_write_extension_fields",
+      "status": "PASS",
+      "detail": "Updated unit_address=D棟-402"
+    },
+    {
+      "test": "partner_non_resident_default",
+      "status": "PASS",
+      "detail": "is_resident=False"
+    },
+    {
+      "test": "office_create",
+      "status": "PASS",
+      "detail": "id=4, name=TEST-R1-管理室B, building=TEST大樓B"
+    },
+    {
+      "test": "office_read",
+      "status": "PASS",
+      "detail": "Found 1 records"
+    },
+    {
+      "test": "office_write",
+      "status": "PASS",
+      "detail": "Updated building_id=TEST大樓C"
+    },
+    {
+      "test": "office_unlink",
+      "status": "PASS",
+      "detail": "Deleted id=5"
+    },
+    {
+      "test": "parcel_create",
+      "status": "PASS",
+      "detail": "id=10, name=PKL/0010, state=draft"
+    },
+    {
+      "test": "parcel_create_letter_type",
+      "status": "PASS",
+      "detail": "parcel_type=letter"
+    },
+    {
+      "test": "parcel_create_registered_type",
+      "status": "PASS",
+      "detail": "parcel_type=registered"
+    },
+    {
+      "test": "parcel_create_other_type",
+      "status": "PASS",
+      "detail": "parcel_type=other"
+    },
+    {
+      "test": "parcel_read",
+      "status": "PASS",
+      "detail": "Read barcode=TEST-R1-BC002, name=PKL/0010"
+    },
+    {
+      "test": "parcel_search_read",
+      "status": "PASS",
+      "detail": "Found 6 TEST-R1 parcels"
+    },
+    {
+      "test": "parcel_write",
+      "status": "PASS",
+      "detail": "Updated note=Updated note v2 - Round 1"
+    },
+    {
+      "test": "parcel_unlink",
+      "status": "PASS",
+      "detail": "Deleted id=14"
+    },
+    {
+      "test": "storage_create",
+      "status": "PASS",
+      "detail": "id=7, name=STG/0007, state=pending"
+    },
+    {
+      "test": "storage_read",
+      "status": "PASS",
+      "detail": "Read: STG/0007, desc=TEST-R1 寄放測試物品B"
+    },
+    {
+      "test": "storage_write",
+      "status": "PASS",
+      "detail": "Updated location=C區後方"
+    },
+    {
+      "test": "storage_unlink",
+      "status": "PASS",
+      "detail": "Deleted id=8"
+    }
+  ],
+  "summary": {
+    "pass": 20,
+    "fail": 0,
+    "total": 20
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "round": 5,
+  "title": "Wizard 快速登記",
+  "results": [
+    {
+      "test": "wizard_basic_with_auto_notify",
+      "status": "PASS",
+      "detail": "Created PKL/0060, state=notified (auto_notify=True)"
+    },
+    {
+      "test": "wizard_no_auto_notify_stays_draft",
+      "status": "PASS",
+      "detail": "state=draft (auto_notify=False, stays draft)"
+    },
+    {
+      "test": "wizard_register_and_new",
+      "status": "PASS",
+      "detail": "Created parcel, returned action type=ir.actions.act_window"
+    },
+    {
+      "test": "wizard_missing_resident_id",
+      "status": "PASS",
+      "detail": "Blocked: missing required field resident_id"
+    },
+    {
+      "test": "wizard_type_parcel",
+      "status": "PASS",
+      "detail": "type=parcel created OK"
+    },
+    {
+      "test": "wizard_type_letter",
+      "status": "PASS",
+      "detail": "type=letter created OK"
+    },
+    {
+      "test": "wizard_type_registered",
+      "status": "PASS",
+      "detail": "type=registered created OK"
+    },
+    {
+      "test": "wizard_type_other",
+      "status": "PASS",
+      "detail": "type=other created OK"
+    }
+  ],
+  "summary": {
+    "pass": 8,
+    "fail": 0,
+    "total": 8
+  }
+}
