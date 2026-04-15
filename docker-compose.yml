@@ -1,0 +1,30 @@
+services:
+  odoo-communitypackage-db:
+    container_name: odoo-communitypackage-db
+    image: postgres:16
+    environment:
+      POSTGRES_USER: odoocommunitypackage
+      POSTGRES_PASSWORD: odoocommunitypackage
+      POSTGRES_DB: odoocommunitypackage
+    volumes:
+      - odoo-cp-db-data:/var/lib/postgresql/data
+    ports:
+      - "5433:5432"
+    restart: unless-stopped
+
+  odoo-communitypackage-web:
+    container_name: odoo-communitypackage-web
+    image: odoo:18
+    depends_on:
+      - odoo-communitypackage-db
+    ports:
+      - "9097:8069"
+    volumes:
+      - ./community_parcel:/mnt/extra-addons/community_parcel
+      - ./odoo.conf:/etc/odoo/odoo.conf
+      - odoo-cp-web-data:/var/lib/odoo
+    restart: unless-stopped
+
+volumes:
+  odoo-cp-db-data:
+  odoo-cp-web-data:

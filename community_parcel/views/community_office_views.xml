@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══ Form View ═══ -->
+    <record id="community_office_view_form" model="ir.ui.view">
+        <field name="name">community.office.form</field>
+        <field name="model">community.office</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="管理室名稱"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="building_id"/>
+                        </group>
+                        <group>
+                            <field name="responsible_id"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══ List View ═══ -->
+    <record id="community_office_view_tree" model="ir.ui.view">
+        <field name="name">community.office.list</field>
+        <field name="model">community.office</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="building_id"/>
+                <field name="responsible_id"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══ Action ═══ -->
+    <record id="action_community_office" model="ir.actions.act_window">
+        <field name="name">管理室</field>
+        <field name="res_model">community.office</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>
