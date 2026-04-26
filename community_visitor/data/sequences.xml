@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <record id="seq_community_visit" model="ir.sequence">
+        <field name="name">訪問記錄編號</field>
+        <field name="code">community.visit</field>
+        <field name="prefix">VIS/%(year)s%(month)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+    <record id="seq_community_appointment" model="ir.sequence">
+        <field name="name">預約通行單編號</field>
+        <field name="code">community.appointment</field>
+        <field name="prefix">APT/%(year)s%(month)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+</odoo>

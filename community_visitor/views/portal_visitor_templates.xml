@@ -1,0 +1,462 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Portal My Home: add Visitor & Appointment cards -->
+    <template id="portal_my_home_visitor" name="Portal My Home - Visitor"
+              inherit_id="portal.portal_my_home" priority="35">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3" id="portal_visitor_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon">/community_visitor/static/src/img/visitor.svg</t>
+                    <t t-set="title">我的訪客</t>
+                    <t t-set="url" t-value="'/my/visitors'"/>
+                    <t t-set="text">查看與管理待確認的訪客</t>
+                    <t t-set="placeholder_count" t-value="'pending_visit_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon">/community_visitor/static/src/img/appointment.svg</t>
+                    <t t-set="title">我的預約</t>
+                    <t t-set="url" t-value="'/my/appointments'"/>
+                    <t t-set="text">管理訪客預約通行單</t>
+                    <t t-set="placeholder_count" t-value="'appointment_count'"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Token error page -->
+    <template id="portal_visitor_token_error" name="Visitor Token Error">
+        <t t-call="portal.frontend_layout">
+            <div class="container mt-4">
+                <div class="alert alert-danger text-center" role="alert">
+                    <h4><i class="fa fa-exclamation-triangle"/> 錯誤</h4>
+                    <p t-esc="error"/>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Token confirmation page -->
+    <template id="portal_visitor_confirm_page" name="Visitor Confirm Page">
+        <t t-call="portal.frontend_layout">
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6">
+                        <div class="card">
+                            <div class="card-header bg-primary text-white text-center">
+                                <h4 class="mb-0">訪客確認</h4>
+                            </div>
+                            <div class="card-body">
+                                <table class="table table-borderless">
+                                    <tr>
+                                        <td class="text-muted">訪客姓名</td>
+                                        <td><strong t-esc="visit.visitor_id.name"/></td>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">來訪目的</td>
+                                        <td t-esc="dict(visit._fields['purpose'].selection).get(visit.purpose, '')"/>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">訪問戶號</td>
+                                        <td t-esc="visit.unit_id.name"/>
+                                    </tr>
+                                    <tr>
+                                        <td class="text-muted">登記時間</td>
+                                        <td t-field="visit.create_date"/>
+                                    </tr>
+                                </table>
+                                <div class="text-center mt-4">
+                                    <form t-attf-action="/visitor/confirm/#{token}/accept"
+                                          method="post" class="d-inline">
+                                        <input type="hidden" name="csrf_token"
+                                               t-att-value="request.csrf_token()"/>
+                                        <button type="submit"
+                                                class="btn btn-success btn-lg mx-2"
+                                                style="min-width: 120px;">
+                                            <i class="fa fa-check"/> 確認放行
+                                        </button>
+                                    </form>
+                                    <form t-attf-action="/visitor/confirm/#{token}/reject"
+                                          method="post" class="d-inline">
+                                        <input type="hidden" name="csrf_token"
+                                               t-att-value="request.csrf_token()"/>
+                                        <button type="submit"
+                                                class="btn btn-danger btn-lg mx-2"
+                                                style="min-width: 120px;">
+                                            <i class="fa fa-times"/> 拒絕
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Confirmation result page -->
+    <template id="portal_visitor_confirm_result" name="Visitor Confirm Result">
+        <t t-call="portal.frontend_layout">
+            <div class="container mt-4">
+                <div class="row justify-content-center">
+                    <div class="col-md-8 col-lg-6 text-center">
+                        <div t-if="result == 'confirmed'"
+                             class="alert alert-success">
+                            <h4><i class="fa fa-check-circle"/> 已確認放行</h4>
+                            <p>訪客 <strong t-esc="visit.visitor_id.name"/> 已獲得放行許可。</p>
+                        </div>
+                        <div t-if="result == 'rejected'"
+                             class="alert alert-danger">
+                            <h4><i class="fa fa-times-circle"/> 已拒絕</h4>
+                            <p>訪客 <strong t-esc="visit.visitor_id.name"/> 已被拒絕進入。</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: My Visitors -->
+    <template id="portal_my_visitors" name="My Visitors">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">我的訪客</t>
+            </t>
+
+            <!-- Pending visits -->
+            <div class="card mb-4" t-if="pending_visits">
+                <div class="card-header bg-warning">
+                    <h5 class="mb-0">
+                        <i class="fa fa-clock-o"/> 待確認
+                        <span class="badge bg-danger ms-2"
+                              t-esc="len(pending_visits)"/>
+                    </h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>訪客</th>
+                                <th>目的</th>
+                                <th>戶號</th>
+                                <th>登記時間</th>
+                                <th>操作</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="pending_visits" t-as="visit">
+                                <td t-esc="visit.visitor_id.name"/>
+                                <td t-esc="dict(visit._fields['purpose'].selection).get(visit.purpose, '')"/>
+                                <td t-esc="visit.unit_id.name"/>
+                                <td t-field="visit.create_date"/>
+                                <td>
+                                    <form t-attf-action="/visitor/confirm/#{visit.confirm_token}/accept"
+                                          method="post" class="d-inline"
+                                          t-if="visit.confirm_token">
+                                        <input type="hidden" name="csrf_token"
+                                               t-att-value="request.csrf_token()"/>
+                                        <button type="submit"
+                                                class="btn btn-sm btn-success">
+                                            放行
+                                        </button>
+                                    </form>
+                                    <form t-attf-action="/visitor/confirm/#{visit.confirm_token}/reject"
+                                          method="post" class="d-inline"
+                                          t-if="visit.confirm_token">
+                                        <input type="hidden" name="csrf_token"
+                                               t-att-value="request.csrf_token()"/>
+                                        <button type="submit"
+                                                class="btn btn-sm btn-danger">
+                                            拒絕
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Recent visits -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0"><i class="fa fa-history"/> 近期記錄</h5>
+                </div>
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0"
+                           t-if="recent_visits">
+                        <thead>
+                            <tr>
+                                <th>編號</th>
+                                <th>訪客</th>
+                                <th>類型</th>
+                                <th>戶號</th>
+                                <th>時間</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="recent_visits" t-as="visit">
+                                <td t-esc="visit.name"/>
+                                <td t-esc="visit.visitor_id.name"/>
+                                <td t-esc="dict(visit._fields['visit_type'].selection).get(visit.visit_type, '')"/>
+                                <td t-esc="visit.unit_id.name"/>
+                                <td t-field="visit.create_date"/>
+                                <td>
+                                    <span t-if="visit.state == 'checked_in'"
+                                          class="badge bg-success">已入場</span>
+                                    <span t-if="visit.state == 'confirmed'"
+                                          class="badge bg-info">已確認</span>
+                                    <span t-if="visit.state == 'rejected'"
+                                          class="badge bg-danger">已拒絕</span>
+                                    <span t-if="visit.state == 'timeout'"
+                                          class="badge bg-warning">逾時</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center py-4 text-muted"
+                         t-if="not recent_visits">
+                        <p>暫無訪客記錄</p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: My Appointments -->
+    <template id="portal_my_appointments" name="My Appointments">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">我的預約</t>
+            </t>
+
+            <div class="mb-3">
+                <a href="/my/appointments/new" class="btn btn-primary">
+                    <i class="fa fa-plus"/> 新增預約
+                </a>
+            </div>
+
+            <div class="card">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0"
+                           t-if="appointments">
+                        <thead>
+                            <tr>
+                                <th>編號</th>
+                                <th>訪客</th>
+                                <th>戶號</th>
+                                <th>類型</th>
+                                <th>有效期</th>
+                                <th>次數</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="appointments" t-as="apt">
+                                <td>
+                                    <a t-attf-href="/my/appointments/#{apt.id}"
+                                       t-esc="apt.name"/>
+                                </td>
+                                <td t-esc="apt.visitor_name"/>
+                                <td t-esc="apt.unit_id.name"/>
+                                <td t-esc="dict(apt._fields['appointment_type'].selection).get(apt.appointment_type, '')"/>
+                                <td>
+                                    <span t-field="apt.valid_from"/> ~
+                                    <span t-field="apt.valid_until"/>
+                                </td>
+                                <td>
+                                    <t t-if="apt.max_entries == 0">無限</t>
+                                    <t t-else="">
+                                        <t t-esc="apt.used_entries"/>/<t t-esc="apt.max_entries"/>
+                                    </t>
+                                </td>
+                                <td>
+                                    <span t-if="apt.state == 'active'"
+                                          class="badge bg-success">有效</span>
+                                    <span t-if="apt.state == 'expired'"
+                                          class="badge bg-secondary">已過期</span>
+                                    <span t-if="apt.state == 'cancelled'"
+                                          class="badge bg-danger">已撤銷</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="text-center py-4 text-muted"
+                         t-if="not appointments">
+                        <p>暫無預約記錄</p>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: Appointment Detail -->
+    <template id="portal_appointment_detail" name="Appointment Detail">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0" t-esc="appointment.name"/>
+                    <span t-if="appointment.state == 'active'"
+                          class="badge bg-success">有效</span>
+                    <span t-if="appointment.state == 'expired'"
+                          class="badge bg-secondary">已過期</span>
+                    <span t-if="appointment.state == 'cancelled'"
+                          class="badge bg-danger">已撤銷</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td class="text-muted">訪客姓名</td>
+                                    <td t-esc="appointment.visitor_name"/>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">訪客電話</td>
+                                    <td t-esc="appointment.visitor_phone"/>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">戶號</td>
+                                    <td t-esc="appointment.unit_id.name"/>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">有效期間</td>
+                                    <td>
+                                        <span t-field="appointment.valid_from"/> ~
+                                        <span t-field="appointment.valid_until"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">驗證碼</td>
+                                    <td>
+                                        <span class="badge bg-dark fs-5"
+                                              t-esc="appointment.access_token"/>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="text-muted">剩餘次數</td>
+                                    <td>
+                                        <t t-if="appointment.max_entries == 0">無限</t>
+                                        <t t-else="">
+                                            <t t-esc="appointment.max_entries - appointment.used_entries"/>
+                                            / <t t-esc="appointment.max_entries"/>
+                                        </t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6 text-center"
+                             t-if="appointment.qr_code">
+                            <p class="text-muted">QR Code</p>
+                            <img t-att-src="'data:image/png;base64,' + appointment.qr_code.decode('utf-8') if appointment.qr_code else ''"
+                                 alt="QR Code"
+                                 style="max-width: 200px;"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-footer"
+                     t-if="appointment.state == 'active'">
+                    <form t-attf-action="/my/appointments/#{appointment.id}/cancel"
+                          method="post" class="d-inline"
+                          onsubmit="return confirm('確定要撤銷此預約嗎？');">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa fa-times"/> 撤銷預約
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: New Appointment Form -->
+    <template id="portal_appointment_new" name="New Appointment">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">新增預約</h5>
+                </div>
+                <div class="card-body">
+                    <form action="/my/appointments/create" method="post">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">戶號</label>
+                                <select name="unit_id" class="form-select"
+                                        required="required">
+                                    <option value="">請選擇...</option>
+                                    <t t-foreach="units" t-as="unit">
+                                        <option t-att-value="unit.id"
+                                                t-esc="unit.name"/>
+                                    </t>
+                                </select>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">預約類型</label>
+                                <select name="appointment_type"
+                                        class="form-select">
+                                    <option value="one_time">一次性</option>
+                                    <option value="recurring">週期性</option>
+                                    <option value="permanent">永久</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">訪客姓名</label>
+                                <input type="text" name="visitor_name"
+                                       class="form-control"
+                                       required="required"/>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">訪客電話</label>
+                                <input type="text" name="visitor_phone"
+                                       class="form-control"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">有效起始</label>
+                                <input type="datetime-local" name="valid_from"
+                                       class="form-control"
+                                       required="required"/>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">有效截止</label>
+                                <input type="datetime-local" name="valid_until"
+                                       class="form-control"
+                                       required="required"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6 mb-3">
+                                <label class="form-label">最大入場次數</label>
+                                <input type="number" name="max_entries"
+                                       class="form-control" value="1"
+                                       min="0"/>
+                                <small class="text-muted">0 表示無限次</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">授權目的</label>
+                            <textarea name="purpose" class="form-control"
+                                      rows="2"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-plus"/> 建立預約
+                        </button>
+                        <a href="/my/appointments"
+                           class="btn btn-secondary ms-2">取消</a>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>

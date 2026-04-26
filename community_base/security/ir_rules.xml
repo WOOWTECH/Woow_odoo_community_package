@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Announcement: portal users see published announcements from their office -->
+    <record id="rule_announcement_portal" model="ir.rule">
+        <field name="name">Announcement: Portal 住戶看自己管理室的已發布公告</field>
+        <field name="model_id" ref="model_community_announcement"/>
+        <field name="domain_force">[
+            ('state', '=', 'published'),
+            ('office_id', 'in', user.partner_id.unit_ids.office_id.ids),
+        ]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Announcement: internal users see all -->
+    <record id="rule_announcement_user" model="ir.rule">
+        <field name="name">Announcement: 內部使用者看全部</field>
+        <field name="model_id" ref="model_community_announcement"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Feedback: portal users see only their own -->
+    <record id="rule_feedback_portal" model="ir.rule">
+        <field name="name">Feedback: Portal 住戶只看自己提交的</field>
+        <field name="model_id" ref="model_community_feedback"/>
+        <field name="domain_force">[('partner_id', '=', user.partner_id.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Feedback: internal users see all -->
+    <record id="rule_feedback_user" model="ir.rule">
+        <field name="name">Feedback: 內部使用者看全部</field>
+        <field name="model_id" ref="model_community_feedback"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+</odoo>

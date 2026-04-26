@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_feedback_form" model="ir.ui.view">
+        <field name="name">community.feedback.form</field>
+        <field name="model">community.feedback</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_accept"
+                            string="受理"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'pending'"/>
+                    <button name="action_done"
+                            string="結案"
+                            type="object"
+                            class="btn-success"
+                            invisible="state != 'in_progress'"/>
+                    <button name="action_reopen"
+                            string="重新開啟"
+                            type="object"
+                            class="btn-warning"
+                            invisible="state != 'done'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="pending,in_progress,done"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="title"/>
+                            <field name="category_id"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="unit_id"/>
+                            <field name="office_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="意見內容">
+                            <field name="content" placeholder="意見描述..."/>
+                        </page>
+                        <page string="屬性">
+                            <field name="properties"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_feedback_list" model="ir.ui.view">
+        <field name="name">community.feedback.list</field>
+        <field name="model">community.feedback</field>
+        <field name="arch" type="xml">
+            <list decoration-warning="state == 'pending'"
+                  decoration-info="state == 'in_progress'"
+                  decoration-success="state == 'done'">
+                <field name="name"/>
+                <field name="title"/>
+                <field name="category_id"/>
+                <field name="partner_id"/>
+                <field name="unit_id"/>
+                <field name="create_date"/>
+                <field name="state" widget="badge"
+                       decoration-warning="state == 'pending'"
+                       decoration-info="state == 'in_progress'"
+                       decoration-success="state == 'done'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_feedback_search" model="ir.ui.view">
+        <field name="name">community.feedback.search</field>
+        <field name="model">community.feedback</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="partner_id"/>
+                <field name="unit_id"/>
+                <filter name="pending"
+                        string="待處理"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter name="in_progress"
+                        string="處理中"
+                        domain="[('state', '=', 'in_progress')]"/>
+                <filter name="done"
+                        string="已結案"
+                        domain="[('state', '=', 'done')]"/>
+                <separator/>
+                <group expand="0" string="分組">
+                    <filter name="group_category"
+                            string="分類"
+                            context="{'group_by': 'category_id'}"/>
+                    <filter name="group_unit"
+                            string="戶號"
+                            context="{'group_by': 'unit_id'}"/>
+                    <filter name="group_state"
+                            string="狀態"
+                            context="{'group_by': 'state'}"/>
+                    <filter name="group_office"
+                            string="管理室"
+                            context="{'group_by': 'office_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_community_feedback" model="ir.actions.act_window">
+        <field name="name">意見反映</field>
+        <field name="res_model">community.feedback</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_pending': 1, 'search_default_in_progress': 1}</field>
+    </record>
+
+</odoo>

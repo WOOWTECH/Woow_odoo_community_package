@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_community_visit_form" model="ir.ui.view">
+        <field name="name">community.visit.form</field>
+        <field name="model">community.visit</field>
+        <field name="arch" type="xml">
+            <form string="訪問記錄">
+                <header>
+                    <button name="action_send_confirmation" type="object"
+                            string="發送確認" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_checkin" type="object"
+                            string="確認入場" class="btn-success"
+                            invisible="state != 'confirmed'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pending_confirm,confirmed,checked_in"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="訪客資訊">
+                            <field name="visitor_id"/>
+                            <field name="visit_type"/>
+                            <field name="purpose"/>
+                            <field name="purpose_note"
+                                   invisible="not purpose_note"/>
+                        </group>
+                        <group string="訪問資訊">
+                            <field name="unit_id"/>
+                            <field name="resident_id"/>
+                            <field name="guard_in_id"/>
+                            <field name="office_id"/>
+                            <field name="checkin_time"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group>
+                            <field name="appointment_id"
+                                   invisible="visit_type == 'walk_in'"/>
+                            <field name="badge_number"/>
+                        </group>
+                        <group>
+                            <field name="resident_confirm_time"
+                                   invisible="state not in ('confirmed', 'checked_in')"/>
+                            <field name="confirm_token" invisible="1"/>
+                            <field name="token_expiry" invisible="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="備註..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_community_visit_list" model="ir.ui.view">
+        <field name="name">community.visit.list</field>
+        <field name="model">community.visit</field>
+        <field name="arch" type="xml">
+            <list string="訪問記錄"
+                  decoration-warning="state == 'pending_confirm'"
+                  decoration-success="state == 'checked_in'"
+                  decoration-danger="state in ('rejected', 'timeout')">
+                <field name="name"/>
+                <field name="visitor_id"/>
+                <field name="visit_type"/>
+                <field name="unit_id"/>
+                <field name="purpose"/>
+                <field name="guard_in_id"/>
+                <field name="checkin_time"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_community_visit_kanban" model="ir.ui.view">
+        <field name="name">community.visit.kanban</field>
+        <field name="model">community.visit</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state"
+                    class="o_kanban_small_column">
+                <field name="state"/>
+                <field name="visitor_id"/>
+                <field name="unit_id"/>
+                <field name="purpose"/>
+                <field name="create_date"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_details">
+                            <strong>
+                                <field name="name"/>
+                            </strong>
+                            <div>
+                                <i class="fa fa-user"/> <field name="visitor_id"/>
+                            </div>
+                            <div>
+                                <i class="fa fa-home"/> <field name="unit_id"/>
+                            </div>
+                            <div class="text-muted">
+                                <field name="purpose"/> -
+                                <field name="create_date"/>
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <record id="view_community_visit_search" model="ir.ui.view">
+        <field name="name">community.visit.search</field>
+        <field name="model">community.visit</field>
+        <field name="arch" type="xml">
+            <search string="搜尋訪問記錄">
+                <field name="name"/>
+                <field name="visitor_id"/>
+                <field name="unit_id"/>
+                <filter string="待確認" name="pending"
+                        domain="[('state', '=', 'pending_confirm')]"/>
+                <filter string="已確認" name="confirmed"
+                        domain="[('state', '=', 'confirmed')]"/>
+                <filter string="已入場" name="checked_in"
+                        domain="[('state', '=', 'checked_in')]"/>
+                <filter string="今日" name="today"
+                        domain="[('create_date', '>=', context_today().strftime('%%Y-%%m-%%d'))]"/>
+                <separator/>
+                <filter string="臨時訪客" name="walk_in"
+                        domain="[('visit_type', '=', 'walk_in')]"/>
+                <filter string="預約訪客" name="pre_registered"
+                        domain="[('visit_type', '=', 'pre_registered')]"/>
+                <group expand="0" string="群組">
+                    <filter string="狀態" name="group_state"
+                            context="{'group_by': 'state'}"/>
+                    <filter string="戶號" name="group_unit"
+                            context="{'group_by': 'unit_id'}"/>
+                    <filter string="類型" name="group_type"
+                            context="{'group_by': 'visit_type'}"/>
+                    <filter string="日期" name="group_date"
+                            context="{'group_by': 'create_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_community_visit" model="ir.actions.act_window">
+        <field name="name">訪問記錄</field>
+        <field name="res_model">community.visit</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="view_community_visit_search"/>
+        <field name="context">{'search_default_today': 1}</field>
+    </record>
+
+</odoo>

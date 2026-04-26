@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_community_appointment_form" model="ir.ui.view">
+        <field name="name">community.appointment.form</field>
+        <field name="model">community.appointment</field>
+        <field name="arch" type="xml">
+            <form string="預約通行單">
+                <header>
+                    <button name="action_cancel" type="object"
+                            string="撤銷" class="btn-danger"
+                            invisible="state != 'active'"
+                            groups="community_visitor.group_manager"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                                name="action_view_visits"
+                                icon="fa-list">
+                            <field name="used_entries" widget="statinfo"
+                                   string="入場次數"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group string="訪客資訊">
+                            <field name="visitor_name"/>
+                            <field name="visitor_phone"/>
+                            <field name="purpose"/>
+                        </group>
+                        <group string="授權資訊">
+                            <field name="resident_id"/>
+                            <field name="unit_id"/>
+                            <field name="appointment_type"/>
+                            <field name="max_entries"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="有效期間">
+                            <field name="valid_from"/>
+                            <field name="valid_until"/>
+                        </group>
+                        <group string="驗證資訊">
+                            <field name="access_token"/>
+                            <field name="qr_code" widget="image"
+                                   class="oe_avatar"
+                                   invisible="not qr_code"/>
+                        </group>
+                    </group>
+                    <group string="週期設定"
+                           invisible="appointment_type != 'recurring'">
+                        <field name="recurring_days"
+                               placeholder="0,1,2,3,4 (0=週一, 6=週日)"/>
+                        <field name="recurring_from" widget="float_time"/>
+                        <field name="recurring_until" widget="float_time"/>
+                    </group>
+                    <notebook>
+                        <page string="入場記錄" name="visits">
+                            <field name="visit_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="visitor_id"/>
+                                    <field name="checkin_time"/>
+                                    <field name="guard_in_id"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_community_appointment_list" model="ir.ui.view">
+        <field name="name">community.appointment.list</field>
+        <field name="model">community.appointment</field>
+        <field name="arch" type="xml">
+            <list string="預約通行單"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state in ('expired', 'cancelled')">
+                <field name="name"/>
+                <field name="visitor_name"/>
+                <field name="unit_id"/>
+                <field name="appointment_type"/>
+                <field name="valid_from"/>
+                <field name="valid_until"/>
+                <field name="used_entries"/>
+                <field name="max_entries"/>
+                <field name="access_token"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_community_appointment_search" model="ir.ui.view">
+        <field name="name">community.appointment.search</field>
+        <field name="model">community.appointment</field>
+        <field name="arch" type="xml">
+            <search string="搜尋預約通行單">
+                <field name="name"/>
+                <field name="visitor_name"/>
+                <field name="access_token"/>
+                <field name="unit_id"/>
+                <filter string="有效" name="active_filter"
+                        domain="[('state', '=', 'active')]"/>
+                <filter string="已過期" name="expired"
+                        domain="[('state', '=', 'expired')]"/>
+                <group expand="0" string="群組">
+                    <filter string="類型" name="group_type"
+                            context="{'group_by': 'appointment_type'}"/>
+                    <filter string="戶號" name="group_unit"
+                            context="{'group_by': 'unit_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_community_appointment" model="ir.actions.act_window">
+        <field name="name">預約通行單</field>
+        <field name="res_model">community.appointment</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id"
+               ref="view_community_appointment_search"/>
+        <field name="context">{'search_default_active_filter': 1}</field>
+    </record>
+
+</odoo>

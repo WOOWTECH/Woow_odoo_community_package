@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_announcement_form" model="ir.ui.view">
+        <field name="name">community.announcement.form</field>
+        <field name="model">community.announcement</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_publish"
+                            string="發布"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_archive_announcement"
+                            string="下架"
+                            type="object"
+                            class="btn-warning"
+                            invisible="state != 'published'"
+                            confirm="確定要下架此公告嗎？"/>
+                    <button name="action_republish"
+                            string="重新發布"
+                            type="object"
+                            class="btn-primary"
+                            invisible="state != 'archived'"/>
+                    <field name="state"
+                           widget="statusbar"
+                           statusbar_visible="draft,published,archived"/>
+                </header>
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" placeholder="公告標題"/>
+                            <field name="category_id"/>
+                            <field name="office_id"/>
+                        </group>
+                        <group>
+                            <field name="author_id"/>
+                            <field name="publish_date"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="公告內容">
+                            <field name="content" placeholder="輸入公告內容..."/>
+                        </page>
+                        <page string="屬性">
+                            <field name="properties"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_announcement_list" model="ir.ui.view">
+        <field name="name">community.announcement.list</field>
+        <field name="model">community.announcement</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="state == 'archived'"
+                  decoration-info="state == 'draft'"
+                  decoration-success="state == 'published'">
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="office_id"/>
+                <field name="author_id"/>
+                <field name="publish_date"/>
+                <field name="state" widget="badge"
+                       decoration-success="state == 'published'"
+                       decoration-info="state == 'draft'"
+                       decoration-muted="state == 'archived'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_announcement_search" model="ir.ui.view">
+        <field name="name">community.announcement.search</field>
+        <field name="model">community.announcement</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="category_id"/>
+                <field name="office_id"/>
+                <filter name="published"
+                        string="已發布"
+                        domain="[('state', '=', 'published')]"/>
+                <filter name="draft"
+                        string="草稿"
+                        domain="[('state', '=', 'draft')]"/>
+                <separator/>
+                <group expand="0" string="分組">
+                    <filter name="group_category"
+                            string="分類"
+                            context="{'group_by': 'category_id'}"/>
+                    <filter name="group_office"
+                            string="管理室"
+                            context="{'group_by': 'office_id'}"/>
+                    <filter name="group_state"
+                            string="狀態"
+                            context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_community_announcement" model="ir.actions.act_window">
+        <field name="name">公告</field>
+        <field name="res_model">community.announcement</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_published': 1}</field>
+    </record>
+
+</odoo>

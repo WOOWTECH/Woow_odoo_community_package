@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+
+    <!-- Visit confirmation request to residents -->
+    <record id="mail_template_visit_confirm_request" model="mail.template">
+        <field name="name">訪客到達通知</field>
+        <field name="model_id" ref="model_community_visit"/>
+        <field name="subject">【社區通知】您有訪客等待確認 - {{ object.visitor_id.name }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <table style="width: 100%; background-color: #f5f5f5; padding: 20px;">
+        <tr>
+            <td align="center">
+                <table style="width: 600px; background-color: white; border-radius: 8px; padding: 30px;">
+                    <tr>
+                        <td>
+                            <h2 style="color: #333;">您有訪客等待確認</h2>
+                            <table style="width: 100%; margin: 20px 0;">
+                                <tr>
+                                    <td style="padding: 8px 0; color: #666;">訪客姓名：</td>
+                                    <td style="padding: 8px 0;"><strong>{{ object.visitor_id.name }}</strong></td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #666;">來訪目的：</td>
+                                    <td style="padding: 8px 0;">{{ object.purpose }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #666;">訪問戶號：</td>
+                                    <td style="padding: 8px 0;">{{ object.unit_id.name }}</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 8px 0; color: #666;">登記時間：</td>
+                                    <td style="padding: 8px 0;">{{ object.create_date }}</td>
+                                </tr>
+                            </table>
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="{{ ctx.get('confirm_url', '#') }}"
+                                   style="background-color: #28a745; color: white; padding: 12px 40px;
+                                          text-decoration: none; border-radius: 5px; margin: 0 10px;
+                                          display: inline-block; font-size: 16px;">
+                                    確認放行
+                                </a>
+                                <a href="{{ ctx.get('reject_url', '#') }}"
+                                   style="background-color: #dc3545; color: white; padding: 12px 40px;
+                                          text-decoration: none; border-radius: 5px; margin: 0 10px;
+                                          display: inline-block; font-size: 16px;">
+                                    拒絕
+                                </a>
+                            </div>
+                            <p style="color: #999; font-size: 12px; text-align: center;">
+                                此連結將在 20 分鐘後失效。
+                            </p>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Appointment visitor arrived notification -->
+    <record id="mail_template_appointment_visitor_arrived" model="mail.template">
+        <field name="name">預約訪客已入場通知</field>
+        <field name="model_id" ref="model_community_visit"/>
+        <field name="email_to">{{ object.resident_id.email }}</field>
+        <field name="subject">【社區通知】您的預約訪客 {{ object.visitor_id.name }} 已入場</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <p>您好，</p>
+    <p>您的預約訪客 <strong>{{ object.visitor_id.name }}</strong> 已於
+       <strong>{{ object.checkin_time }}</strong> 入場。</p>
+    <table style="margin: 10px 0;">
+        <tr><td style="padding: 4px 8px; color: #666;">戶號：</td>
+            <td style="padding: 4px 8px;">{{ object.unit_id.name }}</td></tr>
+        <tr><td style="padding: 4px 8px; color: #666;">目的：</td>
+            <td style="padding: 4px 8px;">{{ object.purpose_note or object.purpose }}</td></tr>
+    </table>
+</div>
+        </field>
+        <field name="auto_delete" eval="True"/>
+    </record>
+
+    <!-- Blacklist alert to office manager -->
+    <record id="mail_template_blacklist_alert" model="mail.template">
+        <field name="name">黑名單觸發警示</field>
+        <field name="model_id" ref="model_community_visitor"/>
+        <field name="subject">【警示】黑名單訪客嘗試進入 - {{ object.name }}</field>
+        <field name="body_html" type="html">
+<div style="margin: 0px; padding: 0px;">
+    <h3 style="color: #dc3545;">黑名單訪客警示</h3>
+    <p>以下黑名單訪客嘗試進入社區：</p>
+    <table style="margin: 10px 0;">
+        <tr><td style="padding: 4px 8px; color: #666;">姓名：</td>
+            <td style="padding: 4px 8px;"><strong>{{ object.name }}</strong></td></tr>
+        <tr><td style="padding: 4px 8px; color: #666;">電話：</td>
+            <td style="padding: 4px 8px;">{{ object.phone }}</td></tr>
+        <tr><td style="padding: 4px 8px; color: #666;">黑名單原因：</td>
+            <td style="padding: 4px 8px;">{{ object.blacklist_reason or '未說明' }}</td></tr>
+        <tr><td style="padding: 4px 8px; color: #666;">列入日期：</td>
+            <td style="padding: 4px 8px;">{{ object.blacklist_date }}</td></tr>
+    </table>
+    <p>請即時處理。</p>
+</div>
+        </field>
+        <field name="auto_delete" eval="False"/>
+    </record>
+
+</odoo>

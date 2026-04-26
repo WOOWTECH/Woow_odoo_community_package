@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_community_visitor_guard,community.visitor.guard,model_community_visitor,community_visitor.group_guard,1,1,1,0
+access_community_visitor_manager,community.visitor.manager,model_community_visitor,community_visitor.group_manager,1,1,1,1
+access_community_visit_guard,community.visit.guard,model_community_visit,community_visitor.group_guard,1,1,1,0
+access_community_visit_manager,community.visit.manager,model_community_visit,community_visitor.group_manager,1,1,1,1
+access_community_appointment_guard,community.appointment.guard,model_community_appointment,community_visitor.group_guard,1,0,0,0
+access_community_appointment_manager,community.appointment.manager,model_community_appointment,community_visitor.group_manager,1,1,1,1
+access_community_visit_portal,community.visit.portal,model_community_visit,base.group_portal,1,0,0,0
+access_community_appointment_portal,community.appointment.portal,model_community_appointment,base.group_portal,1,1,1,0
+access_visitor_register_wizard_guard,visitor.register.wizard.guard,model_visitor_register_wizard,community_visitor.group_guard,1,1,1,1
+access_visitor_register_wizard_manager,visitor.register.wizard.manager,model_visitor_register_wizard,community_visitor.group_manager,1,1,1,1

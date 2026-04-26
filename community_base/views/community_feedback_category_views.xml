@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_feedback_category_form" model="ir.ui.view">
+        <field name="name">community.feedback.category.form</field>
+        <field name="model">community.feedback.category</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="sequence"/>
+                        <field name="active"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_feedback_category_list" model="ir.ui.view">
+        <field name="name">community.feedback.category.list</field>
+        <field name="model">community.feedback.category</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_feedback_category" model="ir.actions.act_window">
+        <field name="name">意見分類</field>
+        <field name="res_model">community.feedback.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>

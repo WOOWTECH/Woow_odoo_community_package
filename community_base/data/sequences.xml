@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="seq_community_feedback" model="ir.sequence">
+        <field name="name">意見反映編號</field>
+        <field name="code">community.feedback</field>
+        <field name="prefix">FB/%(year)s%(month)s/</field>
+        <field name="padding">4</field>
+    </record>
+
+</odoo>

@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Portal My Home: add Announcement & Feedback cards -->
+    <template id="portal_my_home_community" name="Portal My Home - Community"
+              inherit_id="portal.portal_my_home" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <div class="o_portal_category row g-2 mt-3" id="portal_community_category">
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon">/community_base/static/description/icon.png</t>
+                    <t t-set="title">社區公告</t>
+                    <t t-set="url" t-value="'/my/announcements'"/>
+                    <t t-set="text">瀏覽社區公布欄</t>
+                    <t t-set="placeholder_count" t-value="'announcement_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon">/community_base/static/description/icon.png</t>
+                    <t t-set="title">意見反映</t>
+                    <t t-set="url" t-value="'/my/feedbacks'"/>
+                    <t t-set="text">提交意見或查看處理進度</t>
+                    <t t-set="placeholder_count" t-value="'feedback_count'"/>
+                </t>
+            </div>
+        </xpath>
+    </template>
+
+    <!-- Portal: Announcement List -->
+    <template id="portal_announcements" name="Announcements">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">社區公告</t>
+            </t>
+
+            <!-- Category filter tabs -->
+            <div class="mb-3 d-flex flex-wrap gap-2">
+                <a t-attf-href="/my/announcements"
+                   t-attf-class="btn btn-sm #{not current_category and 'btn-primary' or 'btn-outline-primary'}">
+                    全部
+                </a>
+                <t t-foreach="categories" t-as="cat">
+                    <a t-attf-href="/my/announcements?category=#{cat.id}"
+                       t-attf-class="btn btn-sm #{current_category == cat.id and 'btn-primary' or 'btn-outline-primary'}">
+                        <t t-esc="cat.name"/>
+                    </a>
+                </t>
+            </div>
+
+            <div t-if="announcements">
+                <t t-foreach="announcements" t-as="ann">
+                    <div class="card mb-3">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <h5 class="card-title mb-1">
+                                    <a t-attf-href="/my/announcements/#{ann.id}"
+                                       class="text-decoration-none"
+                                       t-esc="ann.name"/>
+                                </h5>
+                                <span class="badge bg-secondary"
+                                      t-esc="ann.category_id.name"/>
+                            </div>
+                            <small class="text-muted">
+                                <span t-field="ann.publish_date"/>
+                                <span class="mx-1">|</span>
+                                <span t-esc="ann.author_id.name"/>
+                            </small>
+                        </div>
+                    </div>
+                </t>
+            </div>
+            <div t-else="" class="text-center py-4 text-muted">
+                <p>目前尚無公告</p>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: Announcement Detail -->
+    <template id="portal_announcement_detail" name="Announcement Detail">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0" t-esc="announcement.name"/>
+                    <span class="badge bg-secondary"
+                          t-esc="announcement.category_id.name"/>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <small class="text-muted">
+                            發布時間：<span t-field="announcement.publish_date"/>
+                            <span class="mx-1">|</span>
+                            發布者：<span t-esc="announcement.author_id.name"/>
+                            <span class="mx-1">|</span>
+                            管理室：<span t-esc="announcement.office_id.name"/>
+                        </small>
+                    </div>
+                    <div t-field="announcement.content"/>
+                </div>
+            </div>
+            <div class="mt-3">
+                <a href="/my/announcements" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"/> 返回公告列表
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: Feedback List -->
+    <template id="portal_feedbacks" name="My Feedbacks">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-call="portal.portal_searchbar">
+                <t t-set="title">意見反映</t>
+            </t>
+
+            <div class="mb-3">
+                <a href="/my/feedbacks/new" class="btn btn-primary">
+                    <i class="fa fa-plus"/> 新增意見
+                </a>
+            </div>
+
+            <div class="card" t-if="feedbacks">
+                <div class="card-body p-0">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>編號</th>
+                                <th>標題</th>
+                                <th>類別</th>
+                                <th>戶號</th>
+                                <th>提交時間</th>
+                                <th>狀態</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr t-foreach="feedbacks" t-as="fb">
+                                <td>
+                                    <a t-attf-href="/my/feedbacks/#{fb.id}"
+                                       t-esc="fb.name"/>
+                                </td>
+                                <td t-esc="fb.title"/>
+                                <td t-esc="fb.category_id.name"/>
+                                <td t-esc="fb.unit_id.name"/>
+                                <td><span t-field="fb.create_date"/></td>
+                                <td>
+                                    <span t-if="fb.state == 'pending'"
+                                          class="badge bg-warning">待處理</span>
+                                    <span t-if="fb.state == 'in_progress'"
+                                          class="badge bg-info">處理中</span>
+                                    <span t-if="fb.state == 'done'"
+                                          class="badge bg-success">已結案</span>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <div t-else="" class="text-center py-4 text-muted">
+                <p>暫無意見反映記錄</p>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: Feedback Detail -->
+    <template id="portal_feedback_detail" name="Feedback Detail">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <span t-esc="feedback.name"/>
+                        <span class="mx-1">-</span>
+                        <span t-esc="feedback.title"/>
+                    </h5>
+                    <span t-if="feedback.state == 'pending'"
+                          class="badge bg-warning">待處理</span>
+                    <span t-if="feedback.state == 'in_progress'"
+                          class="badge bg-info">處理中</span>
+                    <span t-if="feedback.state == 'done'"
+                          class="badge bg-success">已結案</span>
+                </div>
+                <div class="card-body">
+                    <table class="table table-borderless">
+                        <tr>
+                            <td class="text-muted" style="width: 120px;">類別</td>
+                            <td t-esc="feedback.category_id.name"/>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">戶號</td>
+                            <td t-esc="feedback.unit_id.name"/>
+                        </tr>
+                        <tr>
+                            <td class="text-muted">提交時間</td>
+                            <td><span t-field="feedback.create_date"/></td>
+                        </tr>
+                    </table>
+                    <hr/>
+                    <div class="mb-3">
+                        <strong>意見內容：</strong>
+                        <p class="mt-2" style="white-space: pre-wrap;"
+                           t-esc="feedback.content"/>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chatter for portal communication -->
+            <div class="mt-3" id="feedback_communication">
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="feedback"/>
+                </t>
+            </div>
+
+            <div class="mt-3">
+                <a href="/my/feedbacks" class="btn btn-secondary">
+                    <i class="fa fa-arrow-left"/> 返回列表
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- Portal: New Feedback Form -->
+    <template id="portal_feedback_new" name="New Feedback">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">新增意見反映</h5>
+                </div>
+                <div class="card-body">
+                    <p class="text-muted">
+                        親愛的住戶 您好，社區維護不分你我，大家一起共同維護，
+                        對社區有任何建議可提供管委會參考。
+                    </p>
+                    <form action="/my/feedbacks/create" method="post">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label class="form-label">類別</label>
+                            <select name="category_id" class="form-select"
+                                    required="required">
+                                <option value="">請選擇項目</option>
+                                <t t-foreach="categories" t-as="cat">
+                                    <option t-att-value="cat.id"
+                                            t-esc="cat.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">戶號</label>
+                            <select name="unit_id" class="form-select"
+                                    required="required">
+                                <option value="">請選擇戶號</option>
+                                <t t-foreach="units" t-as="unit">
+                                    <option t-att-value="unit.id"
+                                            t-esc="unit.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">標題</label>
+                            <input type="text" name="title"
+                                   class="form-control"
+                                   placeholder="簡述您的意見"
+                                   required="required"/>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">描述</label>
+                            <textarea name="content" class="form-control"
+                                      rows="5"
+                                      placeholder="請詳細描述您的意見或問題..."
+                                      required="required"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-paper-plane"/> 提交
+                        </button>
+                        <a href="/my/feedbacks"
+                           class="btn btn-secondary ms-2">取消</a>
+                    </form>
+                </div>
+            </div>
+        </t>
+    </template>
+
+</odoo>
