@@ -7,7 +7,7 @@ WoowTech 社區管理系統 Odoo 18 模組套件。
 ```
 community_base          # 基礎模組（必裝）
 ├── community_visitor   # 訪客管理（延伸）
-└── community_parcel    # 包裹管理（延伸，開發中）
+└── community_parcel    # 包裹管理（延伸）
 ```
 
 ## 模組說明
@@ -37,9 +37,18 @@ community_base          # 基礎模組（必裝）
 
 依賴：`community_base`, `mail`, `portal`
 
-### community_parcel (開發中)
+### community_parcel (v18.0.1.0.0)
 
-社區包裹管理模組，部署於 port 9097。
+社區包裹管理模組，提供：
+
+- **包裹登記** (`community.parcel`) — 收件登記、條碼掃描、狀態追蹤（待通知→已通知→已取件/逾期/已退回）
+- **寄放物品** (`community.storage`) — 住戶間寄放物品登記、保管與交付
+- **管理室工作台** — 今日到件、未取件、逾期包裹一覽
+- **快速登記精靈** — 條碼掃描快速建立包裹記錄
+- **郵件通知** — 到件通知、逾期提醒自動發送
+- **自動逾期排程** — 7 天未取件自動標記逾期
+
+依賴：`community_base`, `mail`
 
 ## 安裝
 

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!-- ═══ 管理室（使用 community_base 的 building_name 欄位） ═══ -->
+        <record id="demo_office_a" model="community.office">
+            <field name="name">A棟管理室</field>
+            <field name="building_name">A棟</field>
+        </record>
+        <record id="demo_office_b" model="community.office">
+            <field name="name">B棟管理室</field>
+            <field name="building_name">B棟</field>
+        </record>
+
+        <!-- ═══ 社區戶號（community.unit） ═══ -->
+        <record id="demo_unit_a12f1" model="community.unit">
+            <field name="building">A</field>
+            <field name="floor">12F</field>
+            <field name="number">1</field>
+            <field name="office_id" ref="demo_office_a"/>
+        </record>
+        <record id="demo_unit_b5f2" model="community.unit">
+            <field name="building">B</field>
+            <field name="floor">5F</field>
+            <field name="number">2</field>
+            <field name="office_id" ref="demo_office_b"/>
+        </record>
+        <record id="demo_unit_a3f1" model="community.unit">
+            <field name="building">A</field>
+            <field name="floor">3F</field>
+            <field name="number">1</field>
+            <field name="office_id" ref="demo_office_a"/>
+        </record>
+        <record id="demo_unit_b8f3" model="community.unit">
+            <field name="building">B</field>
+            <field name="floor">8F</field>
+            <field name="number">3</field>
+            <field name="office_id" ref="demo_office_b"/>
+        </record>
+
+        <!-- ═══ 社區住戶（使用 community_base 的 is_resident + unit_ids） ═══ -->
+        <record id="demo_resident_wang" model="res.partner">
+            <field name="name">王小明</field>
+            <field name="is_resident" eval="True"/>
+            <field name="email">wang.xiaoming@example.com</field>
+            <field name="unit_ids" eval="[(4, ref('demo_unit_a12f1'))]"/>
+        </record>
+        <record id="demo_resident_li" model="res.partner">
+            <field name="name">李美麗</field>
+            <field name="is_resident" eval="True"/>
+            <field name="email">li.meili@example.com</field>
+            <field name="unit_ids" eval="[(4, ref('demo_unit_b5f2'))]"/>
+        </record>
+        <record id="demo_resident_chen" model="res.partner">
+            <field name="name">陳大華</field>
+            <field name="is_resident" eval="True"/>
+            <field name="email">chen.dahua@example.com</field>
+            <field name="unit_ids" eval="[(4, ref('demo_unit_a3f1'))]"/>
+        </record>
+        <record id="demo_resident_lin" model="res.partner">
+            <field name="name">林志玲</field>
+            <field name="is_resident" eval="True"/>
+            <field name="email">lin.zhiling@example.com</field>
+            <field name="unit_ids" eval="[(4, ref('demo_unit_b8f3'))]"/>
+        </record>
+
+        <!-- ═══ 包裹：待通知 ═══ -->
+        <record id="demo_parcel_draft_1" model="community.parcel">
+            <field name="barcode">TW2628363685704</field>
+            <field name="resident_id" ref="demo_resident_wang"/>
+            <field name="parcel_type">parcel</field>
+            <field name="state">draft</field>
+            <field name="office_id" ref="demo_office_a"/>
+            <field name="note">大型包裹，請住戶自備推車</field>
+        </record>
+        <record id="demo_parcel_draft_2" model="community.parcel">
+            <field name="barcode">TW1234567890123</field>
+            <field name="resident_id" ref="demo_resident_lin"/>
+            <field name="parcel_type">registered</field>
+            <field name="state">draft</field>
+            <field name="office_id" ref="demo_office_b"/>
+        </record>
+
+        <!-- ═══ 包裹：已通知 ═══ -->
+        <record id="demo_parcel_notified" model="community.parcel">
+            <field name="barcode">TW9876543210987</field>
+            <field name="resident_id" ref="demo_resident_li"/>
+            <field name="parcel_type">parcel</field>
+            <field name="state">notified</field>
+            <field name="notified_date">2026-04-13 10:00:00</field>
+            <field name="office_id" ref="demo_office_b"/>
+        </record>
+
+        <!-- ═══ 包裹：已取件 ═══ -->
+        <record id="demo_parcel_picked" model="community.parcel">
+            <field name="barcode">TW1112223334445</field>
+            <field name="resident_id" ref="demo_resident_chen"/>
+            <field name="parcel_type">letter</field>
+            <field name="state">picked_up</field>
+            <field name="notified_date">2026-04-10 09:00:00</field>
+            <field name="pickup_date">2026-04-12 14:30:00</field>
+            <field name="office_id" ref="demo_office_a"/>
+        </record>
+
+        <!-- ═══ 包裹：逾期 ═══ -->
+        <record id="demo_parcel_overdue" model="community.parcel">
+            <field name="barcode">TW4445556667778</field>
+            <field name="resident_id" ref="demo_resident_wang"/>
+            <field name="parcel_type">parcel</field>
+            <field name="state">overdue</field>
+            <field name="notified_date">2026-04-05 08:00:00</field>
+            <field name="office_id" ref="demo_office_a"/>
+            <field name="note">已逾期 10 天，請盡快聯繫住戶</field>
+        </record>
+
+        <!-- ═══ 包裹：已退回 ═══ -->
+        <record id="demo_parcel_returned" model="community.parcel">
+            <field name="barcode">TW7778889990001</field>
+            <field name="resident_id" ref="demo_resident_li"/>
+            <field name="parcel_type">other</field>
+            <field name="state">returned</field>
+            <field name="notified_date">2026-03-31 10:00:00</field>
+            <field name="office_id" ref="demo_office_b"/>
+            <field name="note">住戶長期不在，已退回寄件人</field>
+        </record>
+
+        <!-- ═══ 寄放物品：待接收 ═══ -->
+        <record id="demo_storage_pending" model="community.storage">
+            <field name="depositor_id" ref="demo_resident_wang"/>
+            <field name="recipient_id" ref="demo_resident_chen"/>
+            <field name="item_description">大型紙箱（書籍），約 3 公斤</field>
+            <field name="state">pending</field>
+        </record>
+
+        <!-- ═══ 寄放物品：保管中 ═══ -->
+        <record id="demo_storage_storing" model="community.storage">
+            <field name="depositor_id" ref="demo_resident_li"/>
+            <field name="recipient_id" ref="demo_resident_lin"/>
+            <field name="item_description">鑰匙一串（大門+信箱）</field>
+            <field name="storage_location">B棟管理室-3號格</field>
+            <field name="state">storing</field>
+            <field name="expected_pickup">2026-04-18</field>
+        </record>
+
+        <!-- ═══ 寄放物品：待取件 ═══ -->
+        <record id="demo_storage_ready" model="community.storage">
+            <field name="depositor_id" ref="demo_resident_chen"/>
+            <field name="item_description">手提袋（文件資料）</field>
+            <field name="storage_location">A棟管理室-1號格</field>
+            <field name="state">ready</field>
+        </record>
+
+        <!-- ═══ 寄放物品：已完成 ═══ -->
+        <record id="demo_storage_done" model="community.storage">
+            <field name="depositor_id" ref="demo_resident_lin"/>
+            <field name="recipient_id" ref="demo_resident_wang"/>
+            <field name="item_description">禮品盒</field>
+            <field name="storage_location">B棟管理室-2號格</field>
+            <field name="state">done</field>
+            <field name="actual_pickup">2026-04-14 16:00:00</field>
+        </record>
+
+    </data>
+</odoo>
