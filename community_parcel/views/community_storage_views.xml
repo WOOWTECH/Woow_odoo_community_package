@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══ Form View ═══ -->
+    <record id="community_storage_view_form" model="ir.ui.view">
+        <field name="name">community.storage.form</field>
+        <field name="model">community.storage</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_accept" string="受理"
+                            type="object" class="btn-primary"
+                            invisible="state != 'pending'"/>
+                    <button name="action_ready" string="通知取件"
+                            type="object" class="btn-primary"
+                            invisible="state != 'storing'"/>
+                    <button name="action_done" string="完成交付"
+                            type="object" class="btn-primary"
+                            invisible="state != 'ready'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="pending,storing,ready,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="寄放資訊">
+                            <field name="depositor_id"/>
+                            <field name="recipient_id"/>
+                            <field name="item_description"/>
+                            <field name="storage_location"/>
+                        </group>
+                        <group string="時間記錄">
+                            <field name="deposit_date"/>
+                            <field name="expected_pickup"/>
+                            <field name="actual_pickup" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <field name="note" placeholder="備註事項..."/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══ List View ═══ -->
+    <record id="community_storage_view_tree" model="ir.ui.view">
+        <field name="name">community.storage.list</field>
+        <field name="model">community.storage</field>
+        <field name="arch" type="xml">
+            <list multi_edit="1">
+                <field name="name"/>
+                <field name="depositor_id"/>
+                <field name="recipient_id"/>
+                <field name="item_description"/>
+                <field name="storage_location"/>
+                <field name="deposit_date"/>
+                <field name="expected_pickup"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'pending'"
+                       decoration-warning="state == 'storing'"
+                       decoration-success="state in ('ready', 'done')"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══ Kanban View ═══ -->
+    <record id="community_storage_view_kanban" model="ir.ui.view">
+        <field name="name">community.storage.kanban</field>
+        <field name="model">community.storage</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="depositor_id"/>
+                <field name="recipient_id"/>
+                <field name="item_description"/>
+                <field name="state"/>
+                <field name="storage_location"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="o_kanban_record_top mb-1">
+                            <strong><field name="name"/></strong>
+                        </div>
+                        <div class="mb-1">
+                            寄放: <field name="depositor_id"/>
+                        </div>
+                        <div class="mb-1" t-if="record.recipient_id.raw_value">
+                            取件: <field name="recipient_id"/>
+                        </div>
+                        <div class="text-muted small text-truncate">
+                            <field name="item_description"/>
+                        </div>
+                        <div class="text-muted small" t-if="record.storage_location.raw_value">
+                            位置: <field name="storage_location"/>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══ Search View ═══ -->
+    <record id="community_storage_view_search" model="ir.ui.view">
+        <field name="name">community.storage.search</field>
+        <field name="model">community.storage</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="depositor_id"/>
+                <field name="recipient_id"/>
+                <field name="item_description"/>
+                <separator/>
+                <filter string="待接收" name="filter_pending"
+                        domain="[('state', '=', 'pending')]"/>
+                <filter string="保管中" name="filter_storing"
+                        domain="[('state', '=', 'storing')]"/>
+                <filter string="待取件" name="filter_ready"
+                        domain="[('state', '=', 'ready')]"/>
+                <filter string="進行中" name="filter_active"
+                        domain="[('state', 'in', ('pending', 'storing', 'ready'))]"/>
+                <separator/>
+                <group expand="0" string="分組">
+                    <filter string="狀態" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="寄放日" name="group_date" context="{'group_by': 'deposit_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══ Action ═══ -->
+    <record id="action_community_storage" model="ir.actions.act_window">
+        <field name="name">所有寄放物品</field>
+        <field name="res_model">community.storage</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="community_storage_view_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+</odoo>

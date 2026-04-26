@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Parcel Management sub-menu (under shared community root) -->
+    <menuitem id="menu_community_parcel_root"
+              name="包裹管理"
+              parent="community_base.menu_community_root"
+              sequence="30"/>
+
+    <!-- ═══ 工作台 ═══ -->
+    <menuitem id="menu_parcel_dashboard"
+              name="工作台"
+              parent="menu_community_parcel_root"
+              sequence="5"/>
+    <menuitem id="menu_parcel_today"
+              name="今日到件"
+              parent="menu_parcel_dashboard"
+              action="action_parcel_today"
+              sequence="10"/>
+    <menuitem id="menu_parcel_uncollected"
+              name="未取件"
+              parent="menu_parcel_dashboard"
+              action="action_parcel_uncollected"
+              sequence="20"/>
+    <menuitem id="menu_parcel_overdue_dash"
+              name="逾期包裹"
+              parent="menu_parcel_dashboard"
+              action="action_parcel_overdue"
+              sequence="30"/>
+    <menuitem id="menu_parcel_quick_register"
+              name="快速登記"
+              parent="menu_parcel_dashboard"
+              action="action_parcel_quick_register"
+              sequence="40"/>
+
+    <!-- ═══ 包裹管理 ═══ -->
+    <menuitem id="menu_parcel_main"
+              name="包裹列表"
+              parent="menu_community_parcel_root"
+              sequence="10"/>
+    <menuitem id="menu_community_parcel_list"
+              name="所有包裹"
+              parent="menu_parcel_main"
+              action="action_community_parcel"
+              sequence="10"/>
+
+    <!-- ═══ 寄放管理 ═══ -->
+    <menuitem id="menu_storage_main"
+              name="寄放管理"
+              parent="menu_community_parcel_root"
+              sequence="20"/>
+    <menuitem id="menu_community_storage_list"
+              name="所有寄放物品"
+              parent="menu_storage_main"
+              action="action_community_storage"
+              sequence="10"/>
+
+</odoo>
