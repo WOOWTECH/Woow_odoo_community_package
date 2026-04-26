@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══ Wizard Form View ═══ -->
+    <record id="parcel_quick_register_view_form" model="ir.ui.view">
+        <field name="name">parcel.quick.register.form</field>
+        <field name="model">parcel.quick.register</field>
+        <field name="arch" type="xml">
+            <form>
+                <group>
+                    <group string="掃描條碼">
+                        <field name="barcode" placeholder="掃描或輸入快遞條碼"/>
+                        <field name="parcel_type"/>
+                    </group>
+                    <group string="收件資訊">
+                        <field name="resident_id"/>
+                        <field name="office_id"/>
+                    </group>
+                </group>
+                <group>
+                    <field name="image" widget="image" class="oe_avatar"/>
+                    <field name="note" placeholder="備註..."/>
+                </group>
+                <group>
+                    <field name="auto_notify"/>
+                </group>
+                <footer>
+                    <button name="action_register" string="登記"
+                            type="object" class="btn-primary"/>
+                    <button name="action_register_and_new" string="登記並繼續"
+                            type="object" class="btn-secondary"/>
+                    <button string="取消" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══ Wizard Action ═══ -->
+    <record id="action_parcel_quick_register" model="ir.actions.act_window">
+        <field name="name">快速登記包裹</field>
+        <field name="res_model">parcel.quick.register</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+</odoo>
