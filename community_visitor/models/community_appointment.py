@@ -29,7 +29,7 @@ class CommunityAppointment(models.Model):
         required=True,
     )
     visitor_name = fields.Char(string='訪客姓名', required=True)
-    visitor_phone = fields.Char(string='訪客電話')
+    visitor_phone = fields.Char(string='訪客電話', required=True)
     valid_from = fields.Datetime(string='有效起始', required=True)
     valid_until = fields.Datetime(string='有效截止', required=True)
     max_entries = fields.Integer(
@@ -235,15 +235,24 @@ class CommunityAppointment(models.Model):
         if not self.recurring_days:
             return True
 
+        # Convert to local timezone for day-of-week and time checks
+        import pytz
+        local_tz = pytz.timezone(
+            self.env.user.tz or self.env.context.get('tz') or 'UTC'
+        )
+        if now.tzinfo is None:
+            now = pytz.utc.localize(now)
+        local_now = now.astimezone(local_tz)
+
         # Python weekday: 0=Monday, 6=Sunday
         allowed_days = [
             int(d.strip()) for d in self.recurring_days.split(',') if d.strip()
         ]
-        if now.weekday() not in allowed_days:
+        if local_now.weekday() not in allowed_days:
             return False
 
         if self.recurring_from and self.recurring_until:
-            current_hour = now.hour + now.minute / 60.0
+            current_hour = local_now.hour + local_now.minute / 60.0
             if (
                 current_hour < self.recurring_from
                 or current_hour > self.recurring_until

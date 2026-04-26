@@ -153,10 +153,16 @@ class CommunityPortal(CustomerPortal):
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/feedbacks')
 
+        category_id = int(kwargs.get('category_id', 0))
+        if not category_id or not request.env[
+            'community.feedback.category'
+        ].sudo().browse(category_id).exists():
+            return request.redirect('/my/feedbacks')
+
         vals = {
             'title': kwargs.get('title', ''),
             'content': kwargs.get('content', ''),
-            'category_id': int(kwargs.get('category_id', 0)),
+            'category_id': category_id,
             'unit_id': unit_id,
             'partner_id': partner.id,
         }

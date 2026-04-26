@@ -5,6 +5,7 @@
     <record id="mail_template_visit_confirm_request" model="mail.template">
         <field name="name">訪客到達通知</field>
         <field name="model_id" ref="model_community_visit"/>
+        <field name="email_to">{{ ctx.get('resident_email', '') }}</field>
         <field name="subject">【社區通知】您有訪客等待確認 - {{ object.visitor_id.name }}</field>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
@@ -87,6 +88,7 @@
     <record id="mail_template_blacklist_alert" model="mail.template">
         <field name="name">黑名單觸發警示</field>
         <field name="model_id" ref="model_community_visitor"/>
+        <field name="email_to">{{ ctx.get('alert_email', '') }}</field>
         <field name="subject">【警示】黑名單訪客嘗試進入 - {{ object.name }}</field>
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">

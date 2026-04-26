@@ -92,7 +92,10 @@ class VisitorRegisterWizard(models.TransientModel):
                     raise_if_not_found=False,
                 )
                 if template:
-                    template.send_mail(visitor.id, force_send=False)
+                    alert_email = self.office_id.responsible_id.email or ''
+                    template.with_context(
+                        alert_email=alert_email,
+                    ).send_mail(visitor.id, force_send=False)
 
             raise UserError(_(
                 '警告：訪客 %s 已被列入黑名單！\n原因：%s\n請通報社區主任。',

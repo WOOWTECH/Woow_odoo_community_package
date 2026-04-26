@@ -36,4 +36,36 @@
         <field name="groups" eval="[(4, ref('base.group_user'))]"/>
     </record>
 
+    <!-- Office: portal users see only offices linked to their units -->
+    <record id="rule_office_portal" model="ir.rule">
+        <field name="name">Office: Portal 住戶只看自己戶號的管理室</field>
+        <field name="model_id" ref="model_community_office"/>
+        <field name="domain_force">[('id', 'in', user.partner_id.unit_ids.office_id.ids)]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Office: internal users see all -->
+    <record id="rule_office_user" model="ir.rule">
+        <field name="name">Office: 內部使用者看全部</field>
+        <field name="model_id" ref="model_community_office"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <!-- Unit: portal users see only their own units -->
+    <record id="rule_unit_portal" model="ir.rule">
+        <field name="name">Unit: Portal 住戶只看自己的戶號</field>
+        <field name="model_id" ref="model_community_unit"/>
+        <field name="domain_force">[('resident_ids', 'in', [user.partner_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Unit: internal users see all -->
+    <record id="rule_unit_user" model="ir.rule">
+        <field name="name">Unit: 內部使用者看全部</field>
+        <field name="model_id" ref="model_community_unit"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
 </odoo>

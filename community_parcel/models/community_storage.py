@@ -25,6 +25,7 @@ class CommunityStorage(models.Model):
     recipient_id = fields.Many2one(
         'res.partner',
         string='取件人',
+        domain=[('is_resident', '=', True)],
         tracking=True,
     )
     item_description = fields.Text(string='物品描述', required=True)

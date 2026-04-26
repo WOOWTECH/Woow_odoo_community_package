@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class CommunityFeedback(models.Model):
@@ -63,10 +64,19 @@ class CommunityFeedback(models.Model):
         return super().create(vals_list)
 
     def action_accept(self):
+        for rec in self:
+            if rec.state != 'pending':
+                raise UserError(_('只有待處理的反映可以接受處理。'))
         self.write({'state': 'in_progress'})
 
     def action_done(self):
+        for rec in self:
+            if rec.state != 'in_progress':
+                raise UserError(_('只有處理中的反映可以結案。'))
         self.write({'state': 'done'})
 
     def action_reopen(self):
+        for rec in self:
+            if rec.state != 'done':
+                raise UserError(_('只有已結案的反映可以重新開啟。'))
         self.write({'state': 'in_progress'})

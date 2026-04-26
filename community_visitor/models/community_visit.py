@@ -133,6 +133,7 @@ class CommunityVisit(models.Model):
             for resident in residents:
                 template.with_context(
                     resident_name=resident.name,
+                    resident_email=resident.email or '',
                     confirm_url=self._get_confirm_url(token),
                     reject_url=self._get_reject_url(token),
                 ).send_mail(self.id, force_send=False)
@@ -177,6 +178,8 @@ class CommunityVisit(models.Model):
             raise UserError(_('此訪問記錄不在待確認狀態。'))
         if self.confirm_token != token:
             raise UserError(_('無效的確認碼。'))
+        if self.token_expiry and fields.Datetime.now() > self.token_expiry:
+            raise UserError(_('確認連結已過期。'))
 
         vals = {'state': 'rejected'}
         if partner:
