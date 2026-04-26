@@ -1,4 +1,5 @@
-from odoo import api, fields, models
+from odoo import api, fields, models, _
+from odoo.exceptions import UserError
 
 
 class CommunityAnnouncement(models.Model):
@@ -44,15 +45,24 @@ class CommunityAnnouncement(models.Model):
     )
 
     def action_publish(self):
+        for rec in self:
+            if rec.state != 'draft':
+                raise UserError(_('只有草稿狀態的公告可以發布。'))
         self.write({
             'state': 'published',
             'publish_date': fields.Datetime.now(),
         })
 
     def action_archive_announcement(self):
+        for rec in self:
+            if rec.state != 'published':
+                raise UserError(_('只有已發布的公告可以下架。'))
         self.write({'state': 'archived'})
 
     def action_republish(self):
+        for rec in self:
+            if rec.state != 'archived':
+                raise UserError(_('只有已下架的公告可以重新發布。'))
         self.write({
             'state': 'published',
             'publish_date': fields.Datetime.now(),

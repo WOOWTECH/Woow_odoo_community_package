@@ -20,6 +20,14 @@
                             <field name="responsible_id"/>
                         </group>
                     </group>
+                    <notebook>
+                        <page string="公告屬性定義" name="announcement_props">
+                            <field name="announcement_properties_definition"/>
+                        </page>
+                        <page string="反映屬性定義" name="feedback_props">
+                            <field name="feedback_properties_definition"/>
+                        </page>
+                    </notebook>
                 </sheet>
             </form>
         </field>

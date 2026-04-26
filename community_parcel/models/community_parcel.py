@@ -1,3 +1,5 @@
+from datetime import timedelta
+
 from odoo import api, fields, models, _
 from odoo.exceptions import UserError
 
@@ -72,8 +74,15 @@ class CommunityParcel(models.Model):
     is_overdue = fields.Boolean(
         string='逾期',
         compute='_compute_is_overdue',
-        store=True,
     )
+
+    _sql_constraints = [
+        (
+            'unique_barcode',
+            'UNIQUE(barcode)',
+            '此快遞條碼已存在！',
+        ),
+    ]
 
     # ── Sequence ─────────────────────────────────────────────
     @api.model_create_multi
@@ -91,7 +100,9 @@ class CommunityParcel(models.Model):
     def _compute_unit_address(self):
         for rec in self:
             if rec.resident_id and rec.resident_id.unit_ids:
-                rec.unit_address = rec.resident_id.unit_ids[0].name
+                rec.unit_address = ', '.join(
+                    rec.resident_id.unit_ids.mapped('name')
+                )
             else:
                 rec.unit_address = False
 
@@ -161,11 +172,17 @@ class CommunityParcel(models.Model):
     @api.model
     def _cron_check_overdue(self):
         """每日檢查逾期包裹：通知超過 7 天未取件自動標為逾期。"""
-        from datetime import timedelta
         threshold = fields.Datetime.now() - timedelta(days=7)
         overdue_parcels = self.search([
             ('state', '=', 'notified'),
             ('notified_date', '<=', threshold),
         ])
-        for parcel in overdue_parcels:
-            parcel.action_overdue()
+        if overdue_parcels:
+            overdue_parcels.write({'state': 'overdue'})
+            template = self.env.ref(
+                'community_parcel.mail_template_parcel_overdue',
+                raise_if_not_found=False,
+            )
+            if template:
+                for parcel in overdue_parcels:
+                    template.send_mail(parcel.id, force_send=False)

@@ -19,7 +19,7 @@
         </tr>
         <tr>
             <td style="padding:4px 12px 4px 0;font-weight:bold;">類型</td>
-            <td style="padding:4px 0;">{{ object.parcel_type }}</td>
+            <td style="padding:4px 0;">{{ dict(object.fields_get(allfields=['parcel_type'])['parcel_type']['selection']).get(object.parcel_type, object.parcel_type) }}</td>
         </tr>
         <tr>
             <td style="padding:4px 12px 4px 0;font-weight:bold;">條碼</td>
@@ -67,6 +67,7 @@
     </p>
 </div>
             ]]></field>
+            <field name="lang">{{ object.resident_id.lang }}</field>
             <field name="auto_delete" eval="True"/>
         </record>
     </data>

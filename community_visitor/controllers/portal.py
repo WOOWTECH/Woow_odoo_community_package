@@ -273,3 +273,30 @@ class VisitorPortal(CustomerPortal):
         appointment = request.env['community.appointment'].sudo().create(vals)
 
         return request.redirect(f'/my/appointments/{appointment.id}')
+
+    @http.route(
+        '/my/appointments/<int:appointment_id>/cancel',
+        type='http',
+        auth='user',
+        website=True,
+        methods=['POST'],
+        csrf=True,
+    )
+    def portal_appointment_cancel(self, appointment_id, **kwargs):
+        appointment = request.env['community.appointment'].browse(
+            appointment_id
+        )
+        if not appointment.exists():
+            return request.redirect('/my/appointments')
+
+        # Security check: only residents of the unit can cancel
+        partner = request.env.user.partner_id
+        if partner.id not in appointment.unit_id.resident_ids.ids:
+            return request.redirect('/my/appointments')
+
+        try:
+            appointment.sudo().action_cancel()
+        except Exception:
+            pass
+
+        return request.redirect(f'/my/appointments/{appointment.id}')
