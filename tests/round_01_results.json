@@ -5,17 +5,17 @@
     {
       "test": "partner_create_with_extension_fields",
       "status": "PASS",
-      "detail": "id=56, is_resident=True, unit_address=C棟-301"
+      "detail": "id=51, is_resident=True, unit_ids=[11]"
     },
     {
       "test": "partner_read_extension_fields",
       "status": "PASS",
-      "detail": "Found: TEST-R1-住戶B, unit=C棟-301"
+      "detail": "Found: TEST-R1-住戶B, unit_ids=[11]"
     },
     {
       "test": "partner_write_extension_fields",
       "status": "PASS",
-      "detail": "Updated unit_address=D棟-402"
+      "detail": "Updated unit name=D棟4-02"
     },
     {
       "test": "partner_non_resident_default",
@@ -30,12 +30,12 @@
     {
       "test": "office_read",
       "status": "PASS",
-      "detail": "Found 4 records"
+      "detail": "Found 1 records"
     },
     {
       "test": "office_write",
       "status": "PASS",
-      "detail": "Updated building_id=TEST大樓C"
+      "detail": "Updated building_name=TEST大樓C"
     },
     {
       "test": "office_unlink",
@@ -45,7 +45,7 @@
     {
       "test": "parcel_create",
       "status": "PASS",
-      "detail": "id=111, name=PKL/0112, state=draft"
+      "detail": "id=22, name=PKL/0022, state=draft"
     },
     {
       "test": "parcel_create_letter_type",
@@ -65,12 +65,12 @@
     {
       "test": "parcel_read",
       "status": "PASS",
-      "detail": "Read barcode=TEST-R1-BC002, name=PKL/0112"
+      "detail": "Read barcode=TEST-R1-BC002, name=PKL/0022"
     },
     {
       "test": "parcel_search_read",
       "status": "PASS",
-      "detail": "Found 16 TEST-R1 parcels"
+      "detail": "Found 4 TEST-R1 parcels"
     },
     {
       "test": "parcel_write",
@@ -80,17 +80,17 @@
     {
       "test": "parcel_unlink",
       "status": "PASS",
-      "detail": "Deleted id=115"
+      "detail": "Deleted id=26"
     },
     {
       "test": "storage_create",
       "status": "PASS",
-      "detail": "id=37, name=STG/0037, state=pending"
+      "detail": "id=11, name=STG/0011, state=pending"
     },
     {
       "test": "storage_read",
       "status": "PASS",
-      "detail": "Read: STG/0037, desc=TEST-R1 寄放測試物品B"
+      "detail": "Read: STG/0011, desc=TEST-R1 寄放測試物品B"
     },
     {
       "test": "storage_write",
@@ -100,7 +100,7 @@
     {
       "test": "storage_unlink",
       "status": "PASS",
-      "detail": "Deleted id=38"
+      "detail": "Deleted id=12"
     }
   ],
   "summary": {

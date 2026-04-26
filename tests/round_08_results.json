@@ -1,26 +1,26 @@
 {
   "round": 8,
-  "title": "資料完整性與關聯",
+  "title": "資料���整性與關聯",
   "results": [
     {
-      "test": "related_field_unit_address_sync",
+      "test": "computed_field_unit_address_sync",
       "status": "PASS",
-      "detail": "unit_address=E棟-501"
+      "detail": "unit_address=E棟5-01 (expected E棟5-01)"
     },
     {
       "test": "sequence_continuity_pkl",
       "status": "PASS",
-      "detail": "PKL/0163 → PKL/0164, diff=1"
+      "detail": "PKL/0059 → PKL/0060, diff=1"
     },
     {
       "test": "sequence_continuity_stg",
       "status": "PASS",
-      "detail": "STG/0043 → STG/0044, diff=1"
+      "detail": "STG/0017 → STG/0018, diff=1"
     },
     {
       "test": "many2one_resident_integrity",
       "status": "PASS",
-      "detail": "resident_id=[56, 'TEST-R1-住戶B']"
+      "detail": "resident_id=[51, 'TEST-R1-住戶B']"
     },
     {
       "test": "many2one_office_integrity",

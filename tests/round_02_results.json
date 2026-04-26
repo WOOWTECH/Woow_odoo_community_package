@@ -5,7 +5,7 @@
     {
       "test": "parcel_draft_notified_picked_up",
       "status": "PASS",
-      "detail": "state=picked_up, pickup_date=2026-04-15 04:15:51, picked_by=[2, 'Mitchell Admin']"
+      "detail": "state=picked_up, pickup_date=2026-04-26 05:18:44, picked_by=[2, 'Mitchell Admin']"
     },
     {
       "test": "parcel_draft_notified_overdue_picked_up",
@@ -25,7 +25,7 @@
     {
       "test": "storage_pending_storing_ready_done",
       "status": "PASS",
-      "detail": "state=done, actual_pickup=2026-04-15 04:15:52"
+      "detail": "state=done, actual_pickup=2026-04-26 05:18:45"
     }
   ],
   "summary": {

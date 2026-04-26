@@ -33,17 +33,20 @@ def test(name, func):
     return ok
 
 print("=" * 70)
-print("Round 8: 資料完整性與關聯測試")
+print("Round 8: 資料完整���與關聯測試")
 print("=" * 70)
 
-# 8.1 Related field unit_address 同步
-print("\n── 8.1 Related field 同步 ──")
+# 8.1 Computed field unit_address 同步 (透過 community.unit)
+print("\n── 8.1 Computed field unit_address 同步 ──")
 def test_unit_address_sync():
-    pid = call('res.partner', 'create', [{'name': 'TEST-R8-Sync', 'email': 'test_r8_sync@test.com', 'is_resident': True, 'unit_address': 'E棟-501'}])
+    # Create a community.unit, then link it to a partner
+    unit_id = call('community.unit', 'create', [{'building': 'E棟', 'floor': '5', 'number': '01'}])
+    unit_name = call('community.unit', 'read', [[unit_id], ['name']])[0]['name']
+    pid = call('res.partner', 'create', [{'name': 'TEST-R8-Sync', 'email': 'test_r8_sync@test.com', 'is_resident': True, 'unit_ids': [(6, 0, [unit_id])]}])
     parcel_id = call('community.parcel', 'create', [{'barcode': 'TEST-R8-SYNC', 'resident_id': pid, 'parcel_type': 'parcel'}])
     d = call('community.parcel', 'read', [[parcel_id], ['unit_address']])[0]
-    return d['unit_address'] == 'E棟-501', f"unit_address={d['unit_address']}"
-test("related_field_unit_address_sync", test_unit_address_sync)
+    return d['unit_address'] == unit_name, f"unit_address={d['unit_address']} (expected {unit_name})"
+test("computed_field_unit_address_sync", test_unit_address_sync)
 
 # 8.2 Sequence 連續性
 print("\n── 8.2 Sequence 連續性 ──")
@@ -91,7 +94,7 @@ def test_many2one_office():
 test("many2one_office_integrity", test_many2one_office)
 
 # 8.4 Computed field is_overdue
-print("\n── 8.4 Computed field is_overdue ──")
+print("\n── 8.4 Computed field is_overdue ─��")
 def test_is_overdue_draft():
     res_ids = call('res.partner', 'search', [[('is_resident', '=', True)]], {'limit': 1})
     pid = call('community.parcel', 'create', [{'barcode': 'TEST-R8-ISOD1', 'resident_id': res_ids[0], 'parcel_type': 'parcel'}])
@@ -128,12 +131,12 @@ def test_state_tracking():
     return msgs > 0, f"Tracking messages found: {msgs}"
 test("state_change_tracked_in_chatter", test_state_tracking)
 
-# ── Summary ──
+# ── Summary ─���
 print("\n" + "=" * 70)
 p = sum(1 for r in results if r['status'] == 'PASS')
 f = sum(1 for r in results if r['status'] == 'FAIL')
 print(f"Round 8 結果: {p} PASS / {f} FAIL / {len(results)} Total")
 print("=" * 70)
 with open('/var/tmp/vibe-kanban/worktrees/803d-woow-odoo-commun/Woow_odoo_community_package/tests/round_08_results.json', 'w') as fh:
-    json.dump({'round': 8, 'title': '資料完整性與關聯', 'results': results, 'summary': {'pass': p, 'fail': f, 'total': len(results)}}, fh, ensure_ascii=False, indent=2)
+    json.dump({'round': 8, 'title': '資料���整性與關聯', 'results': results, 'summary': {'pass': p, 'fail': f, 'total': len(results)}}, fh, ensure_ascii=False, indent=2)
 sys.exit(0 if f == 0 else 1)

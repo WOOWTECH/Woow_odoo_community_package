@@ -58,12 +58,12 @@
       "detail": "Storage Search: model=community.storage, type=search"
     },
     {
-      "test": "view_exists_community_office_view_form",
+      "test": "view_exists_view_community_office_form",
       "status": "PASS",
       "detail": "Office Form: model=community.office, type=form"
     },
     {
-      "test": "view_exists_community_office_view_tree",
+      "test": "view_exists_view_community_office_list",
       "status": "PASS",
       "detail": "Office List: model=community.office, type=list"
     },
@@ -85,17 +85,17 @@
     {
       "test": "dashboard_action_parcel_today",
       "status": "PASS",
-      "detail": "Today Parcels: found (res_id=173)"
+      "detail": "Today Parcels: found (res_id=147)"
     },
     {
       "test": "dashboard_action_parcel_uncollected",
       "status": "PASS",
-      "detail": "Uncollected: found (res_id=174)"
+      "detail": "Uncollected: found (res_id=148)"
     },
     {
       "test": "dashboard_action_parcel_overdue",
       "status": "PASS",
-      "detail": "Overdue: found (res_id=175)"
+      "detail": "Overdue: found (res_id=149)"
     },
     {
       "test": "root_menu_exists",

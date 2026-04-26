@@ -39,51 +39,89 @@ print("=" * 70)
 print("Round 1: API 基礎 CRUD 測試")
 print("=" * 70)
 
-# ──────────────────────────────────────────────────────────
-# 1.1 res.partner 擴展欄位測試
-# ──────────────────────────────────────────────────────────
+# ── Cleanup stale test data for idempotent runs ──
+print("\n── Cleanup stale test data ──")
+# Order: parcels/storage first (FK deps), then partners, offices, units
+for _bc in ['TEST-R1-BC002', 'TEST-R1-LTR002', 'TEST-R1-REG002', 'TEST-R1-OTH001', 'TEST-R1-DELETE2']:
+    _ids = call('community.parcel', 'search', [[('barcode', '=', _bc)]])
+    if _ids:
+        call('community.parcel', 'unlink', [_ids])
+for _desc in ['TEST-R1 寄放測試物品B', 'TEST-R1-暫存刪除B']:
+    _ids = call('community.storage', 'search', [[('item_description', 'like', _desc)]])
+    if _ids:
+        call('community.storage', 'unlink', [_ids])
+# Also cleanup parcels referencing test partners
+for _email in ['test_r1b@test.com', 'test_r1_nonresb@test.com']:
+    _pids = call('res.partner', 'search', [[('email', '=', _email)]])
+    if _pids:
+        _parcel_ids = call('community.parcel', 'search', [[('resident_id', 'in', _pids)]])
+        if _parcel_ids:
+            call('community.parcel', 'unlink', [_parcel_ids])
+        _storage_ids = call('community.storage', 'search', [[('depositor_id', 'in', _pids)]])
+        if _storage_ids:
+            call('community.storage', 'unlink', [_storage_ids])
+        call('res.partner', 'write', [_pids, {'unit_ids': [(5,)]}])
+        call('res.partner', 'unlink', [_pids])
+for _name in ['TEST-R1-管理室B', 'TEST-R1-暫存管理室B']:
+    _ids = call('community.office', 'search', [[('name', '=', _name)]])
+    if _ids:
+        call('community.office', 'unlink', [_ids])
+for _bldg in [('C棟', '3', '01'), ('D棟', '4', '02')]:
+    _ids = call('community.unit', 'search', [[('building', '=', _bldg[0]), ('floor', '=', _bldg[1]), ('number', '=', _bldg[2])]])
+    if _ids:
+        call('community.unit', 'unlink', [_ids])
+print("  Cleanup done.")
+
+# ───────────────────────────────────────────────────────────
+# 1.1 res.partner 擴展欄位測試 (community_base: is_resident, unit_ids)
+# ────────────────────────────��─────────────────────────────
 print("\n── 1.1 res.partner 擴展欄位 ──")
 
 def test_partner_create():
-    pid = call('res.partner', 'create', [{'name': 'TEST-R1-住戶B', 'email': 'test_r1b@test.com', 'is_resident': True, 'unit_address': 'C棟-301'}])
+    # Create a community.unit first
+    unit_id = call('community.unit', 'create', [{'building': 'C棟', 'floor': '3', 'number': '01'}])
+    pid = call('res.partner', 'create', [{'name': 'TEST-R1-住戶B', 'email': 'test_r1b@test.com', 'is_resident': True, 'unit_ids': [(6, 0, [unit_id])]}])
     if pid:
-        data = call('res.partner', 'read', [[pid], ['name', 'is_resident', 'unit_address']])[0]
-        ok = data['is_resident'] == True and data['unit_address'] == 'C棟-301'
-        return ok, f"id={pid}, is_resident={data['is_resident']}, unit_address={data['unit_address']}"
+        data = call('res.partner', 'read', [[pid], ['name', 'is_resident', 'unit_ids']])[0]
+        ok = data['is_resident'] == True and len(data['unit_ids']) == 1
+        return ok, f"id={pid}, is_resident={data['is_resident']}, unit_ids={data['unit_ids']}"
     return False, "create returned None"
 test("partner_create_with_extension_fields", test_partner_create)
 
 def test_partner_read():
     ids = call('res.partner', 'search', [[('email', '=', 'test_r1b@test.com')]])
     if ids:
-        data = call('res.partner', 'read', [ids, ['name', 'is_resident', 'unit_address']])[0]
-        return True, f"Found: {data['name']}, unit={data['unit_address']}"
+        data = call('res.partner', 'read', [ids, ['name', 'is_resident', 'unit_ids']])[0]
+        return True, f"Found: {data['name']}, unit_ids={data['unit_ids']}"
     return False, "Not found"
 test("partner_read_extension_fields", test_partner_read)
 
 def test_partner_write():
     ids = call('res.partner', 'search', [[('email', '=', 'test_r1b@test.com')]])
-    call('res.partner', 'write', [ids, {'unit_address': 'D棟-402'}])
-    data = call('res.partner', 'read', [ids, ['unit_address']])[0]
-    return data['unit_address'] == 'D棟-402', f"Updated unit_address={data['unit_address']}"
+    # Create a new unit and replace the link
+    new_unit_id = call('community.unit', 'create', [{'building': 'D棟', 'floor': '4', 'number': '02'}])
+    call('res.partner', 'write', [ids, {'unit_ids': [(6, 0, [new_unit_id])]}])
+    data = call('res.partner', 'read', [ids, ['unit_ids']])[0]
+    unit_data = call('community.unit', 'read', [data['unit_ids'], ['name']])[0]
+    return unit_data['name'] == 'D棟4-02', f"Updated unit name={unit_data['name']}"
 test("partner_write_extension_fields", test_partner_write)
 
 def test_partner_non_resident():
     pid = call('res.partner', 'create', [{'name': 'TEST-R1-非住戶B', 'email': 'test_r1_nonresb@test.com', 'is_resident': False}])
-    data = call('res.partner', 'read', [[pid], ['is_resident', 'unit_address']])[0]
+    data = call('res.partner', 'read', [[pid], ['is_resident', 'unit_ids']])[0]
     return data['is_resident'] == False, f"is_resident={data['is_resident']}"
 test("partner_non_resident_default", test_partner_non_resident)
 
-# ──────────────────────────────────────────────────────────
-# 1.2 community.office CRUD (fields: name, building_id, responsible_id)
-# ──────────────────────────────────────────────────────────
+# ────────���───────────────────────���─────────────────────────
+# 1.2 community.office CRUD (fields: name, building_name, responsible_id)
+# ────────────��────────────���────────────────────────────────
 print("\n── 1.2 community.office CRUD ──")
 
 def test_office_create():
-    oid = call('community.office', 'create', [{'name': 'TEST-R1-管理室B', 'building_id': 'TEST大樓B'}])
+    oid = call('community.office', 'create', [{'name': 'TEST-R1-管理室B', 'building_name': 'TEST大樓B'}])
     if oid:
-        data = call('community.office', 'read', [[oid], ['name', 'building_id']])[0]
-        return data['name'] == 'TEST-R1-管理室B', f"id={oid}, name={data['name']}, building={data['building_id']}"
+        data = call('community.office', 'read', [[oid], ['name', 'building_name']])[0]
+        return data['name'] == 'TEST-R1-管理室B', f"id={oid}, name={data['name']}, building={data['building_name']}"
     return False, "create returned None"
 test("office_create", test_office_create)
 
@@ -94,9 +132,9 @@ test("office_read", test_office_read)
 
 def test_office_write():
     ids = call('community.office', 'search', [[('name', '=', 'TEST-R1-管理室B')]])
-    call('community.office', 'write', [ids, {'building_id': 'TEST大樓C'}])
-    data = call('community.office', 'read', [ids, ['building_id']])[0]
-    return data['building_id'] == 'TEST大樓C', f"Updated building_id={data['building_id']}"
+    call('community.office', 'write', [ids, {'building_name': 'TEST大樓C'}])
+    data = call('community.office', 'read', [ids, ['building_name']])[0]
+    return data['building_name'] == 'TEST大樓C', f"Updated building_name={data['building_name']}"
 test("office_write", test_office_write)
 
 def test_office_unlink():
@@ -106,7 +144,7 @@ def test_office_unlink():
     return len(remaining) == 0, f"Deleted id={oid}"
 test("office_unlink", test_office_unlink)
 
-# ──────────────────────────────────────────────────────────
+# ────��───────���─────────────────────────────────────────────
 # 1.3 community.parcel CRUD
 # ──────────────────────────────────────────────────────────
 print("\n── 1.3 community.parcel CRUD ──")
@@ -196,9 +234,9 @@ def test_parcel_unlink():
     return len(remaining) == 0, f"Deleted id={pid}"
 test("parcel_unlink", test_parcel_unlink)
 
-# ──────────────────────────────────────────────────────────
+# ─��───────────���────────────────────────────────���───────────
 # 1.4 community.storage CRUD
-# ──────────────────────────────────────────────────────────
+# ───────���──────────────────────────────────────────────────
 print("\n── 1.4 community.storage CRUD ──")
 
 def test_storage_create():

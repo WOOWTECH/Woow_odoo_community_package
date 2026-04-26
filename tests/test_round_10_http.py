@@ -74,8 +74,8 @@ views_to_check = [
     ('community_parcel', 'community_storage_view_tree', 'Storage List'),
     ('community_parcel', 'community_storage_view_kanban', 'Storage Kanban'),
     ('community_parcel', 'community_storage_view_search', 'Storage Search'),
-    ('community_parcel', 'community_office_view_form', 'Office Form'),
-    ('community_parcel', 'community_office_view_tree', 'Office List'),
+    ('community_base', 'view_community_office_form', 'Office Form'),
+    ('community_base', 'view_community_office_list', 'Office List'),
 ]
 
 for module, xml_id, label in views_to_check:
@@ -92,7 +92,7 @@ print("\n── 10.3 Actions 載入 ──")
 actions_to_check = [
     ('community_parcel', 'action_community_parcel', 'All Parcels'),
     ('community_parcel', 'action_community_storage', 'All Storage'),
-    ('community_parcel', 'action_community_office', 'Offices'),
+    ('community_base', 'action_community_office', 'Offices'),
 ]
 
 for module, xml_id, label in actions_to_check:

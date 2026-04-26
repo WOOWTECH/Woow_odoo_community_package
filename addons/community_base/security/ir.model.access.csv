@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_community_office_user,community.office.user,model_community_office,base.group_user,1,1,1,1
+access_community_unit_user,community.unit.user,model_community_unit,base.group_user,1,1,1,1

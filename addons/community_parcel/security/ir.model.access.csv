@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_community_parcel_staff,community.parcel staff,model_community_parcel,community_parcel_group_office_staff,1,1,1,0
+access_community_parcel_manager,community.parcel manager,model_community_parcel,community_parcel_group_manager,1,1,1,1
+access_community_storage_staff,community.storage staff,model_community_storage,community_parcel_group_office_staff,1,1,1,0
+access_community_storage_manager,community.storage manager,model_community_storage,community_parcel_group_manager,1,1,1,1
+access_parcel_quick_register_staff,parcel.quick.register staff,model_parcel_quick_register,community_parcel_group_office_staff,1,1,1,1

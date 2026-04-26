@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Root menu -->
+    <menuitem id="menu_community_root"
+              name="社區管理"
+              web_icon="community_base,static/description/icon.png"
+              sequence="100"/>
+
+    <!-- Configuration sub-menu -->
+    <menuitem id="menu_community_config"
+              name="基礎設定"
+              parent="menu_community_root"
+              sequence="90"/>
+
+    <menuitem id="menu_community_unit"
+              name="戶號"
+              parent="menu_community_config"
+              action="action_community_unit"
+              sequence="10"/>
+
+    <menuitem id="menu_community_office"
+              name="管理室"
+              parent="menu_community_config"
+              action="action_community_office"
+              sequence="20"/>
+
+</odoo>

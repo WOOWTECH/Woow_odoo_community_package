@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- ═══ Form View ═══ -->
+    <record id="community_parcel_view_form" model="ir.ui.view">
+        <field name="name">community.parcel.form</field>
+        <field name="model">community.parcel</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_notify" string="通知住戶"
+                            type="object" class="btn-primary"
+                            invisible="state != 'draft'"/>
+                    <button name="action_pickup" string="確認取件"
+                            type="object" class="btn-primary"
+                            invisible="state not in ('notified', 'overdue')"/>
+                    <button name="action_return" string="退回"
+                            type="object"
+                            invisible="state not in ('notified', 'overdue')"/>
+                    <button name="action_overdue" string="標記逾期"
+                            type="object" class="btn-warning"
+                            invisible="state != 'notified'"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,notified,picked_up"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box"/>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group string="包裹資訊">
+                            <field name="barcode"/>
+                            <field name="resident_id"/>
+                            <field name="unit_address"/>
+                            <field name="parcel_type"/>
+                            <field name="office_id"/>
+                        </group>
+                        <group string="時間記錄">
+                            <field name="received_date"/>
+                            <field name="notified_date" readonly="1"/>
+                            <field name="pickup_date" readonly="1"/>
+                            <field name="picked_by" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="照片">
+                            <field name="image" widget="image" class="oe_avatar"/>
+                        </page>
+                        <page string="備註">
+                            <field name="note" placeholder="備註事項..."/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+
+    <!-- ═══ List View ═══ -->
+    <record id="community_parcel_view_tree" model="ir.ui.view">
+        <field name="name">community.parcel.list</field>
+        <field name="model">community.parcel</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="is_overdue == True"
+                  decoration-muted="state == 'picked_up'"
+                  multi_edit="1">
+                <field name="name"/>
+                <field name="barcode"/>
+                <field name="resident_id"/>
+                <field name="unit_address"/>
+                <field name="parcel_type"/>
+                <field name="received_date"/>
+                <field name="state" widget="badge"
+                       decoration-info="state == 'draft'"
+                       decoration-warning="state == 'notified'"
+                       decoration-success="state == 'picked_up'"
+                       decoration-danger="state in ('overdue', 'returned')"/>
+                <field name="is_overdue" column_invisible="True"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- ═══ Kanban View ═══ -->
+    <record id="community_parcel_view_kanban" model="ir.ui.view">
+        <field name="name">community.parcel.kanban</field>
+        <field name="model">community.parcel</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state" class="o_kanban_small_column">
+                <field name="name"/>
+                <field name="barcode"/>
+                <field name="resident_id"/>
+                <field name="unit_address"/>
+                <field name="parcel_type"/>
+                <field name="state"/>
+                <field name="is_overdue"/>
+                <field name="received_date"/>
+                <field name="color"/>
+                <templates>
+                    <t t-name="card">
+                        <div t-attf-class="#{record.is_overdue.raw_value ? 'border-start border-danger border-3' : ''}">
+                            <div class="o_kanban_record_top mb-1">
+                                <strong><field name="name"/></strong>
+                                <field name="parcel_type" widget="badge"/>
+                            </div>
+                            <div class="mb-1">
+                                <field name="resident_id"/>
+                                <span class="ms-2 text-muted small">
+                                    <field name="unit_address"/>
+                                </span>
+                            </div>
+                            <div class="text-muted small" t-if="record.barcode.raw_value">
+                                條碼: <field name="barcode"/>
+                            </div>
+                            <div class="text-muted small">
+                                <field name="received_date" widget="date"/>
+                            </div>
+                            <div t-if="record.is_overdue.raw_value"
+                                 class="text-danger fw-bold small mt-1">
+                                ⚠ 逾期未取
+                            </div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+
+    <!-- ═══ Search View ═══ -->
+    <record id="community_parcel_view_search" model="ir.ui.view">
+        <field name="name">community.parcel.search</field>
+        <field name="model">community.parcel</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="barcode"/>
+                <field name="resident_id"/>
+                <field name="unit_address"/>
+                <separator/>
+                <filter string="待通知" name="filter_draft"
+                        domain="[('state', '=', 'draft')]"/>
+                <filter string="已通知" name="filter_notified"
+                        domain="[('state', '=', 'notified')]"/>
+                <filter string="逾期" name="filter_overdue"
+                        domain="[('state', '=', 'overdue')]"/>
+                <filter string="已取件" name="filter_picked_up"
+                        domain="[('state', '=', 'picked_up')]"/>
+                <filter string="未取件" name="filter_uncollected"
+                        domain="[('state', 'in', ('draft', 'notified', 'overdue'))]"/>
+                <separator/>
+                <filter string="今日到件" name="filter_today"
+                        domain="[('received_date', '>=', (context_today()).strftime('%Y-%m-%d 00:00:00')),
+                                 ('received_date', '&lt;=', (context_today()).strftime('%Y-%m-%d 23:59:59'))]"/>
+                <separator/>
+                <group expand="0" string="分組">
+                    <filter string="狀態" name="group_state" context="{'group_by': 'state'}"/>
+                    <filter string="類型" name="group_type" context="{'group_by': 'parcel_type'}"/>
+                    <filter string="管理室" name="group_office" context="{'group_by': 'office_id'}"/>
+                    <filter string="收件日" name="group_date" context="{'group_by': 'received_date:day'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- ═══ Action ═══ -->
+    <record id="action_community_parcel" model="ir.actions.act_window">
+        <field name="name">所有包裹</field>
+        <field name="res_model">community.parcel</field>
+        <field name="view_mode">list,kanban,form</field>
+        <field name="search_view_id" ref="community_parcel_view_search"/>
+        <field name="context">{'search_default_filter_uncollected': 1}</field>
+    </record>
+</odoo>

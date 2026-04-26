@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_community_unit_form" model="ir.ui.view">
+        <field name="name">community.unit.form</field>
+        <field name="model">community.unit</field>
+        <field name="arch" type="xml">
+            <form string="戶號">
+                <sheet>
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="building"/>
+                            <field name="floor"/>
+                            <field name="number"/>
+                        </group>
+                        <group>
+                            <field name="office_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="住戶" name="residents">
+                            <field name="resident_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="phone"/>
+                                    <field name="email"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_community_unit_list" model="ir.ui.view">
+        <field name="name">community.unit.list</field>
+        <field name="model">community.unit</field>
+        <field name="arch" type="xml">
+            <list string="戶號">
+                <field name="name"/>
+                <field name="building"/>
+                <field name="floor"/>
+                <field name="number"/>
+                <field name="office_id"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_community_unit_search" model="ir.ui.view">
+        <field name="name">community.unit.search</field>
+        <field name="model">community.unit</field>
+        <field name="arch" type="xml">
+            <search string="搜尋戶號">
+                <field name="name"/>
+                <field name="building"/>
+                <field name="floor"/>
+                <field name="number"/>
+                <filter string="已啟用" name="active_filter"
+                        domain="[('active', '=', True)]"/>
+                <group expand="0" string="群組">
+                    <filter string="棟別" name="group_building"
+                            context="{'group_by': 'building'}"/>
+                    <filter string="管理室" name="group_office"
+                            context="{'group_by': 'office_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_community_unit" model="ir.actions.act_window">
+        <field name="name">戶號</field>
+        <field name="res_model">community.unit</field>
+        <field name="view_mode">list,form</field>
+        <field name="context">{'search_default_active_filter': 1}</field>
+    </record>
+
+</odoo>

@@ -5,7 +5,7 @@
     {
       "test": "wizard_basic_with_auto_notify",
       "status": "PASS",
-      "detail": "Created PKL/0149, state=notified (auto_notify=True)"
+      "detail": "Created PKL/0045, state=notified (auto_notify=True)"
     },
     {
       "test": "wizard_no_auto_notify_stays_draft",

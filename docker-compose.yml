@@ -24,7 +24,7 @@ services:
     ports:
       - "9098:8069"
     volumes:
-      - ./community_parcel:/mnt/extra-addons/community_parcel
+      - ./addons:/mnt/extra-addons
       - ./odoo.conf:/etc/odoo/odoo.conf
       - odoo-cp-web-data:/var/lib/odoo
     restart: unless-stopped
