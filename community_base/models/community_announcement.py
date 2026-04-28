@@ -39,6 +39,7 @@ class CommunityAnnouncement(models.Model):
         tracking=True,
     )
     publish_date = fields.Datetime(string='發布時間', readonly=True)
+    internal_note = fields.Text(string='內部備註')
     properties = fields.Properties(
         string='屬性',
         definition='office_id.announcement_properties_definition',

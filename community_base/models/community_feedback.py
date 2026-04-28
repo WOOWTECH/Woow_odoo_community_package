@@ -49,6 +49,7 @@ class CommunityFeedback(models.Model):
         default='pending',
         tracking=True,
     )
+    internal_note = fields.Text(string='內部備註')
     properties = fields.Properties(
         string='屬性',
         definition='office_id.feedback_properties_definition',

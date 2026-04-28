@@ -9,8 +9,7 @@
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="sequence"/>
-                        <field name="active"/>
+                        <field name="color" widget="color_picker"/>
                     </group>
                 </sheet>
             </form>
@@ -22,9 +21,8 @@
         <field name="model">community.feedback.category</field>
         <field name="arch" type="xml">
             <list editable="bottom">
-                <field name="sequence" widget="handle"/>
                 <field name="name"/>
-                <field name="active"/>
+                <field name="color" widget="color_picker"/>
             </list>
         </field>
     </record>

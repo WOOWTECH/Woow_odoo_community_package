@@ -39,12 +39,13 @@
                             <field name="office_id"/>
                         </group>
                     </group>
+                    <field name="properties"/>
                     <notebook>
                         <page string="意見內容">
                             <field name="content" placeholder="意見描述..."/>
                         </page>
-                        <page string="屬性">
-                            <field name="properties"/>
+                        <page string="內部備註">
+                            <field name="internal_note" placeholder="內部備註..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -62,7 +63,7 @@
                   decoration-success="state == 'done'">
                 <field name="name"/>
                 <field name="title"/>
-                <field name="category_id"/>
+                <field name="category_id" widget="badge"/>
                 <field name="partner_id"/>
                 <field name="unit_id"/>
                 <field name="create_date"/>

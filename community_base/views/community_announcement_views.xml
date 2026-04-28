@@ -39,12 +39,13 @@
                             <field name="publish_date"/>
                         </group>
                     </group>
+                    <field name="properties"/>
                     <notebook>
                         <page string="公告內容">
                             <field name="content" placeholder="輸入公告內容..."/>
                         </page>
-                        <page string="屬性">
-                            <field name="properties"/>
+                        <page string="內部備註">
+                            <field name="internal_note" placeholder="內部備註..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -61,7 +62,7 @@
                   decoration-info="state == 'draft'"
                   decoration-success="state == 'published'">
                 <field name="name"/>
-                <field name="category_id"/>
+                <field name="category_id" widget="badge"/>
                 <field name="office_id"/>
                 <field name="author_id"/>
                 <field name="publish_date"/>
