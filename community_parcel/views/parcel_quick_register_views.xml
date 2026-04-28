@@ -9,16 +9,14 @@
                 <group>
                     <group string="掃描條碼">
                         <field name="barcode" placeholder="掃描或輸入快遞條碼"/>
-                        <field name="parcel_type"/>
+                        <field name="type_id"/>
                     </group>
                     <group string="收件資訊">
-                        <field name="resident_id"/>
-                        <field name="office_id"/>
+                        <field name="unit_id"/>
                     </group>
                 </group>
                 <group>
-                    <field name="image" widget="image" class="oe_avatar"/>
-                    <field name="note" placeholder="備註..."/>
+                    <field name="description" placeholder="物品敘述..."/>
                 </group>
                 <group>
                     <field name="auto_notify"/>

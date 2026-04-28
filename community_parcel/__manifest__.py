@@ -22,6 +22,8 @@
         'data/sequence_data.xml',
         'data/mail_template_data.xml',
         # Views
+        'views/community_parcel_type_views.xml',
+        'views/community_storage_type_views.xml',
         'views/community_parcel_views.xml',
         'views/community_storage_views.xml',
         'views/parcel_quick_register_views.xml',

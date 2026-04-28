@@ -18,31 +18,23 @@ class CommunityParcel(models.Model):
         copy=False,
     )
     barcode = fields.Char(string='快遞條碼', index=True)
-    resident_id = fields.Many2one(
-        'res.partner',
-        string='收件住戶',
+    unit_id = fields.Many2one(
+        'community.unit',
+        string='戶號',
         required=True,
-        domain=[('is_resident', '=', True)],
         tracking=True,
     )
-    unit_address = fields.Char(
-        string='戶號',
-        compute='_compute_unit_address',
+    type_id = fields.Many2one(
+        'community.parcel.type',
+        string='類型',
+        tracking=True,
+    )
+    office_id = fields.Many2one(
+        'community.office',
+        string='管理室',
+        related='unit_id.office_id',
         store=True,
     )
-    parcel_type = fields.Selection(
-        [
-            ('parcel', '包裹'),
-            ('letter', '信件'),
-            ('registered', '掛號'),
-            ('other', '其他'),
-        ],
-        string='類型',
-        default='parcel',
-        required=True,
-        tracking=True,
-    )
-    image = fields.Binary(string='包裹照片', attachment=True)
     received_date = fields.Datetime(
         string='收件時間',
         default=fields.Datetime.now,
@@ -61,6 +53,7 @@ class CommunityParcel(models.Model):
             ('picked_up', '已取件'),
             ('returned', '已退回'),
             ('overdue', '逾期'),
+            ('scrapped', '已報廢'),
         ],
         string='狀態',
         default='draft',
@@ -68,8 +61,8 @@ class CommunityParcel(models.Model):
         tracking=True,
         group_expand='_expand_states',
     )
-    note = fields.Text(string='備註')
-    office_id = fields.Many2one('community.office', string='管理室')
+    description = fields.Text(string='物品敘述')
+    internal_note = fields.Text(string='內部備註')
     color = fields.Integer(string='Color Index')
     is_overdue = fields.Boolean(
         string='逾期',
@@ -94,17 +87,6 @@ class CommunityParcel(models.Model):
                     or 'New'
                 )
         return super().create(vals_list)
-
-    # ── Computed: unit_address ─────────────────────────────────
-    @api.depends('resident_id', 'resident_id.unit_ids')
-    def _compute_unit_address(self):
-        for rec in self:
-            if rec.resident_id and rec.resident_id.unit_ids:
-                rec.unit_address = ', '.join(
-                    rec.resident_id.unit_ids.mapped('name')
-                )
-            else:
-                rec.unit_address = False
 
     # ── Kanban group_expand ──────────────────────────────────
     @api.model
@@ -167,6 +149,12 @@ class CommunityParcel(models.Model):
             )
             if template:
                 template.send_mail(rec.id, force_send=False)
+
+    def action_scrap(self):
+        for rec in self:
+            if rec.state == 'scrapped':
+                raise UserError(_('此包裹已經報廢。'))
+        self.write({'state': 'scrapped'})
 
     # ── Cron ─────────────────────────────────────────────────
     @api.model

@@ -55,4 +55,21 @@
               action="action_community_storage"
               sequence="10"/>
 
+    <!-- ═══ 設定 ═══ -->
+    <menuitem id="menu_parcel_config"
+              name="設定"
+              parent="menu_community_parcel_root"
+              sequence="90"
+              groups="community_parcel_group_manager"/>
+    <menuitem id="menu_parcel_type"
+              name="包裹類型"
+              parent="menu_parcel_config"
+              action="action_parcel_type"
+              sequence="10"/>
+    <menuitem id="menu_storage_type"
+              name="寄放類型"
+              parent="menu_parcel_config"
+              action="action_storage_type"
+              sequence="20"/>
+
 </odoo>

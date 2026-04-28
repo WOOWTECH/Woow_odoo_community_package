@@ -15,20 +15,27 @@ class CommunityStorage(models.Model):
         default='New',
         copy=False,
     )
-    depositor_id = fields.Many2one(
-        'res.partner',
-        string='寄放住戶',
+    unit_id = fields.Many2one(
+        'community.unit',
+        string='戶號',
         required=True,
-        domain=[('is_resident', '=', True)],
         tracking=True,
     )
-    recipient_id = fields.Many2one(
-        'res.partner',
+    recipient_name = fields.Char(
         string='取件人',
-        domain=[('is_resident', '=', True)],
         tracking=True,
     )
-    item_description = fields.Text(string='物品描述', required=True)
+    type_id = fields.Many2one(
+        'community.storage.type',
+        string='類型',
+        tracking=True,
+    )
+    office_id = fields.Many2one(
+        'community.office',
+        string='管理室',
+        related='unit_id.office_id',
+        store=True,
+    )
     storage_location = fields.Char(string='寄放位置/格號')
     deposit_date = fields.Datetime(
         string='寄放時間',
@@ -43,6 +50,7 @@ class CommunityStorage(models.Model):
             ('storing', '保管中'),
             ('ready', '待取件'),
             ('done', '已完成'),
+            ('scrapped', '已報廢'),
         ],
         string='狀態',
         default='pending',
@@ -50,7 +58,9 @@ class CommunityStorage(models.Model):
         tracking=True,
         group_expand='_expand_states',
     )
-    note = fields.Text(string='備註')
+    item_description = fields.Text(string='物品敘述')
+    internal_note = fields.Text(string='內部備註')
+    color = fields.Integer(string='Color Index')
 
     # ── Sequence ─────────────────────────────────────────────
     @api.model_create_multi
@@ -89,3 +99,9 @@ class CommunityStorage(models.Model):
                 'state': 'done',
                 'actual_pickup': fields.Datetime.now(),
             })
+
+    def action_scrap(self):
+        for rec in self:
+            if rec.state == 'scrapped':
+                raise UserError(_('此寄放物品已經報廢。'))
+        self.write({'state': 'scrapped'})

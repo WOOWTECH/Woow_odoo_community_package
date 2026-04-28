@@ -19,6 +19,10 @@
                     <button name="action_overdue" string="標記逾期"
                             type="object" class="btn-warning"
                             invisible="state != 'notified'"/>
+                    <button name="action_scrap" string="報廢"
+                            type="object" class="btn-danger"
+                            invisible="state == 'scrapped'"
+                            confirm="確定要將此包裹報廢嗎？"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,notified,picked_up"/>
                 </header>
@@ -30,9 +34,8 @@
                     <group>
                         <group string="包裹資訊">
                             <field name="barcode"/>
-                            <field name="resident_id"/>
-                            <field name="unit_address"/>
-                            <field name="parcel_type"/>
+                            <field name="unit_id"/>
+                            <field name="type_id"/>
                             <field name="office_id"/>
                         </group>
                         <group string="時間記錄">
@@ -43,11 +46,11 @@
                         </group>
                     </group>
                     <notebook>
-                        <page string="照片">
-                            <field name="image" widget="image" class="oe_avatar"/>
+                        <page string="物品敘述">
+                            <field name="description" placeholder="物品敘述..."/>
                         </page>
-                        <page string="備註">
-                            <field name="note" placeholder="備註事項..."/>
+                        <page string="內部備註">
+                            <field name="internal_note" placeholder="內部備註..."/>
                         </page>
                     </notebook>
                 </sheet>
@@ -62,19 +65,19 @@
         <field name="model">community.parcel</field>
         <field name="arch" type="xml">
             <list decoration-danger="is_overdue == True"
-                  decoration-muted="state == 'picked_up'"
+                  decoration-muted="state in ('picked_up', 'scrapped')"
                   multi_edit="1">
                 <field name="name"/>
                 <field name="barcode"/>
-                <field name="resident_id"/>
-                <field name="unit_address"/>
-                <field name="parcel_type"/>
+                <field name="unit_id"/>
+                <field name="type_id" widget="badge"/>
+                <field name="office_id"/>
                 <field name="received_date"/>
                 <field name="state" widget="badge"
                        decoration-info="state == 'draft'"
                        decoration-warning="state == 'notified'"
                        decoration-success="state == 'picked_up'"
-                       decoration-danger="state in ('overdue', 'returned')"/>
+                       decoration-danger="state in ('overdue', 'returned', 'scrapped')"/>
                 <field name="is_overdue" column_invisible="True"/>
             </list>
         </field>
@@ -88,9 +91,8 @@
             <kanban default_group_by="state" class="o_kanban_small_column">
                 <field name="name"/>
                 <field name="barcode"/>
-                <field name="resident_id"/>
-                <field name="unit_address"/>
-                <field name="parcel_type"/>
+                <field name="unit_id"/>
+                <field name="type_id"/>
                 <field name="state"/>
                 <field name="is_overdue"/>
                 <field name="received_date"/>
@@ -100,13 +102,10 @@
                         <div t-attf-class="#{record.is_overdue.raw_value ? 'border-start border-danger border-3' : ''}">
                             <div class="o_kanban_record_top mb-1">
                                 <strong><field name="name"/></strong>
-                                <field name="parcel_type" widget="badge"/>
+                                <field name="type_id" widget="badge"/>
                             </div>
                             <div class="mb-1">
-                                <field name="resident_id"/>
-                                <span class="ms-2 text-muted small">
-                                    <field name="unit_address"/>
-                                </span>
+                                <field name="unit_id"/>
                             </div>
                             <div class="text-muted small" t-if="record.barcode.raw_value">
                                 條碼: <field name="barcode"/>
@@ -116,7 +115,7 @@
                             </div>
                             <div t-if="record.is_overdue.raw_value"
                                  class="text-danger fw-bold small mt-1">
-                                ⚠ 逾期未取
+                                逾期未取
                             </div>
                         </div>
                     </t>
@@ -133,8 +132,7 @@
             <search>
                 <field name="name"/>
                 <field name="barcode"/>
-                <field name="resident_id"/>
-                <field name="unit_address"/>
+                <field name="unit_id"/>
                 <separator/>
                 <filter string="待通知" name="filter_draft"
                         domain="[('state', '=', 'draft')]"/>
@@ -148,12 +146,12 @@
                         domain="[('state', 'in', ('draft', 'notified', 'overdue'))]"/>
                 <separator/>
                 <filter string="今日到件" name="filter_today"
-                        domain="[('received_date', '>=', (context_today()).strftime('%Y-%m-%d 00:00:00')),
+                        domain="[('received_date', '&gt;=', (context_today()).strftime('%Y-%m-%d 00:00:00')),
                                  ('received_date', '&lt;=', (context_today()).strftime('%Y-%m-%d 23:59:59'))]"/>
                 <separator/>
                 <group expand="0" string="分組">
                     <filter string="狀態" name="group_state" context="{'group_by': 'state'}"/>
-                    <filter string="類型" name="group_type" context="{'group_by': 'parcel_type'}"/>
+                    <filter string="類型" name="group_type" context="{'group_by': 'type_id'}"/>
                     <filter string="管理室" name="group_office" context="{'group_by': 'office_id'}"/>
                     <filter string="收件日" name="group_date" context="{'group_by': 'received_date:day'}"/>
                 </group>
