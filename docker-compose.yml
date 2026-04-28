@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  odoo-communitypackage-db:
+    image: postgres:16
+    container_name: odoo-communitypackage-db
+    environment:
+      - POSTGRES_DB=odoocommunitypackage
+      - POSTGRES_USER=odoocommunitypackage
+      - POSTGRES_PASSWORD=odoocommunitypackage
+    volumes:
+      - odoo-cp-db-data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoocommunitypackage -d odoocommunitypackage"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  odoo-communitypackage-web:
+    image: odoo:18
+    container_name: odoo-communitypackage-web
+    depends_on:
+      odoo-communitypackage-db:
+        condition: service_healthy
+    ports:
+      - "9098:8069"
+    volumes:
+      - ./addons:/mnt/extra-addons
+      - ./config/odoo.conf:/etc/odoo/odoo.conf
+      - odoo-cp-web-data:/var/lib/odoo
+    restart: unless-stopped
+
+volumes:
+  odoo-cp-db-data:
+  odoo-cp-web-data:
