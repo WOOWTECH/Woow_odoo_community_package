@@ -7,31 +7,12 @@
               parent="community_base.menu_community_root"
               sequence="30"/>
 
-    <!-- ═══ 工作台 ═══ -->
+    <!-- ═══ 工作台 (Dashboard Kanban) ═══ -->
     <menuitem id="menu_parcel_dashboard"
               name="工作台"
               parent="menu_community_parcel_root"
+              action="action_parcel_dashboard"
               sequence="5"/>
-    <menuitem id="menu_parcel_today"
-              name="今日到件"
-              parent="menu_parcel_dashboard"
-              action="action_parcel_today"
-              sequence="10"/>
-    <menuitem id="menu_parcel_uncollected"
-              name="未取件"
-              parent="menu_parcel_dashboard"
-              action="action_parcel_uncollected"
-              sequence="20"/>
-    <menuitem id="menu_parcel_overdue_dash"
-              name="逾期包裹"
-              parent="menu_parcel_dashboard"
-              action="action_parcel_overdue"
-              sequence="30"/>
-    <menuitem id="menu_parcel_quick_register"
-              name="快速登記"
-              parent="menu_parcel_dashboard"
-              action="action_parcel_quick_register"
-              sequence="40"/>
 
     <!-- ═══ 包裹管理 ═══ -->
     <menuitem id="menu_parcel_main"

@@ -8,7 +8,6 @@
         - 包裹收件登記與住戶通知（到件通知、逾期提醒）
         - 寄放物品管理（登記、保管、取件）
         - 管理室工作台（今日到件、未取件、逾期一覽）
-        - 快速條碼登記精靈
         - 自動逾期排程（7 天未取件自動標記）
     """,
     'author': 'WoowTech',
@@ -26,8 +25,7 @@
         'views/community_storage_type_views.xml',
         'views/community_parcel_views.xml',
         'views/community_storage_views.xml',
-        'views/parcel_quick_register_views.xml',
-        'views/community_parcel_dashboard.xml',
+        'views/community_parcel_dashboard_kanban.xml',
         'views/menu_views.xml',
     ],
     'demo': [
