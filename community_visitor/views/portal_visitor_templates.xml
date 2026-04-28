@@ -62,7 +62,7 @@
                                     </tr>
                                     <tr>
                                         <td class="text-muted">登記時間</td>
-                                        <td t-field="visit.create_date"/>
+                                        <td><span t-field="visit.create_date"/></td>
                                     </tr>
                                 </table>
                                 <div class="text-center mt-4">
@@ -150,7 +150,7 @@
                                 <td t-esc="visit.visitor_id.name"/>
                                 <td t-esc="visit.purpose_id.name"/>
                                 <td t-esc="visit.unit_id.name"/>
-                                <td t-field="visit.create_date"/>
+                                <td><span t-field="visit.create_date"/></td>
                                 <td>
                                     <a t-attf-href="/my/visitors/#{visit.id}"
                                        class="btn btn-sm btn-outline-primary me-1">
@@ -210,7 +210,7 @@
                                 <td t-esc="visit.visitor_id.name"/>
                                 <td t-esc="dict(visit._fields['visit_type'].selection).get(visit.visit_type, '')"/>
                                 <td t-esc="visit.unit_id.name"/>
-                                <td t-field="visit.create_date"/>
+                                <td><span t-field="visit.create_date"/></td>
                                 <td>
                                     <span t-if="visit.state == 'checked_in'"
                                           class="badge bg-success">已入場</span>
@@ -434,15 +434,15 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <td class="text-muted" style="width:40%;">登記時間</td>
-                                    <td t-field="visit.create_date"/>
+                                    <td><span t-field="visit.create_date"/></td>
                                 </tr>
                                 <tr t-if="visit.checkin_time">
                                     <td class="text-muted">入場時間</td>
-                                    <td t-field="visit.checkin_time"/>
+                                    <td><span t-field="visit.checkin_time"/></td>
                                 </tr>
                                 <tr t-if="visit.checkout_time">
                                     <td class="text-muted">離場時間</td>
-                                    <td t-field="visit.checkout_time"/>
+                                    <td><span t-field="visit.checkout_time"/></td>
                                 </tr>
                                 <tr t-if="visit.badge_id">
                                     <td class="text-muted">訪客證</td>
