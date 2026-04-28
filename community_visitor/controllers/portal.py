@@ -156,7 +156,10 @@ class VisitorPortal(CustomerPortal):
 
         recent_visits = request.env['community.visit'].search([
             ('unit_id', 'in', unit_ids),
-            ('state', 'in', ['confirmed', 'checked_in', 'rejected', 'timeout']),
+            ('state', 'in', [
+                'confirmed', 'checked_in', 'checked_out',
+                'rejected', 'timeout',
+            ]),
         ], order='create_date desc', limit=50)
 
         return request.render(
@@ -164,6 +167,30 @@ class VisitorPortal(CustomerPortal):
             {
                 'pending_visits': pending_visits,
                 'recent_visits': recent_visits,
+                'page_name': 'visitors',
+            },
+        )
+
+    @http.route(
+        '/my/visitors/<int:visit_id>',
+        type='http',
+        auth='user',
+        website=True,
+    )
+    def portal_visit_detail(self, visit_id, **kwargs):
+        visit = request.env['community.visit'].browse(visit_id)
+        if not visit.exists():
+            return request.redirect('/my/visitors')
+
+        # Security check: only residents of the unit can view
+        partner = request.env.user.partner_id
+        if partner.id not in visit.unit_id.resident_ids.ids:
+            return request.redirect('/my/visitors')
+
+        return request.render(
+            'community_visitor.portal_visit_detail',
+            {
+                'visit': visit,
                 'page_name': 'visitors',
             },
         )

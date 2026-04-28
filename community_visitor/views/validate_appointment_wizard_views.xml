@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_validate_appointment_wizard_form" model="ir.ui.view">
+        <field name="name">validate.appointment.wizard.form</field>
+        <field name="model">validate.appointment.wizard</field>
+        <field name="arch" type="xml">
+            <form string="驗證碼查驗">
+                <field name="state" invisible="1"/>
+
+                <!-- 輸入狀態 -->
+                <group invisible="state != 'input'">
+                    <group>
+                        <field name="access_code" placeholder="請輸入驗證碼"
+                               string="驗證碼"/>
+                    </group>
+                </group>
+
+                <!-- 成功狀態 -->
+                <div class="alert alert-success" role="alert"
+                     invisible="state != 'success'">
+                    <h4><i class="fa fa-check-circle"/> 驗證成功</h4>
+                    <field name="result_message" nolabel="1"/>
+                </div>
+                <group invisible="state != 'success'">
+                    <group>
+                        <field name="visitor_name"/>
+                        <field name="unit_name"/>
+                        <field name="remaining"/>
+                    </group>
+                </group>
+
+                <!-- 失敗狀態 -->
+                <div class="alert alert-danger" role="alert"
+                     invisible="state != 'fail'">
+                    <h4><i class="fa fa-times-circle"/> 驗證失敗</h4>
+                    <field name="result_message" nolabel="1"/>
+                </div>
+
+                <footer>
+                    <button name="action_validate" type="object"
+                            string="驗證" class="btn-primary"
+                            invisible="state != 'input'"/>
+                    <button name="action_open_visit" type="object"
+                            string="前往訪問記錄" class="btn-primary"
+                            invisible="state != 'success'"/>
+                    <button name="action_reset" type="object"
+                            string="重新輸入" class="btn-secondary"
+                            invisible="state == 'input'"/>
+                    <button string="關閉" class="btn-secondary"
+                            special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_validate_appointment_wizard" model="ir.actions.act_window">
+        <field name="name">驗證碼查驗</field>
+        <field name="res_model">validate.appointment.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+</odoo>

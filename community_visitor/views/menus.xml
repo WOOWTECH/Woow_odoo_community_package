@@ -28,6 +28,13 @@
               action="action_community_appointment"
               sequence="30"/>
 
+    <!-- Validate Appointment Wizard -->
+    <menuitem id="menu_validate_appointment"
+              name="驗證碼查驗"
+              parent="menu_community_visitor_root"
+              action="action_validate_appointment_wizard"
+              sequence="35"/>
+
     <!-- Settings -->
     <menuitem id="menu_community_visitor_settings"
               name="設定"

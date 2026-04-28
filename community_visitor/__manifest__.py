@@ -1,6 +1,6 @@
 {
     'name': '社區訪客管理',
-    'version': '18.0.1.1.0',
+    'version': '18.0.1.2.0',
     'category': 'Community',
     'summary': '訪客登記、住戶確認、預約通行管理',
     'description': """
@@ -27,6 +27,7 @@
         'views/community_visitor_views.xml',
         'views/community_visit_views.xml',
         'views/community_appointment_views.xml',
+        'views/validate_appointment_wizard_views.xml',
         'views/portal_visitor_templates.xml',
         'views/menus.xml',
     ],

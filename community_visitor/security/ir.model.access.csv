@@ -11,3 +11,5 @@ access_visit_purpose_guard,community.visit.purpose.guard,model_community_visit_p
 access_visit_purpose_manager,community.visit.purpose.manager,model_community_visit_purpose,community_visitor.group_manager,1,1,1,1
 access_visitor_badge_guard,community.visitor.badge.guard,model_community_visitor_badge,community_visitor.group_guard,1,1,0,0
 access_visitor_badge_manager,community.visitor.badge.manager,model_community_visitor_badge,community_visitor.group_manager,1,1,1,1
+access_validate_appointment_wizard_guard,validate.appointment.wizard.guard,model_validate_appointment_wizard,community_visitor.group_guard,1,1,1,0
+access_validate_appointment_wizard_manager,validate.appointment.wizard.manager,model_validate_appointment_wizard,community_visitor.group_manager,1,1,1,1

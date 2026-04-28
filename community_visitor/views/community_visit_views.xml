@@ -39,9 +39,9 @@
                             <field name="badge_id"/>
                             <field name="checkin_time"/>
                             <field name="checkout_time"
-                                   invisible="state != 'checked_out'"/>
+                                   invisible="state not in ('checked_in', 'checked_out')"/>
                             <field name="guard_out_id"
-                                   invisible="state != 'checked_out'"/>
+                                   invisible="state not in ('checked_in', 'checked_out')"/>
                         </group>
                     </group>
                     <group>
