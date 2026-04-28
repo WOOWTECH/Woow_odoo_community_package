@@ -26,6 +26,11 @@ class CommunityUnit(models.Model):
         string='所屬管理室',
     )
     active = fields.Boolean(string='啟用', default=True)
+    internal_note = fields.Text(string='內部備註')
+    properties = fields.Properties(
+        string='屬性',
+        definition='office_id.unit_properties_definition',
+    )
 
     _sql_constraints = [
         (

@@ -21,11 +21,28 @@
                         </group>
                     </group>
                     <notebook>
+                        <page string="戶號" name="units">
+                            <field name="unit_ids">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="building"/>
+                                    <field name="floor"/>
+                                    <field name="number"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
                         <page string="公告屬性定義" name="announcement_props">
                             <field name="announcement_properties_definition"/>
                         </page>
                         <page string="反映屬性定義" name="feedback_props">
                             <field name="feedback_properties_definition"/>
+                        </page>
+                        <page string="戶號屬性定義" name="unit_props">
+                            <field name="unit_properties_definition"/>
+                        </page>
+                        <page string="內部備註" name="internal_note">
+                            <field name="internal_note" placeholder="內部備註..."/>
                         </page>
                     </notebook>
                 </sheet>

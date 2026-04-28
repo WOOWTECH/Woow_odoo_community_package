@@ -12,9 +12,18 @@ class CommunityOffice(models.Model):
         'res.users',
         string='負責人',
     )
+    unit_ids = fields.One2many(
+        'community.unit',
+        'office_id',
+        string='轄下戶號',
+    )
+    internal_note = fields.Text(string='內部備註')
     announcement_properties_definition = fields.PropertiesDefinition(
         string='公告屬性定義',
     )
     feedback_properties_definition = fields.PropertiesDefinition(
         string='意見屬性定義',
+    )
+    unit_properties_definition = fields.PropertiesDefinition(
+        string='戶號屬性定義',
     )

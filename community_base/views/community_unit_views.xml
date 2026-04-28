@@ -23,6 +23,7 @@
                             <field name="active"/>
                         </group>
                     </group>
+                    <field name="properties"/>
                     <notebook>
                         <page string="住戶" name="residents">
                             <field name="resident_ids">
@@ -32,6 +33,9 @@
                                     <field name="email"/>
                                 </list>
                             </field>
+                        </page>
+                        <page string="內部備註" name="internal_note">
+                            <field name="internal_note" placeholder="內部備註..."/>
                         </page>
                     </notebook>
                 </sheet>
