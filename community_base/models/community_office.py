@@ -27,3 +27,6 @@ class CommunityOffice(models.Model):
     unit_properties_definition = fields.PropertiesDefinition(
         string='戶號屬性定義',
     )
+    visit_properties_definition = fields.PropertiesDefinition(
+        string='訪問屬性定義',
+    )

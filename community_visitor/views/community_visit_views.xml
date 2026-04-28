@@ -13,8 +13,11 @@
                     <button name="action_checkin" type="object"
                             string="確認入場" class="btn-success"
                             invisible="state != 'confirmed'"/>
+                    <button name="action_checkout" type="object"
+                            string="離場登記" class="btn-warning"
+                            invisible="state != 'checked_in'"/>
                     <field name="state" widget="statusbar"
-                           statusbar_visible="draft,pending_confirm,confirmed,checked_in"/>
+                           statusbar_visible="draft,pending_confirm,confirmed,checked_in,checked_out"/>
                 </header>
                 <sheet>
                     <div class="oe_title">
@@ -23,37 +26,45 @@
                         </h1>
                     </div>
                     <group>
-                        <group string="訪客資訊">
+                        <group>
                             <field name="visitor_id"/>
                             <field name="visit_type"/>
-                            <field name="purpose"/>
-                            <field name="purpose_note"
-                                   invisible="not purpose_note"/>
-                        </group>
-                        <group string="訪問資訊">
+                            <field name="purpose_id"/>
                             <field name="unit_id"/>
                             <field name="resident_id"/>
-                            <field name="guard_in_id"/>
+                        </group>
+                        <group>
                             <field name="office_id"/>
+                            <field name="guard_in_id"/>
+                            <field name="badge_id"/>
                             <field name="checkin_time"/>
+                            <field name="checkout_time"
+                                   invisible="state != 'checked_out'"/>
+                            <field name="guard_out_id"
+                                   invisible="state != 'checked_out'"/>
                         </group>
                     </group>
                     <group>
                         <group>
                             <field name="appointment_id"
                                    invisible="visit_type == 'walk_in'"/>
-                            <field name="badge_number"/>
                         </group>
                         <group>
                             <field name="resident_confirm_time"
-                                   invisible="state not in ('confirmed', 'checked_in')"/>
+                                   invisible="state not in ('confirmed', 'checked_in', 'checked_out')"/>
                             <field name="confirm_token" invisible="1"/>
                             <field name="token_expiry" invisible="1"/>
                         </group>
                     </group>
-                    <group>
-                        <field name="note" placeholder="備註..."/>
-                    </group>
+                    <field name="properties"/>
+                    <notebook>
+                        <page string="訪問敘述" name="description">
+                            <field name="description" placeholder="訪問敘述..."/>
+                        </page>
+                        <page string="內部備註" name="internal_note">
+                            <field name="note" placeholder="內部備註..."/>
+                        </page>
+                    </notebook>
                 </sheet>
                 <chatter/>
             </form>
@@ -66,13 +77,14 @@
         <field name="arch" type="xml">
             <list string="訪問記錄"
                   decoration-warning="state == 'pending_confirm'"
-                  decoration-success="state == 'checked_in'"
+                  decoration-success="state in ('checked_in', 'checked_out')"
                   decoration-danger="state in ('rejected', 'timeout')">
                 <field name="name"/>
                 <field name="visitor_id"/>
                 <field name="visit_type"/>
                 <field name="unit_id"/>
-                <field name="purpose"/>
+                <field name="purpose_id"/>
+                <field name="badge_id" optional="hide"/>
                 <field name="guard_in_id"/>
                 <field name="checkin_time"/>
                 <field name="state"/>
@@ -89,7 +101,7 @@
                 <field name="state"/>
                 <field name="visitor_id"/>
                 <field name="unit_id"/>
-                <field name="purpose"/>
+                <field name="purpose_id"/>
                 <field name="create_date"/>
                 <templates>
                     <t t-name="card">
@@ -98,13 +110,13 @@
                                 <field name="name"/>
                             </strong>
                             <div>
-                                <i class="fa fa-user"/> <field name="visitor_id"/>
+                                <i class="fa fa-user" title="訪客"/> <field name="visitor_id"/>
                             </div>
                             <div>
-                                <i class="fa fa-home"/> <field name="unit_id"/>
+                                <i class="fa fa-home" title="戶號"/> <field name="unit_id"/>
                             </div>
                             <div class="text-muted">
-                                <field name="purpose"/> -
+                                <field name="purpose_id"/> -
                                 <field name="create_date"/>
                             </div>
                         </div>
@@ -122,12 +134,15 @@
                 <field name="name"/>
                 <field name="visitor_id"/>
                 <field name="unit_id"/>
+                <field name="purpose_id"/>
                 <filter string="待確認" name="pending"
                         domain="[('state', '=', 'pending_confirm')]"/>
                 <filter string="已確認" name="confirmed"
                         domain="[('state', '=', 'confirmed')]"/>
                 <filter string="已入場" name="checked_in"
                         domain="[('state', '=', 'checked_in')]"/>
+                <filter string="已離場" name="checked_out"
+                        domain="[('state', '=', 'checked_out')]"/>
                 <filter string="今日" name="today"
                         domain="[('create_date', '>=', context_today().strftime('%%Y-%%m-%%d'))]"/>
                 <separator/>
@@ -142,6 +157,8 @@
                             context="{'group_by': 'unit_id'}"/>
                     <filter string="類型" name="group_type"
                             context="{'group_by': 'visit_type'}"/>
+                    <filter string="來訪目的" name="group_purpose"
+                            context="{'group_by': 'purpose_id'}"/>
                     <filter string="日期" name="group_date"
                             context="{'group_by': 'create_date:day'}"/>
                 </group>

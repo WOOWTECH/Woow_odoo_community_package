@@ -187,6 +187,11 @@ class CommunityAppointment(models.Model):
                 'error': f'訪客 {visitor.name} 已被列入黑名單。',
             }
 
+        # Find default purpose
+        default_purpose = self.env['community.visit.purpose'].search(
+            [], limit=1,
+        )
+
         # Create visit record
         visit = self.env['community.visit'].create({
             'visitor_id': visitor.id,
@@ -197,8 +202,8 @@ class CommunityAppointment(models.Model):
             ),
             'unit_id': appointment.unit_id.id,
             'resident_id': appointment.resident_id.id,
-            'purpose': 'visit',
-            'purpose_note': appointment.purpose,
+            'purpose_id': default_purpose.id if default_purpose else False,
+            'description': appointment.purpose,
             'appointment_id': appointment.id,
             'guard_in_id': self.env.user.id,
             'checkin_time': now,

@@ -7,5 +7,7 @@ access_community_appointment_guard,community.appointment.guard,model_community_a
 access_community_appointment_manager,community.appointment.manager,model_community_appointment,community_visitor.group_manager,1,1,1,1
 access_community_visit_portal,community.visit.portal,model_community_visit,base.group_portal,1,0,0,0
 access_community_appointment_portal,community.appointment.portal,model_community_appointment,base.group_portal,1,1,1,0
-access_visitor_register_wizard_guard,visitor.register.wizard.guard,model_visitor_register_wizard,community_visitor.group_guard,1,1,1,1
-access_visitor_register_wizard_manager,visitor.register.wizard.manager,model_visitor_register_wizard,community_visitor.group_manager,1,1,1,1
+access_visit_purpose_guard,community.visit.purpose.guard,model_community_visit_purpose,community_visitor.group_guard,1,0,0,0
+access_visit_purpose_manager,community.visit.purpose.manager,model_community_visit_purpose,community_visitor.group_manager,1,1,1,1
+access_visitor_badge_guard,community.visitor.badge.guard,model_community_visitor_badge,community_visitor.group_guard,1,1,0,0
+access_visitor_badge_manager,community.visitor.badge.manager,model_community_visitor_badge,community_visitor.group_manager,1,1,1,1

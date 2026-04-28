@@ -7,14 +7,6 @@
               parent="community_base.menu_community_root"
               sequence="10"/>
 
-    <!-- Guard Quick Register -->
-    <menuitem id="menu_visitor_register"
-              name="訪客登記"
-              parent="menu_community_visitor_root"
-              action="action_visitor_register_wizard"
-              sequence="1"
-              groups="community_visitor.group_guard"/>
-
     <!-- Visits -->
     <menuitem id="menu_community_visit"
               name="訪問記錄"
@@ -35,5 +27,23 @@
               parent="menu_community_visitor_root"
               action="action_community_appointment"
               sequence="30"/>
+
+    <!-- Settings -->
+    <menuitem id="menu_community_visitor_settings"
+              name="設定"
+              parent="menu_community_visitor_root"
+              sequence="90"/>
+
+    <menuitem id="menu_visit_purpose"
+              name="來訪目的"
+              parent="menu_community_visitor_settings"
+              action="action_visit_purpose"
+              sequence="10"/>
+
+    <menuitem id="menu_visitor_badge"
+              name="訪客證管理"
+              parent="menu_community_visitor_settings"
+              action="action_visitor_badge"
+              sequence="20"/>
 
 </odoo>

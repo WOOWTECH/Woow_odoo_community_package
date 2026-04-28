@@ -41,6 +41,9 @@
                         <page string="戶號屬性定義" name="unit_props">
                             <field name="unit_properties_definition"/>
                         </page>
+                        <page string="訪問屬性定義" name="visit_props">
+                            <field name="visit_properties_definition"/>
+                        </page>
                         <page string="內部備註" name="internal_note">
                             <field name="internal_note" placeholder="內部備註..."/>
                         </page>

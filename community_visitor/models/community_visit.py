@@ -2,7 +2,7 @@ import secrets
 from datetime import timedelta
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import UserError
 
 
 class CommunityVisit(models.Model):
@@ -41,21 +41,14 @@ class CommunityVisit(models.Model):
     resident_id = fields.Many2one(
         'res.partner',
         string='確認住戶',
-        help='實際確認放行的住戶',
+        readonly=True,
+        help='透過確認連結自動記錄',
     )
-    purpose = fields.Selection(
-        [
-            ('visit', '探訪'),
-            ('delivery', '送貨'),
-            ('repair', '維修'),
-            ('business', '商務'),
-            ('other', '其他'),
-        ],
+    purpose_id = fields.Many2one(
+        'community.visit.purpose',
         string='來訪目的',
         required=True,
-        default='visit',
     )
-    purpose_note = fields.Text(string='目的說明')
     appointment_id = fields.Many2one(
         'community.appointment',
         string='預約單',
@@ -65,7 +58,13 @@ class CommunityVisit(models.Model):
         string='登記警衛',
         default=lambda self: self.env.user,
     )
+    guard_out_id = fields.Many2one(
+        'res.users',
+        string='離場警衛',
+        readonly=True,
+    )
     checkin_time = fields.Datetime(string='入場時間')
+    checkout_time = fields.Datetime(string='離場時間', readonly=True)
     state = fields.Selection(
         [
             ('draft', '草稿'),
@@ -74,6 +73,7 @@ class CommunityVisit(models.Model):
             ('rejected', '已拒絕'),
             ('timeout', '逾時'),
             ('checked_in', '已入場'),
+            ('checked_out', '已離場'),
         ],
         string='狀態',
         default='draft',
@@ -82,12 +82,23 @@ class CommunityVisit(models.Model):
     resident_confirm_time = fields.Datetime(string='住戶確認時間')
     confirm_token = fields.Char(string='確認 Token', copy=False)
     token_expiry = fields.Datetime(string='Token 過期時間')
-    badge_number = fields.Char(string='訪客證編號')
+    badge_id = fields.Many2one(
+        'community.visitor.badge',
+        string='訪客證',
+        domain=[('state', '=', 'available')],
+    )
     office_id = fields.Many2one(
         'community.office',
         string='管理室',
     )
-    note = fields.Text(string='備註')
+    description = fields.Text(string='訪問敘述')
+    note = fields.Text(string='內部備註')
+    properties = fields.Properties(
+        string='屬性',
+        definition='office_id.visit_properties_definition',
+    )
+
+    # ── CRUD ──────────────────────────────────────────────
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -96,10 +107,30 @@ class CommunityVisit(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code(
                     'community.visit'
                 ) or '/'
-        return super().create(vals_list)
+        records = super().create(vals_list)
+        for rec in records:
+            if rec.badge_id:
+                rec.badge_id.action_assign(rec)
+        return records
+
+    def write(self, vals):
+        old_badges = {}
+        if 'badge_id' in vals:
+            for rec in self:
+                old_badges[rec.id] = rec.badge_id
+        res = super().write(vals)
+        if 'badge_id' in vals:
+            for rec in self:
+                old_badge = old_badges.get(rec.id)
+                if old_badge and old_badge != rec.badge_id:
+                    old_badge.action_release()
+                if rec.badge_id and rec.badge_id.state == 'available':
+                    rec.badge_id.action_assign(rec)
+        return res
+
+    # ── Token ─────────────────────────────────────────────
 
     def _generate_confirm_token(self):
-        """Generate a confirmation token and set expiry (20 minutes)."""
         self.ensure_one()
         token = secrets.token_urlsafe(16)
         self.write({
@@ -108,8 +139,10 @@ class CommunityVisit(models.Model):
         })
         return token
 
+    # ── Actions ───────────────────────────────────────────
+
     def action_send_confirmation(self):
-        """Send confirmation request to all residents of the unit."""
+        """發送確認請求給戶號內所有住戶"""
         self.ensure_one()
         if self.state != 'draft':
             raise UserError(_('只有草稿狀態的訪問記錄可以發送確認請求。'))
@@ -117,7 +150,6 @@ class CommunityVisit(models.Model):
         token = self._generate_confirm_token()
         self.write({'state': 'pending_confirm'})
 
-        # Send notification to all residents of the unit
         residents = self.unit_id.resident_ids.filtered('is_resident')
         if not residents:
             raise UserError(_(
@@ -151,7 +183,7 @@ class CommunityVisit(models.Model):
         return f"{base_url}/visitor/confirm/{token}/reject"
 
     def action_confirm(self, token, partner=None):
-        """Resident confirms visitor entry."""
+        """住戶確認訪客入場"""
         self.ensure_one()
         if self.state != 'pending_confirm':
             raise UserError(_('此訪問記錄不在待確認狀態。'))
@@ -167,12 +199,10 @@ class CommunityVisit(models.Model):
         if partner:
             vals['resident_id'] = partner.id
         self.write(vals)
-
-        # Notify guard via bus.bus
         self._notify_guard('confirmed')
 
     def action_reject(self, token, partner=None):
-        """Resident rejects visitor entry."""
+        """住戶拒絕訪客入場"""
         self.ensure_one()
         if self.state != 'pending_confirm':
             raise UserError(_('此訪問記錄不在待確認狀態。'))
@@ -185,11 +215,10 @@ class CommunityVisit(models.Model):
         if partner:
             vals['resident_id'] = partner.id
         self.write(vals)
-
         self._notify_guard('rejected')
 
     def action_checkin(self):
-        """Guard confirms visitor has entered."""
+        """警衛確認訪客已入場"""
         self.ensure_one()
         if self.state != 'confirmed':
             raise UserError(_('只有已確認的訪問記錄可以登記入場。'))
@@ -198,9 +227,23 @@ class CommunityVisit(models.Model):
             'checkin_time': fields.Datetime.now(),
         })
 
+    def action_checkout(self):
+        """離場登記，自動歸還訪客證"""
+        self.ensure_one()
+        if self.state != 'checked_in':
+            raise UserError(_('只有已入場的訪問記錄可以登記離場。'))
+        self.write({
+            'state': 'checked_out',
+            'checkout_time': fields.Datetime.now(),
+            'guard_out_id': self.env.user.id,
+        })
+        if self.badge_id:
+            self.badge_id.action_release()
+
+    # ── Cron ──────────────────────────────────────────────
+
     @api.model
     def action_timeout(self):
-        """Cron job: timeout visits pending for more than 20 minutes."""
         timeout_visits = self.search([
             ('state', '=', 'pending_confirm'),
             ('token_expiry', '<=', fields.Datetime.now()),
@@ -209,8 +252,9 @@ class CommunityVisit(models.Model):
             visit.write({'state': 'timeout'})
             visit._notify_guard('timeout')
 
+    # ── Notification ──────────────────────────────────────
+
     def _notify_guard(self, event_type):
-        """Send bus.bus notification to the guard who registered the visit."""
         self.ensure_one()
         guard = self.guard_in_id
         if not guard or not guard.partner_id:
