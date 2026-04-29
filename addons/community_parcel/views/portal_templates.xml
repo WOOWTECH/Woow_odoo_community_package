@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- ====================================================
+         Portal Home: Add Parcel & Storage Cards
+         ==================================================== -->
+    <template id="portal_my_home_parcel"
+              name="Portal: Parcel &amp; Storage Cards"
+              inherit_id="portal.portal_my_home"
+              priority="40">
+        <xpath expr="//div[hasclass('o_portal_my_home')]" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/community_parcel/static/description/icon.png'"/>
+                <t t-set="title">包裹收件</t>
+                <t t-set="text">查看待取包裹</t>
+                <t t-set="url" t-value="'/my/parcels'"/>
+                <t t-set="placeholder_count" t-valuef="parcel_count"/>
+            </t>
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/community_parcel/static/description/icon.png'"/>
+                <t t-set="title">物品寄放</t>
+                <t t-set="text">查看寄放物品狀態</t>
+                <t t-set="url" t-value="'/my/storage'"/>
+                <t t-set="placeholder_count" t-valuef="storage_count"/>
+            </t>
+        </xpath>
+    </template>
+
+    <!-- ====================================================
+         Parcel List
+         ==================================================== -->
+    <template id="portal_parcels" name="Portal: Parcel List">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="title">包裹收件</t>
+
+            <t t-if="parcels">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>編號</th>
+                            <th>條碼</th>
+                            <th>類型</th>
+                            <th>戶號</th>
+                            <th>收件時間</th>
+                            <th>物品說明</th>
+                            <th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="parcels" t-as="p">
+                            <tr>
+                                <td>
+                                    <a t-attf-href="/my/parcels/#{p.id}">
+                                        <t t-out="p.name"/>
+                                    </a>
+                                </td>
+                                <td><t t-out="p.barcode or '-'"/></td>
+                                <td><t t-out="p.type_id.name or '-'"/></td>
+                                <td><t t-out="p.unit_id.name"/></td>
+                                <td><t t-out="p.received_date" t-options="{'widget': 'datetime'}"/></td>
+                                <td>
+                                    <t t-if="p.description">
+                                        <t t-out="p.description[:30]"/>
+                                        <t t-if="len(p.description) > 30">...</t>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                <td>
+                                    <span t-if="p.state == 'draft'"
+                                          class="badge rounded-pill text-bg-secondary">待通知</span>
+                                    <span t-if="p.state == 'notified'"
+                                          class="badge rounded-pill text-bg-info">已通知</span>
+                                    <span t-if="p.state == 'picked_up'"
+                                          class="badge rounded-pill text-bg-success">已取件</span>
+                                    <span t-if="p.state == 'returned'"
+                                          class="badge rounded-pill text-bg-warning">已退回</span>
+                                    <span t-if="p.state == 'overdue'"
+                                          class="badge rounded-pill text-bg-danger">逾期</span>
+                                    <span t-if="p.state == 'scrapped'"
+                                          class="badge rounded-pill text-bg-dark">已報廢</span>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <t t-else="">
+                <div class="alert alert-info" role="alert">
+                    目前沒有包裹記錄。
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ====================================================
+         Parcel Detail
+         ==================================================== -->
+    <template id="portal_parcel_detail" name="Portal: Parcel Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="title" t-valuef="包裹 #{parcel.name}"/>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <t t-out="parcel.name"/>
+                    </h5>
+                    <span t-if="parcel.state == 'draft'"
+                          class="badge rounded-pill text-bg-secondary">待通知</span>
+                    <span t-if="parcel.state == 'notified'"
+                          class="badge rounded-pill text-bg-info">已通知</span>
+                    <span t-if="parcel.state == 'picked_up'"
+                          class="badge rounded-pill text-bg-success">已取件</span>
+                    <span t-if="parcel.state == 'returned'"
+                          class="badge rounded-pill text-bg-warning">已退回</span>
+                    <span t-if="parcel.state == 'overdue'"
+                          class="badge rounded-pill text-bg-danger">逾期</span>
+                    <span t-if="parcel.state == 'scrapped'"
+                          class="badge rounded-pill text-bg-dark">已報廢</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th class="w-50">快遞條碼</th>
+                                    <td><t t-out="parcel.barcode or '-'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>類型</th>
+                                    <td><t t-out="parcel.type_id.name or '-'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>戶號</th>
+                                    <td><t t-out="parcel.unit_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>物品說明</th>
+                                    <td><t t-out="parcel.description or '-'"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th class="w-50">收件時間</th>
+                                    <td><t t-out="parcel.received_date" t-options="{'widget': 'datetime'}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>通知時間</th>
+                                    <td>
+                                        <t t-if="parcel.notified_date">
+                                            <t t-out="parcel.notified_date" t-options="{'widget': 'datetime'}"/>
+                                        </t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>取件時間</th>
+                                    <td>
+                                        <t t-if="parcel.pickup_date">
+                                            <t t-out="parcel.pickup_date" t-options="{'widget': 'datetime'}"/>
+                                        </t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>確認人員</th>
+                                    <td><t t-out="parcel.picked_by.name or '-'"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a href="/my/parcels" class="btn btn-secondary btn-sm">
+                    <i class="fa fa-arrow-left"/> 返回列表
+                </a>
+            </div>
+        </t>
+    </template>
+
+    <!-- ====================================================
+         Storage List
+         ==================================================== -->
+    <template id="portal_storage" name="Portal: Storage List">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="title">物品寄放</t>
+
+            <t t-if="items">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>編號</th>
+                            <th>類型</th>
+                            <th>戶號</th>
+                            <th>取件人</th>
+                            <th>寄放位置</th>
+                            <th>寄放時間</th>
+                            <th>物品說明</th>
+                            <th>狀態</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <t t-foreach="items" t-as="s">
+                            <tr>
+                                <td>
+                                    <a t-attf-href="/my/storage/#{s.id}">
+                                        <t t-out="s.name"/>
+                                    </a>
+                                </td>
+                                <td><t t-out="s.type_id.name or '-'"/></td>
+                                <td><t t-out="s.unit_id.name"/></td>
+                                <td><t t-out="s.recipient_name or '-'"/></td>
+                                <td><t t-out="s.storage_location or '-'"/></td>
+                                <td><t t-out="s.deposit_date" t-options="{'widget': 'datetime'}"/></td>
+                                <td>
+                                    <t t-if="s.item_description">
+                                        <t t-out="s.item_description[:30]"/>
+                                        <t t-if="len(s.item_description) > 30">...</t>
+                                    </t>
+                                    <t t-else="">-</t>
+                                </td>
+                                <td>
+                                    <span t-if="s.state == 'pending'"
+                                          class="badge rounded-pill text-bg-secondary">待接收</span>
+                                    <span t-if="s.state == 'storing'"
+                                          class="badge rounded-pill text-bg-info">保管中</span>
+                                    <span t-if="s.state == 'ready'"
+                                          class="badge rounded-pill text-bg-warning">待取件</span>
+                                    <span t-if="s.state == 'done'"
+                                          class="badge rounded-pill text-bg-success">已完成</span>
+                                    <span t-if="s.state == 'scrapped'"
+                                          class="badge rounded-pill text-bg-dark">已報廢</span>
+                                </td>
+                            </tr>
+                        </t>
+                    </tbody>
+                </table>
+            </t>
+            <t t-else="">
+                <div class="alert alert-info" role="alert">
+                    目前沒有寄放物品記錄。
+                </div>
+            </t>
+        </t>
+    </template>
+
+    <!-- ====================================================
+         Storage Detail
+         ==================================================== -->
+    <template id="portal_storage_detail" name="Portal: Storage Detail">
+        <t t-call="portal.portal_layout">
+            <t t-set="breadcrumbs_searchbar" t-value="True"/>
+            <t t-set="title" t-valuef="寄放 #{item.name}"/>
+
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <h5 class="mb-0">
+                        <t t-out="item.name"/>
+                    </h5>
+                    <span t-if="item.state == 'pending'"
+                          class="badge rounded-pill text-bg-secondary">待接收</span>
+                    <span t-if="item.state == 'storing'"
+                          class="badge rounded-pill text-bg-info">保管中</span>
+                    <span t-if="item.state == 'ready'"
+                          class="badge rounded-pill text-bg-warning">待取件</span>
+                    <span t-if="item.state == 'done'"
+                          class="badge rounded-pill text-bg-success">已完成</span>
+                    <span t-if="item.state == 'scrapped'"
+                          class="badge rounded-pill text-bg-dark">已報廢</span>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th class="w-50">類型</th>
+                                    <td><t t-out="item.type_id.name or '-'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>戶號</th>
+                                    <td><t t-out="item.unit_id.name"/></td>
+                                </tr>
+                                <tr>
+                                    <th>取件人</th>
+                                    <td><t t-out="item.recipient_name or '-'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>寄放位置/格號</th>
+                                    <td><t t-out="item.storage_location or '-'"/></td>
+                                </tr>
+                                <tr>
+                                    <th>物品說明</th>
+                                    <td><t t-out="item.item_description or '-'"/></td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th class="w-50">寄放時間</th>
+                                    <td><t t-out="item.deposit_date" t-options="{'widget': 'datetime'}"/></td>
+                                </tr>
+                                <tr>
+                                    <th>預計取件日</th>
+                                    <td>
+                                        <t t-if="item.expected_pickup">
+                                            <t t-out="item.expected_pickup" t-options="{'widget': 'date'}"/>
+                                        </t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>實際取件時間</th>
+                                    <td>
+                                        <t t-if="item.actual_pickup">
+                                            <t t-out="item.actual_pickup" t-options="{'widget': 'datetime'}"/>
+                                        </t>
+                                        <t t-else="">-</t>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-3">
+                <a href="/my/storage" class="btn btn-secondary btn-sm">
+                    <i class="fa fa-arrow-left"/> 返回列表
+                </a>
+            </div>
+        </t>
+    </template>
+
+</odoo>
