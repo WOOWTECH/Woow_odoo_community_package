@@ -175,6 +175,13 @@
                 </div>
             </div>
 
+            <!-- Chatter for portal communication -->
+            <div class="mt-3" id="parcel_communication">
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="parcel"/>
+                </t>
+            </div>
+
             <div class="mt-3">
                 <a href="/my/parcels" class="btn btn-secondary btn-sm">
                     <i class="fa fa-arrow-left"/> 返回列表
@@ -328,6 +335,13 @@
                         </div>
                     </div>
                 </div>
+            </div>
+
+            <!-- Chatter for portal communication -->
+            <div class="mt-3" id="storage_communication">
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="item"/>
+                </t>
             </div>
 
             <div class="mt-3">
