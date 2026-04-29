@@ -84,18 +84,47 @@
                           t-esc="announcement.category_id.name"/>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3">
-                        <small class="text-muted">
-                            發布時間：<span t-field="announcement.publish_date"/>
-                            <span class="mx-1">|</span>
-                            發布者：<span t-esc="announcement.author_id.name"/>
-                            <span class="mx-1">|</span>
-                            管理室：<span t-esc="announcement.office_id.name"/>
-                        </small>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th class="w-50">公告分類</th>
+                                    <td t-esc="announcement.category_id.name"/>
+                                </tr>
+                                <tr>
+                                    <th>發布管理室</th>
+                                    <td t-esc="announcement.office_id.name"/>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6">
+                            <table class="table table-sm">
+                                <tr>
+                                    <th class="w-50">發布時間</th>
+                                    <td><span t-field="announcement.publish_date"/></td>
+                                </tr>
+                                <tr>
+                                    <th>發布者</th>
+                                    <td t-esc="announcement.author_id.name"/>
+                                </tr>
+                            </table>
+                        </div>
                     </div>
-                    <div t-field="announcement.content"/>
+                    <hr/>
+                    <div>
+                        <strong class="text-muted">公告內容：</strong>
+                        <div class="mt-2" t-field="announcement.content"/>
+                    </div>
                 </div>
             </div>
+
+            <!-- Chatter for portal communication -->
+            <div class="mt-3" id="announcement_communication">
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="announcement"/>
+                </t>
+            </div>
+
             <div class="mt-3">
                 <a href="/my/announcements" class="btn btn-secondary">
                     <i class="fa fa-arrow-left"/> 返回公告列表
