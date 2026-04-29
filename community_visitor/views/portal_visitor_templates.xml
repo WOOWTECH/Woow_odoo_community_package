@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Portal My Home: add Visitor & Appointment cards -->
+    <!-- Portal My Home: visitor cards moved to community_base landing page -->
     <template id="portal_my_home_visitor" name="Portal My Home - Visitor"
               inherit_id="portal.portal_my_home" priority="35">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <div class="o_portal_category row g-2 mt-3" id="portal_visitor_category">
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon">/community_visitor/static/src/img/visitor.svg</t>
-                    <t t-set="title">我的訪客</t>
-                    <t t-set="url" t-value="'/my/visitors'"/>
-                    <t t-set="text">查看與管理待確認的訪客</t>
-                    <t t-set="placeholder_count" t-value="'pending_visit_count'"/>
-                </t>
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon">/community_visitor/static/src/img/appointment.svg</t>
-                    <t t-set="title">我的預約</t>
-                    <t t-set="url" t-value="'/my/appointments'"/>
-                    <t t-set="text">管理訪客預約通行單</t>
-                    <t t-set="placeholder_count" t-value="'appointment_count'"/>
-                </t>
-            </div>
+            <!-- Cards consolidated into /my/community landing page -->
         </xpath>
     </template>
 
@@ -260,7 +245,6 @@
                                 <th>戶號</th>
                                 <th>類型</th>
                                 <th>有效期</th>
-                                <th>次數</th>
                                 <th>狀態</th>
                             </tr>
                         </thead>
@@ -270,18 +254,12 @@
                                     <a t-attf-href="/my/appointments/#{apt.id}"
                                        t-esc="apt.name"/>
                                 </td>
-                                <td t-esc="apt.visitor_name"/>
+                                <td t-esc="apt.visitor_id.name"/>
                                 <td t-esc="apt.unit_id.name"/>
                                 <td t-esc="dict(apt._fields['appointment_type'].selection).get(apt.appointment_type, '')"/>
                                 <td>
                                     <span t-field="apt.valid_from"/> ~
                                     <span t-field="apt.valid_until"/>
-                                </td>
-                                <td>
-                                    <t t-if="apt.max_entries == 0">無限</t>
-                                    <t t-else="">
-                                        <t t-esc="apt.used_entries"/>/<t t-esc="apt.max_entries"/>
-                                    </t>
                                 </td>
                                 <td>
                                     <span t-if="apt.state == 'active'"
@@ -322,15 +300,19 @@
                             <table class="table table-borderless">
                                 <tr>
                                     <td class="text-muted">訪客姓名</td>
-                                    <td t-esc="appointment.visitor_name"/>
+                                    <td t-esc="appointment.visitor_id.name"/>
                                 </tr>
-                                <tr>
+                                <tr t-if="appointment.visitor_id.phone">
                                     <td class="text-muted">訪客電話</td>
-                                    <td t-esc="appointment.visitor_phone"/>
+                                    <td t-esc="appointment.visitor_id.phone"/>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">戶號</td>
                                     <td t-esc="appointment.unit_id.name"/>
+                                </tr>
+                                <tr t-if="appointment.purpose_id">
+                                    <td class="text-muted">來訪目的</td>
+                                    <td t-esc="appointment.purpose_id.name"/>
                                 </tr>
                                 <tr>
                                     <td class="text-muted">有效期間</td>
@@ -346,16 +328,6 @@
                                               t-esc="appointment.access_token"/>
                                     </td>
                                 </tr>
-                                <tr>
-                                    <td class="text-muted">剩餘次數</td>
-                                    <td>
-                                        <t t-if="appointment.max_entries == 0">無限</t>
-                                        <t t-else="">
-                                            <t t-esc="appointment.max_entries - appointment.used_entries"/>
-                                            / <t t-esc="appointment.max_entries"/>
-                                        </t>
-                                    </td>
-                                </tr>
                             </table>
                         </div>
                         <div class="col-md-6 text-center"
@@ -365,6 +337,10 @@
                                  alt="QR Code"
                                  style="max-width: 200px;"/>
                         </div>
+                    </div>
+                    <div t-if="appointment.description" class="mt-3">
+                        <h6 class="text-muted">來訪敘述</h6>
+                        <p t-esc="appointment.description"/>
                     </div>
                 </div>
                 <div class="card-footer"
@@ -379,6 +355,13 @@
                         </button>
                     </form>
                 </div>
+            </div>
+
+            <!-- Chatter for portal communication -->
+            <div class="mt-3" id="appointment_communication">
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="appointment"/>
+                </t>
             </div>
         </t>
     </template>
@@ -484,6 +467,13 @@
                     </div>
                 </div>
             </div>
+            <!-- Chatter for portal communication -->
+            <div class="mt-3" id="visit_communication">
+                <t t-call="portal.message_thread">
+                    <t t-set="object" t-value="visit"/>
+                </t>
+            </div>
+
             <div class="mt-3">
                 <a href="/my/visitors" class="btn btn-secondary">
                     <i class="fa fa-arrow-left"/> 返回列表
@@ -518,10 +508,10 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">預約類型</label>
                                 <select name="appointment_type"
-                                        class="form-select">
+                                        class="form-select"
+                                        id="appointment_type">
                                     <option value="one_time">一次性</option>
                                     <option value="recurring">週期性</option>
-                                    <option value="permanent">永久</option>
                                 </select>
                             </div>
                         </div>
@@ -554,17 +544,98 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label class="form-label">最大入場次數</label>
-                                <input type="number" name="max_entries"
-                                       class="form-control" value="1"
-                                       min="0"/>
-                                <small class="text-muted">0 表示無限次</small>
+                                <label class="form-label">來訪目的</label>
+                                <select name="purpose_id" class="form-select">
+                                    <option value="">請選擇...</option>
+                                    <t t-foreach="purposes" t-as="purpose">
+                                        <option t-att-value="purpose.id"
+                                                t-esc="purpose.name"/>
+                                    </t>
+                                </select>
+                            </div>
+                        </div>
+                        <!-- Recurring settings -->
+                        <div id="recurring_section" style="display:none;">
+                            <hr/>
+                            <h6>週期設定</h6>
+                            <div class="mb-3">
+                                <label class="form-label">授權星期</label>
+                                <div class="d-flex gap-3">
+                                    <div class="form-check">
+                                        <input type="checkbox" name="mon"
+                                               class="form-check-input"
+                                               id="day_mon" value="1"/>
+                                        <label class="form-check-label"
+                                               for="day_mon">一</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="tue"
+                                               class="form-check-input"
+                                               id="day_tue" value="1"/>
+                                        <label class="form-check-label"
+                                               for="day_tue">二</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="wed"
+                                               class="form-check-input"
+                                               id="day_wed" value="1"/>
+                                        <label class="form-check-label"
+                                               for="day_wed">三</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="thu"
+                                               class="form-check-input"
+                                               id="day_thu" value="1"/>
+                                        <label class="form-check-label"
+                                               for="day_thu">四</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="fri"
+                                               class="form-check-input"
+                                               id="day_fri" value="1"/>
+                                        <label class="form-check-label"
+                                               for="day_fri">五</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="sat"
+                                               class="form-check-input"
+                                               id="day_sat" value="1"/>
+                                        <label class="form-check-label"
+                                               for="day_sat">六</label>
+                                    </div>
+                                    <div class="form-check">
+                                        <input type="checkbox" name="sun"
+                                               class="form-check-input"
+                                               id="day_sun" value="1"/>
+                                        <label class="form-check-label"
+                                               for="day_sun">日</label>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">每日起始時間</label>
+                                    <input type="time" name="recurring_from"
+                                           class="form-control"/>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label class="form-label">每日截止時間</label>
+                                    <input type="time" name="recurring_until"
+                                           class="form-control"/>
+                                </div>
                             </div>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">授權目的</label>
-                            <textarea name="purpose" class="form-control"
-                                      rows="2"></textarea>
+                            <label class="form-label">來訪敘述</label>
+                            <textarea name="description" class="form-control"
+                                      rows="2"
+                                      placeholder="來訪敘述..."></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">內部備註</label>
+                            <textarea name="note" class="form-control"
+                                      rows="2"
+                                      placeholder="內部備註..."></textarea>
                         </div>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-plus"/> 建立預約
@@ -574,6 +645,12 @@
                     </form>
                 </div>
             </div>
+            <script>
+                document.getElementById('appointment_type').addEventListener('change', function() {
+                    document.getElementById('recurring_section').style.display =
+                        this.value === 'recurring' ? 'block' : 'none';
+                });
+            </script>
         </t>
     </template>
 

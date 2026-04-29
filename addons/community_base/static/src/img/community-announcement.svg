@@ -1,0 +1,28 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="32" cy="56" rx="20" ry="3.5" fill="#C1DBF6"/>
+  <!-- Bulletin board -->
+  <rect x="12" y="14" width="40" height="36" rx="3" fill="#FBDBD0" stroke="#374874" stroke-width="1.5"/>
+  <!-- Board inner area -->
+  <rect x="16" y="18" width="32" height="28" rx="1.5" fill="white" stroke="#374874" stroke-width="1"/>
+  <!-- Pin 1 -->
+  <circle cx="24" cy="18" r="2" fill="#374874"/>
+  <!-- Pin 2 -->
+  <circle cx="40" cy="18" r="2" fill="#374874"/>
+  <!-- Note card 1 -->
+  <rect x="19" y="22" width="12" height="10" rx="1" fill="#C1DBF6" stroke="#374874" stroke-width="0.8"/>
+  <!-- Note card 2 -->
+  <rect x="33" y="22" width="12" height="10" rx="1" fill="#FBDBD0" stroke="#374874" stroke-width="0.8"/>
+  <!-- Note card 3 -->
+  <rect x="19" y="34" width="12" height="9" rx="1" fill="#FBDBD0" stroke="#374874" stroke-width="0.8"/>
+  <!-- Note card 4 -->
+  <rect x="33" y="34" width="12" height="9" rx="1" fill="#C1DBF6" stroke="#374874" stroke-width="0.8"/>
+  <!-- Text lines on cards -->
+  <line x1="21" y1="26" x2="29" y2="26" stroke="#374874" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="21" y1="29" x2="27" y2="29" stroke="#374874" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="35" y1="26" x2="43" y2="26" stroke="#374874" stroke-width="0.8" stroke-linecap="round"/>
+  <line x1="35" y1="29" x2="40" y2="29" stroke="#374874" stroke-width="0.8" stroke-linecap="round"/>
+  <!-- Board legs -->
+  <rect x="20" y="50" width="2" height="5" fill="#374874" rx="0.5"/>
+  <rect x="42" y="50" width="2" height="5" fill="#374874" rx="0.5"/>
+</svg>

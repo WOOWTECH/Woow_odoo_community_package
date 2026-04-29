@@ -1,0 +1,13 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="32" cy="56" rx="20" ry="3.5" fill="#C1DBF6"/>
+  <!-- Person 1 (front, larger) -->
+  <circle cx="28" cy="20" r="7" fill="#FBDBD0" stroke="#374874" stroke-width="1.5"/>
+  <path d="M14 52C14 42 20 36 28 36C36 36 42 42 42 52" fill="#C1DBF6" stroke="#374874" stroke-width="1.5" stroke-linecap="round"/>
+  <!-- Person 2 (behind, smaller) -->
+  <circle cx="42" cy="18" r="5.5" fill="#FBDBD0" stroke="#374874" stroke-width="1.2"/>
+  <path d="M32 48C32 40.5 36.5 35 42 35C47.5 35 52 40.5 52 48" fill="#C1DBF6" stroke="#374874" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Badge on person 1 -->
+  <rect x="24" y="40" width="8" height="5" rx="1" fill="white" stroke="#374874" stroke-width="0.8"/>
+  <line x1="26" y1="42.5" x2="30" y2="42.5" stroke="#374874" stroke-width="0.6"/>
+</svg>

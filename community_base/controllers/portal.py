@@ -28,6 +28,22 @@ class CommunityPortal(CustomerPortal):
 
         return values
 
+    # --- Community Landing Page ---
+
+    @http.route(
+        '/my/community',
+        type='http',
+        auth='user',
+        website=True,
+    )
+    def portal_community_home(self, **kwargs):
+        return request.render(
+            'community_base.portal_my_community',
+            {
+                'page_name': 'community',
+            },
+        )
+
     # --- Announcements ---
 
     @http.route(

@@ -1,26 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Portal My Home: add Visitor & Appointment cards -->
+    <!-- Portal My Home: visitor cards moved to community_base landing page -->
     <template id="portal_my_home_visitor" name="Portal My Home - Visitor"
               inherit_id="portal.portal_my_home" priority="35">
         <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <div class="o_portal_category row g-2 mt-3" id="portal_visitor_category">
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon">/community_visitor/static/src/img/visitor.svg</t>
-                    <t t-set="title">我的訪客</t>
-                    <t t-set="url" t-value="'/my/visitors'"/>
-                    <t t-set="text">查看與管理待確認的訪客</t>
-                    <t t-set="placeholder_count" t-value="'pending_visit_count'"/>
-                </t>
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon">/community_visitor/static/src/img/appointment.svg</t>
-                    <t t-set="title">我的預約</t>
-                    <t t-set="url" t-value="'/my/appointments'"/>
-                    <t t-set="text">管理訪客預約通行單</t>
-                    <t t-set="placeholder_count" t-value="'appointment_count'"/>
-                </t>
-            </div>
+            <!-- Cards consolidated into /my/community landing page -->
         </xpath>
     </template>
 

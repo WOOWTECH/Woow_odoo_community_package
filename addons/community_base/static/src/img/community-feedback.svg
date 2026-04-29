@@ -1,0 +1,19 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Shadow -->
+  <ellipse cx="32" cy="56" rx="20" ry="3.5" fill="#C1DBF6"/>
+  <!-- Main chat bubble -->
+  <path d="M10 16C10 13.8 11.8 12 14 12H42C44.2 12 46 13.8 46 16V34C46 36.2 44.2 38 42 38H22L14 46V38H14C11.8 38 10 36.2 10 34V16Z" fill="#C1DBF6" stroke="#374874" stroke-width="1.5"/>
+  <!-- Text lines in main bubble -->
+  <line x1="16" y1="20" x2="40" y2="20" stroke="#374874" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="16" y1="25" x2="36" y2="25" stroke="#374874" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="16" y1="30" x2="32" y2="30" stroke="#374874" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Reply bubble -->
+  <path d="M36 30C36 28.3 37.3 27 39 27H52C53.7 27 55 28.3 55 30V42C55 43.7 53.7 45 52 45H46L42 50V45H39C37.3 45 36 43.7 36 42V30Z" fill="#FBDBD0" stroke="#374874" stroke-width="1.5"/>
+  <!-- Text lines in reply bubble -->
+  <line x1="40" y1="33" x2="51" y2="33" stroke="#374874" stroke-width="1" stroke-linecap="round"/>
+  <line x1="40" y1="37" x2="48" y2="37" stroke="#374874" stroke-width="1" stroke-linecap="round"/>
+  <!-- Dots in reply -->
+  <circle cx="42" cy="41" r="1" fill="#374874"/>
+  <circle cx="46" cy="41" r="1" fill="#374874"/>
+  <circle cx="50" cy="41" r="1" fill="#374874"/>
+</svg>
