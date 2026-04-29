@@ -18,8 +18,7 @@
                         <button class="oe_stat_button" type="object"
                                 name="action_view_visits"
                                 icon="fa-list">
-                            <field name="used_entries" widget="statinfo"
-                                   string="入場次數"/>
+                            <span class="o_stat_text">入場記錄</span>
                         </button>
                     </div>
                     <div class="oe_title">
@@ -29,15 +28,15 @@
                     </div>
                     <group>
                         <group string="訪客資訊">
-                            <field name="visitor_name"/>
-                            <field name="visitor_phone"/>
-                            <field name="purpose"/>
+                            <field name="visitor_id"
+                                   options="{'quick_create': true}"/>
+                            <field name="purpose_id"/>
                         </group>
                         <group string="授權資訊">
-                            <field name="resident_id"/>
                             <field name="unit_id"/>
+                            <field name="resident_id"
+                                   domain="[('id', 'in', unit_id.resident_ids)]"/>
                             <field name="appointment_type"/>
-                            <field name="max_entries"/>
                         </group>
                     </group>
                     <group>
@@ -54,12 +53,31 @@
                     </group>
                     <group string="週期設定"
                            invisible="appointment_type != 'recurring'">
-                        <field name="recurring_days"
-                               placeholder="0,1,2,3,4 (0=週一, 6=週日)"/>
-                        <field name="recurring_from" widget="float_time"/>
-                        <field name="recurring_until" widget="float_time"/>
+                        <group string="授權星期">
+                            <div class="d-flex gap-4">
+                                <field name="mon"/>
+                                <field name="tue"/>
+                                <field name="wed"/>
+                                <field name="thu"/>
+                                <field name="fri"/>
+                                <field name="sat"/>
+                                <field name="sun"/>
+                            </div>
+                        </group>
+                        <group string="時間範圍">
+                            <field name="recurring_from" widget="float_time"/>
+                            <field name="recurring_until" widget="float_time"/>
+                        </group>
                     </group>
                     <notebook>
+                        <page string="來訪敘述" name="description">
+                            <field name="description"
+                                   placeholder="來訪敘述..."/>
+                        </page>
+                        <page string="內部備註" name="note">
+                            <field name="note"
+                                   placeholder="內部備註..."/>
+                        </page>
                         <page string="入場記錄" name="visits">
                             <field name="visit_ids">
                                 <list>
@@ -86,13 +104,12 @@
                   decoration-success="state == 'active'"
                   decoration-muted="state in ('expired', 'cancelled')">
                 <field name="name"/>
-                <field name="visitor_name"/>
+                <field name="visitor_id"/>
                 <field name="unit_id"/>
+                <field name="resident_id"/>
                 <field name="appointment_type"/>
                 <field name="valid_from"/>
                 <field name="valid_until"/>
-                <field name="used_entries"/>
-                <field name="max_entries"/>
                 <field name="access_token"/>
                 <field name="state"/>
             </list>
@@ -105,7 +122,8 @@
         <field name="arch" type="xml">
             <search string="搜尋預約通行單">
                 <field name="name"/>
-                <field name="visitor_name"/>
+                <field name="visitor_id"/>
+                <field name="resident_id"/>
                 <field name="access_token"/>
                 <field name="unit_id"/>
                 <filter string="有效" name="active_filter"
@@ -117,6 +135,8 @@
                             context="{'group_by': 'appointment_type'}"/>
                     <filter string="戶號" name="group_unit"
                             context="{'group_by': 'unit_id'}"/>
+                    <filter string="訪客" name="group_visitor"
+                            context="{'group_by': 'visitor_id'}"/>
                 </group>
             </search>
         </field>

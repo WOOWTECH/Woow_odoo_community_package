@@ -9,7 +9,7 @@ class CommunityVisitor(models.Model):
     _inherit = ['mail.thread']
 
     name = fields.Char(string='姓名', required=True, tracking=True)
-    phone = fields.Char(string='電話', required=True, tracking=True)
+    phone = fields.Char(string='電話', tracking=True)
     id_last4 = fields.Char(string='證件末4碼', size=4)
     company = fields.Char(string='公司/單位')
     photo = fields.Binary(string='照片', attachment=True)

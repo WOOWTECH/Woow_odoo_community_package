@@ -252,11 +252,13 @@ class VisitorPortal(CustomerPortal):
     def portal_appointment_new(self, **kwargs):
         partner = request.env.user.partner_id
         units = partner.unit_ids
+        purposes = request.env['community.visit.purpose'].sudo().search([])
 
         return request.render(
             'community_visitor.portal_appointment_new',
             {
                 'units': units,
+                'purposes': purposes,
                 'page_name': 'appointments',
             },
         )
@@ -277,27 +279,56 @@ class VisitorPortal(CustomerPortal):
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/appointments')
 
-        vals = {
+        # Find or create visitor
+        visitor_name = (kwargs.get('visitor_name') or '').strip()
+        visitor_phone = (kwargs.get('visitor_phone') or '').strip()
+
+        visitor = False
+        if visitor_phone:
+            visitor = request.env['community.visitor'].sudo().search([
+                ('phone', '=', visitor_phone),
+            ], limit=1)
+        if not visitor and visitor_name:
+            vals = {'name': visitor_name}
+            if visitor_phone:
+                vals['phone'] = visitor_phone
+            visitor = request.env['community.visitor'].sudo().create(vals)
+
+        if not visitor:
+            return request.redirect('/my/appointments/new')
+
+        purpose_id = int(kwargs.get('purpose_id', 0)) or False
+
+        appointment_vals = {
             'resident_id': partner.id,
             'unit_id': unit_id,
-            'visitor_name': kwargs.get('visitor_name', ''),
-            'visitor_phone': kwargs.get('visitor_phone', ''),
+            'visitor_id': visitor.id,
             'valid_from': kwargs.get('valid_from'),
             'valid_until': kwargs.get('valid_until'),
-            'max_entries': int(kwargs.get('max_entries', 1)),
             'appointment_type': kwargs.get('appointment_type', 'one_time'),
-            'purpose': kwargs.get('purpose', ''),
+            'purpose_id': purpose_id,
+            'description': kwargs.get('description', ''),
+            'note': kwargs.get('note', ''),
         }
 
-        if vals['appointment_type'] == 'recurring':
-            days = kwargs.getlist('recurring_days') if hasattr(
-                kwargs, 'getlist'
-            ) else []
-            vals['recurring_days'] = ','.join(days)
-            vals['recurring_from'] = float(kwargs.get('recurring_from', 0))
-            vals['recurring_until'] = float(kwargs.get('recurring_until', 0))
+        if appointment_vals['appointment_type'] == 'recurring':
+            appointment_vals['mon'] = bool(kwargs.get('mon'))
+            appointment_vals['tue'] = bool(kwargs.get('tue'))
+            appointment_vals['wed'] = bool(kwargs.get('wed'))
+            appointment_vals['thu'] = bool(kwargs.get('thu'))
+            appointment_vals['fri'] = bool(kwargs.get('fri'))
+            appointment_vals['sat'] = bool(kwargs.get('sat'))
+            appointment_vals['sun'] = bool(kwargs.get('sun'))
+            appointment_vals['recurring_from'] = float(
+                kwargs.get('recurring_from', 0)
+            )
+            appointment_vals['recurring_until'] = float(
+                kwargs.get('recurring_until', 0)
+            )
 
-        appointment = request.env['community.appointment'].sudo().create(vals)
+        appointment = request.env[
+            'community.appointment'
+        ].sudo().create(appointment_vals)
 
         return request.redirect(f'/my/appointments/{appointment.id}')
 

@@ -22,7 +22,6 @@ class ValidateAppointmentWizard(models.TransientModel):
     )
     visitor_name = fields.Char(string='訪客姓名', readonly=True)
     unit_name = fields.Char(string='訪問戶號', readonly=True)
-    remaining = fields.Char(string='剩餘次數', readonly=True)
 
     def action_validate(self):
         """驗證預約通行碼"""
@@ -45,7 +44,6 @@ class ValidateAppointmentWizard(models.TransientModel):
                 'visit_id': result.get('visit_id'),
                 'visitor_name': result.get('visitor_name'),
                 'unit_name': result.get('unit_name'),
-                'remaining': result.get('remaining'),
             })
         else:
             self.write({
@@ -65,7 +63,6 @@ class ValidateAppointmentWizard(models.TransientModel):
             'visit_id': False,
             'visitor_name': False,
             'unit_name': False,
-            'remaining': False,
         })
         return self._reopen()
 

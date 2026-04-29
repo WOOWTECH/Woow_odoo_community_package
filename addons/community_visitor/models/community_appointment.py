@@ -28,20 +28,14 @@ class CommunityAppointment(models.Model):
         string='戶號',
         required=True,
     )
-    visitor_name = fields.Char(string='訪客姓名', required=True)
-    visitor_phone = fields.Char(string='訪客電話', required=True)
+    visitor_id = fields.Many2one(
+        'community.visitor',
+        string='訪客',
+        required=True,
+        ondelete='restrict',
+    )
     valid_from = fields.Datetime(string='有效起始', required=True)
     valid_until = fields.Datetime(string='有效截止', required=True)
-    max_entries = fields.Integer(
-        string='最大入場次數',
-        default=1,
-        help='0 表示無限次',
-    )
-    used_entries = fields.Integer(
-        string='已使用次數',
-        compute='_compute_used_entries',
-        store=True,
-    )
     access_token = fields.Char(
         string='驗證碼',
         readonly=True,
@@ -56,16 +50,19 @@ class CommunityAppointment(models.Model):
         [
             ('one_time', '一次性'),
             ('recurring', '週期性'),
-            ('permanent', '永久'),
         ],
         string='類型',
         required=True,
         default='one_time',
     )
-    recurring_days = fields.Char(
-        string='授權星期',
-        help='以逗號分隔的星期數字（0=週一, 6=週日），例如 0,1,2,3,4',
-    )
+    # Recurring day booleans
+    mon = fields.Boolean(string='一')
+    tue = fields.Boolean(string='二')
+    wed = fields.Boolean(string='三')
+    thu = fields.Boolean(string='四')
+    fri = fields.Boolean(string='五')
+    sat = fields.Boolean(string='六')
+    sun = fields.Boolean(string='日')
     recurring_from = fields.Float(string='每日起始時間')
     recurring_until = fields.Float(string='每日截止時間')
     state = fields.Selection(
@@ -83,7 +80,12 @@ class CommunityAppointment(models.Model):
         'appointment_id',
         string='入場記錄',
     )
-    purpose = fields.Text(string='授權目的')
+    purpose_id = fields.Many2one(
+        'community.visit.purpose',
+        string='來訪目的',
+    )
+    description = fields.Text(string='來訪敘述')
+    note = fields.Text(string='內部備註')
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -96,12 +98,11 @@ class CommunityAppointment(models.Model):
                 vals['access_token'] = secrets.token_hex(3).upper()
         return super().create(vals_list)
 
-    @api.depends('visit_ids', 'visit_ids.state')
-    def _compute_used_entries(self):
-        for rec in self:
-            rec.used_entries = len(
-                rec.visit_ids.filtered(lambda v: v.state == 'checked_in')
-            )
+    @api.onchange('unit_id')
+    def _onchange_unit_id(self):
+        if self.unit_id and self.resident_id:
+            if self.resident_id not in self.unit_id.resident_ids:
+                self.resident_id = False
 
     @api.depends('access_token')
     def _compute_qr_code(self):
@@ -134,10 +135,11 @@ class CommunityAppointment(models.Model):
     def _check_recurring_times(self):
         for rec in self:
             if rec.appointment_type == 'recurring':
-                if rec.recurring_from >= rec.recurring_until:
-                    raise ValidationError(
-                        _('每日截止時間必須晚於每日起始時間。')
-                    )
+                if rec.recurring_from and rec.recurring_until:
+                    if rec.recurring_from >= rec.recurring_until:
+                        raise ValidationError(
+                            _('每日截止時間必須晚於每日起始時間。')
+                        )
 
     def action_validate_appointment(self, code):
         """Validate an appointment access code and create a visit if valid."""
@@ -163,22 +165,7 @@ class CommunityAppointment(models.Model):
                     'error': '目前不在授權的時間範圍內。',
                 }
 
-        # Check remaining entries
-        if (
-            appointment.max_entries > 0
-            and appointment.used_entries >= appointment.max_entries
-        ):
-            return {'success': False, 'error': '入場次數已用完。'}
-
-        # Find or create visitor
-        visitor = self.env['community.visitor'].search([
-            ('phone', '=', appointment.visitor_phone),
-        ], limit=1)
-        if not visitor:
-            visitor = self.env['community.visitor'].create({
-                'name': appointment.visitor_name,
-                'phone': appointment.visitor_phone,
-            })
+        visitor = appointment.visitor_id
 
         # Check blacklist
         if visitor.blacklisted:
@@ -186,11 +173,6 @@ class CommunityAppointment(models.Model):
                 'success': False,
                 'error': f'訪客 {visitor.name} 已被列入黑名單。',
             }
-
-        # Find default purpose
-        default_purpose = self.env['community.visit.purpose'].search(
-            [], limit=1,
-        )
 
         # Create visit record
         visit = self.env['community.visit'].create({
@@ -202,8 +184,9 @@ class CommunityAppointment(models.Model):
             ),
             'unit_id': appointment.unit_id.id,
             'resident_id': appointment.resident_id.id,
-            'purpose_id': default_purpose.id if default_purpose else False,
-            'description': appointment.purpose,
+            'purpose_id': appointment.purpose_id.id if appointment.purpose_id else False,
+            'description': appointment.description,
+            'note': appointment.note,
             'appointment_id': appointment.id,
             'guard_in_id': self.env.user.id,
             'checkin_time': now,
@@ -219,25 +202,31 @@ class CommunityAppointment(models.Model):
         if template:
             template.send_mail(visit.id, force_send=False)
 
-        remaining = (
-            '無限'
-            if appointment.max_entries == 0
-            else str(appointment.max_entries - appointment.used_entries)
-        )
-
         return {
             'success': True,
             'visitor_name': visitor.name,
             'resident_name': appointment.resident_id.name,
             'unit_name': appointment.unit_id.name,
-            'remaining': remaining,
             'visit_id': visit.id,
         }
 
     def _check_recurring_schedule(self, now):
         """Check if current time falls within recurring schedule."""
         self.ensure_one()
-        if not self.recurring_days:
+
+        # Map Python weekday (0=Monday..6=Sunday) to Boolean fields
+        day_map = {
+            0: self.mon,
+            1: self.tue,
+            2: self.wed,
+            3: self.thu,
+            4: self.fri,
+            5: self.sat,
+            6: self.sun,
+        }
+
+        # If no day is checked, allow any day
+        if not any(day_map.values()):
             return True
 
         # Convert to local timezone for day-of-week and time checks
@@ -249,11 +238,7 @@ class CommunityAppointment(models.Model):
             now = pytz.utc.localize(now)
         local_now = now.astimezone(local_tz)
 
-        # Python weekday: 0=Monday, 6=Sunday
-        allowed_days = [
-            int(d.strip()) for d in self.recurring_days.split(',') if d.strip()
-        ]
-        if local_now.weekday() not in allowed_days:
+        if not day_map.get(local_now.weekday(), False):
             return False
 
         if self.recurring_from and self.recurring_until:
@@ -272,7 +257,6 @@ class CommunityAppointment(models.Model):
         expired = self.search([
             ('state', '=', 'active'),
             ('valid_until', '<', fields.Datetime.now()),
-            ('appointment_type', '!=', 'permanent'),
         ])
         expired.write({'state': 'expired'})
 

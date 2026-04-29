@@ -26,7 +26,6 @@
                     <group>
                         <field name="visitor_name"/>
                         <field name="unit_name"/>
-                        <field name="remaining"/>
                     </group>
                 </group>
 
