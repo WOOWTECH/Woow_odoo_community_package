@@ -1,0 +1,135 @@
+- generic [ref=e1]:
+  - banner [ref=e2]:
+    - navigation [ref=e3]:
+      - button "" [ref=e5] [cursor=pointer]:
+        - generic [ref=e6]: 
+      - menuitem "社區管理" [ref=e7] [cursor=pointer]
+      - menu [ref=e8]:
+        - button "公布欄" [ref=e9] [cursor=pointer]:
+          - generic [ref=e10]: 公布欄
+        - button "訪客管理" [ref=e11] [cursor=pointer]:
+          - generic [ref=e12]: 訪客管理
+        - button "意見反映" [ref=e13] [cursor=pointer]:
+          - generic [ref=e14]: 意見反映
+        - button "包裹管理" [ref=e15] [cursor=pointer]:
+          - generic [ref=e16]: 包裹管理
+        - button "基礎設定" [ref=e17] [cursor=pointer]:
+          - generic [ref=e18]: 基礎設定
+      - menu [ref=e19]:
+        - button "Messages 3" [ref=e33] [cursor=pointer]:
+          - img "Messages" [ref=e22]: 
+          - generic [ref=e23]: "3"
+        - button "Activities" [ref=e24] [cursor=pointer]:
+          - img "Activities" [ref=e25]: 
+        - button "My Company" [disabled] [ref=e27]:
+          - text: 
+          - generic [ref=e28]: My Company
+        - button "User" [ref=e30] [cursor=pointer]:
+          - img "User" [ref=e31]
+          - text: 
+  - generic [ref=e34]:
+    - generic [ref=e36]:
+      - generic [ref=e37]:
+        - button "New" [ref=e40] [cursor=pointer]
+        - generic [ref=e41]:
+          - generic [ref=e43]: 預約通行單
+          - button "" [ref=e47] [cursor=pointer]:
+            - generic [ref=e48]: 
+      - search [ref=e50]:
+        - search [ref=e51]:
+          - button "Search..." [ref=e52] [cursor=pointer]:
+            - img [ref=e53]: 
+          - generic [ref=e54]:
+            - listitem "search" [ref=e55]:
+              - button " " [ref=e57] [cursor=pointer]:
+                - generic [ref=e58]: 
+                - generic [ref=e60]: 
+              - generic [ref=e61]:
+                - generic "有效" [ref=e62]
+                - button "Remove" [ref=e63] [cursor=pointer]: 
+            - listitem "search" [ref=e249]:
+              - button "訪客 " [ref=e251] [cursor=pointer]:
+                - text: 訪客
+                - generic [ref=e253]: 
+              - generic [ref=e254]:
+                - generic "Portal" [ref=e255]
+                - button "Remove" [ref=e256] [cursor=pointer]: 
+            - searchbox "Search..." [active] [ref=e64]
+        - button "" [ref=e65] [cursor=pointer]
+      - search [ref=e67]:
+        - navigation "Pager" [ref=e68]:
+          - generic [ref=e69]:
+            - generic [ref=e70]: 1-1
+            - text: / 1
+          - generic [ref=e71]:
+            - button "Previous" [disabled]:
+              - generic: 
+            - button "Next" [disabled]:
+              - generic: 
+    - table [ref=e74]:
+      - rowgroup [ref=e75]:
+        - row "預約單編號  訪客  戶號  授權住戶  類型  有效起始  有效截止  驗證碼  狀態 " [ref=e76]:
+          - columnheader [ref=e77] [cursor=pointer]:
+            - checkbox [ref=e79]
+          - columnheader "預約單編號 " [ref=e80] [cursor=pointer]:
+            - generic [ref=e81]:
+              - generic [ref=e82]: 預約單編號
+              - generic [ref=e83]: 
+          - columnheader "訪客 " [ref=e85] [cursor=pointer]:
+            - generic [ref=e86]:
+              - generic [ref=e87]: 訪客
+              - generic [ref=e88]: 
+          - columnheader "戶號 " [ref=e90] [cursor=pointer]:
+            - generic [ref=e91]:
+              - generic [ref=e92]: 戶號
+              - generic [ref=e93]: 
+          - columnheader "授權住戶 " [ref=e95] [cursor=pointer]:
+            - generic [ref=e96]:
+              - generic [ref=e97]: 授權住戶
+              - generic [ref=e98]: 
+          - columnheader "類型 " [ref=e100] [cursor=pointer]:
+            - generic [ref=e101]:
+              - generic [ref=e102]: 類型
+              - generic [ref=e103]: 
+          - columnheader "有效起始 " [ref=e105] [cursor=pointer]:
+            - generic [ref=e106]:
+              - generic [ref=e107]: 有效起始
+              - generic [ref=e108]: 
+          - columnheader "有效截止 " [ref=e110] [cursor=pointer]:
+            - generic [ref=e111]:
+              - generic [ref=e112]: 有效截止
+              - generic [ref=e113]: 
+          - columnheader "驗證碼 " [ref=e115] [cursor=pointer]:
+            - generic [ref=e116]:
+              - generic [ref=e117]: 驗證碼
+              - generic [ref=e118]: 
+          - columnheader "狀態 " [ref=e120] [cursor=pointer]:
+            - generic [ref=e121]:
+              - generic [ref=e122]: 狀態
+              - generic [ref=e123]: 
+      - rowgroup [ref=e125]:
+        - row "APT/202604/0005 Portal測試訪客 A棟1F-101 王大明 一次性 05/01/2026 17:00:00 05/16/2026 02:00:00 BAFF39 有效" [ref=e257]:
+          - cell [ref=e258]:
+            - checkbox [ref=e260] [cursor=pointer]
+          - cell "APT/202604/0005" [ref=e261] [cursor=pointer]
+          - cell "Portal測試訪客" [ref=e262] [cursor=pointer]
+          - cell "A棟1F-101" [ref=e263] [cursor=pointer]
+          - cell "王大明" [ref=e264] [cursor=pointer]
+          - cell "一次性" [ref=e265] [cursor=pointer]
+          - cell "05/01/2026 17:00:00" [ref=e266] [cursor=pointer]
+          - cell "05/16/2026 02:00:00" [ref=e267] [cursor=pointer]
+          - cell "BAFF39" [ref=e268] [cursor=pointer]
+          - cell "有效" [ref=e269] [cursor=pointer]
+      - rowgroup [ref=e178]:
+        - row [ref=e179]:
+          - cell [ref=e180]
+          - cell [ref=e181]
+          - cell [ref=e182]
+          - cell [ref=e183]
+          - cell [ref=e184]
+          - cell [ref=e185]
+          - cell [ref=e186]
+          - cell [ref=e187]
+          - cell [ref=e188]
+          - cell [ref=e189]
+  - generic [ref=e271]: A棟1F-101

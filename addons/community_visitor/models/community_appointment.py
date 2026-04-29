@@ -28,6 +28,9 @@ class CommunityAppointment(models.Model):
         string='戶號',
         required=True,
     )
+    allowed_resident_ids = fields.Many2many(
+        related='unit_id.resident_ids',
+    )
     visitor_id = fields.Many2one(
         'community.visitor',
         string='訪客',

@@ -1,0 +1,91 @@
+{
+  "cookies": [
+    {
+      "name": "tz",
+      "value": "Asia/Taipei",
+      "domain": "localhost",
+      "path": "/",
+      "expires": -1,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "frontend_lang",
+      "value": "en_US",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1808982117.298369,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "session_id",
+      "value": "SKVbnlaZ7veODdgxaUfvkQHpkUKTuDuI2vdA4w_hMU5ErJGoUZkzp-ZKtnBVUN0ToKtv_PWb68P6zmOn2koN",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1778050949.291483,
+      "httpOnly": true,
+      "secure": false,
+      "sameSite": "Lax"
+    },
+    {
+      "name": "cids",
+      "value": "1",
+      "domain": "localhost",
+      "path": "/",
+      "expires": 1808982148.889007,
+      "httpOnly": false,
+      "secure": false,
+      "sameSite": "Lax"
+    }
+  ],
+  "origins": [
+    {
+      "origin": "http://localhost:9098",
+      "localStorage": [
+        {
+          "name": "current_tour",
+          "value": "discuss_channel_tour"
+        },
+        {
+          "name": "current_tour.config",
+          "value": "{\"delayToCheckUndeterminisms\":0,\"stepDelay\":0,\"keepWatchBrowser\":false,\"mode\":\"manual\",\"showPointerDuration\":0,\"debug\":false,\"redirect\":false,\"rainbowManMessage\":\"<span><b>Good job!</b> You went through all steps of this tour.</span>\"}"
+        },
+        {
+          "name": "web.lastConnectedUser",
+          "value": "[{\"login\":\"admin\",\"name\":\"Administrator\",\"partnerId\":3,\"partnerWriteDate\":\"2026-04-28 12:28:26\",\"userId\":2}]"
+        },
+        {
+          "name": "presence.focus",
+          "value": "true"
+        },
+        {
+          "name": "presence.lastPresence",
+          "value": "1777446146258"
+        },
+        {
+          "name": "multi_tab.http_localhost_9098.last_notification_id",
+          "value": "37"
+        },
+        {
+          "name": "current_tour.index",
+          "value": "1"
+        },
+        {
+          "name": "multi_tab.http_localhost_9098.lastPresenceByTab",
+          "value": "{}"
+        },
+        {
+          "name": "multi_tab.http_localhost_9098.heartbeat",
+          "value": "1777446168355"
+        },
+        {
+          "name": "multi_tab.http_localhost_9098.main",
+          "value": "true"
+        }
+      ]
+    }
+  ]
+}

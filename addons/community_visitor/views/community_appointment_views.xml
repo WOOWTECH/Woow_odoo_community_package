@@ -34,8 +34,9 @@
                         </group>
                         <group string="授權資訊">
                             <field name="unit_id"/>
+                            <field name="allowed_resident_ids" invisible="1"/>
                             <field name="resident_id"
-                                   domain="[('id', 'in', unit_id.resident_ids)]"/>
+                                   domain="[('id', 'in', allowed_resident_ids)]"/>
                             <field name="appointment_type"/>
                         </group>
                     </group>
