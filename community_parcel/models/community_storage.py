@@ -7,6 +7,7 @@ class CommunityStorage(models.Model):
     _description = '寄放物品'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'deposit_date desc, id desc'
+    _mail_post_access = 'read'
 
     name = fields.Char(
         string='寄放編號',

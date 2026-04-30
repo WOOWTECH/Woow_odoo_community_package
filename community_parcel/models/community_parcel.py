@@ -9,6 +9,7 @@ class CommunityParcel(models.Model):
     _description = '包裹'
     _inherit = ['mail.thread', 'mail.activity.mixin']
     _order = 'received_date desc, id desc'
+    _mail_post_access = 'read'
 
     name = fields.Char(
         string='流水編號',

@@ -10,6 +10,7 @@ class CommunityVisit(models.Model):
     _description = '訪問記錄'
     _order = 'create_date desc'
     _inherit = ['mail.thread', 'mail.activity.mixin']
+    _mail_post_access = 'read'
 
     name = fields.Char(
         string='訪問編號',

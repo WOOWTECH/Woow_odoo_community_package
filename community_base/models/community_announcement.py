@@ -7,6 +7,7 @@ class CommunityAnnouncement(models.Model):
     _description = '社區公告'
     _inherit = ['mail.thread']
     _order = 'publish_date desc, create_date desc'
+    _mail_post_access = 'read'
 
     name = fields.Char(string='標題', required=True, tracking=True)
     content = fields.Html(string='公告內容', sanitize_style=True)

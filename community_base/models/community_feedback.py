@@ -7,6 +7,7 @@ class CommunityFeedback(models.Model):
     _description = '意見反映'
     _inherit = ['mail.thread']
     _order = 'create_date desc'
+    _mail_post_access = 'read'
 
     name = fields.Char(
         string='編號',

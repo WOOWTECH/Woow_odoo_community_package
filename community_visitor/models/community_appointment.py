@@ -11,6 +11,7 @@ class CommunityAppointment(models.Model):
     _description = '預約通行單'
     _order = 'create_date desc'
     _inherit = ['mail.thread', 'portal.mixin']
+    _mail_post_access = 'read'
 
     name = fields.Char(
         string='預約單編號',
