@@ -5,6 +5,19 @@ from odoo.addons.portal.controllers.portal import CustomerPortal
 
 class VisitorPortal(CustomerPortal):
 
+    @staticmethod
+    def _parse_time_to_float(value):
+        """Convert 'HH:MM' time string or numeric value to float hours."""
+        if not value:
+            return 0.0
+        if isinstance(value, (int, float)):
+            return float(value)
+        value = str(value).strip()
+        if ':' in value:
+            parts = value.split(':')
+            return int(parts[0]) + int(parts[1]) / 60.0
+        return float(value)
+
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
@@ -294,8 +307,12 @@ class VisitorPortal(CustomerPortal):
                 kwargs, 'getlist'
             ) else []
             vals['recurring_days'] = ','.join(days)
-            vals['recurring_from'] = float(kwargs.get('recurring_from', 0))
-            vals['recurring_until'] = float(kwargs.get('recurring_until', 0))
+            vals['recurring_from'] = self._parse_time_to_float(
+                kwargs.get('recurring_from', 0)
+            )
+            vals['recurring_until'] = self._parse_time_to_float(
+                kwargs.get('recurring_until', 0)
+            )
 
         appointment = request.env['community.appointment'].sudo().create(vals)
 

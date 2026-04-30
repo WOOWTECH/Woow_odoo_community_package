@@ -6,7 +6,7 @@
             <field name="name">包裹到件通知</field>
             <field name="model_id" ref="community_parcel.model_community_parcel"/>
             <field name="email_from">{{ (object.office_id.responsible_id.email or user.email_formatted) }}</field>
-            <field name="email_to">{{ ','.join(object.unit_id.resident_ids.mapped('email') | reject('equalto', False)) }}</field>
+            <field name="email_to">{{ ','.join([e for e in object.unit_id.resident_ids.mapped('email') if e]) }}</field>
             <field name="subject">【社區通知】您有包裹到件 - {{ object.name }}</field>
             <field name="body_html"><![CDATA[
 <div style="margin:0;padding:0;font-family:Arial,sans-serif;">
@@ -45,7 +45,7 @@
             <field name="name">包裹逾期提醒</field>
             <field name="model_id" ref="community_parcel.model_community_parcel"/>
             <field name="email_from">{{ (object.office_id.responsible_id.email or user.email_formatted) }}</field>
-            <field name="email_to">{{ ','.join(object.unit_id.resident_ids.mapped('email') | reject('equalto', False)) }}</field>
+            <field name="email_to">{{ ','.join([e for e in object.unit_id.resident_ids.mapped('email') if e]) }}</field>
             <field name="subject">【社區提醒】您的包裹已逾期未取 - {{ object.name }}</field>
             <field name="body_html"><![CDATA[
 <div style="margin:0;padding:0;font-family:Arial,sans-serif;">
