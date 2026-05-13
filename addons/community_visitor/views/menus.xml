@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Visitor Management sub-menu -->
+    <menuitem id="menu_community_visitor_root"
+              name="訪客管理"
+              parent="community_base.menu_community_root"
+              sequence="10"/>
+
+    <!-- Visits -->
+    <menuitem id="menu_community_visit"
+              name="訪問記錄"
+              parent="menu_community_visitor_root"
+              action="action_community_visit"
+              sequence="10"/>
+
+    <!-- Visitors -->
+    <menuitem id="menu_community_visitor_list"
+              name="訪客名單"
+              parent="menu_community_visitor_root"
+              action="action_community_visitor"
+              sequence="20"/>
+
+    <!-- Appointments -->
+    <menuitem id="menu_community_appointment"
+              name="預約通行單"
+              parent="menu_community_visitor_root"
+              action="action_community_appointment"
+              sequence="30"/>
+
+    <!-- Validate Appointment Wizard -->
+    <menuitem id="menu_validate_appointment"
+              name="驗證碼查驗"
+              parent="menu_community_visitor_root"
+              action="action_validate_appointment_wizard"
+              sequence="35"/>
+
+    <!-- Settings -->
+    <menuitem id="menu_community_visitor_settings"
+              name="設定"
+              parent="menu_community_visitor_root"
+              sequence="90"/>
+
+    <menuitem id="menu_visit_purpose"
+              name="來訪目的"
+              parent="menu_community_visitor_settings"
+              action="action_visit_purpose"
+              sequence="10"/>
+
+    <menuitem id="menu_visitor_badge"
+              name="訪客證管理"
+              parent="menu_community_visitor_settings"
+              action="action_visitor_badge"
+              sequence="20"/>
+
+</odoo>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Parcel Management sub-menu (under shared community root) -->
+    <menuitem id="menu_community_parcel_root"
+              name="包裹管理"
+              parent="community_base.menu_community_root"
+              sequence="30"/>
+
+    <!-- ═══ 工作台 (Dashboard Kanban) ═══ -->
+    <menuitem id="menu_parcel_dashboard"
+              name="工作台"
+              parent="menu_community_parcel_root"
+              action="action_parcel_dashboard"
+              sequence="5"/>
+
+    <!-- ═══ 包裹管理 ═══ -->
+    <menuitem id="menu_parcel_main"
+              name="包裹列表"
+              parent="menu_community_parcel_root"
+              sequence="10"/>
+    <menuitem id="menu_community_parcel_list"
+              name="所有包裹"
+              parent="menu_parcel_main"
+              action="action_community_parcel"
+              sequence="10"/>
+
+    <!-- ═══ 寄放管理 ═══ -->
+    <menuitem id="menu_storage_main"
+              name="寄放管理"
+              parent="menu_community_parcel_root"
+              sequence="20"/>
+    <menuitem id="menu_community_storage_list"
+              name="所有寄放物品"
+              parent="menu_storage_main"
+              action="action_community_storage"
+              sequence="10"/>
+
+    <!-- ═══ 設定 ═══ -->
+    <menuitem id="menu_parcel_config"
+              name="設定"
+              parent="menu_community_parcel_root"
+              sequence="90"
+              groups="community_parcel_group_manager"/>
+    <menuitem id="menu_parcel_type"
+              name="包裹類型"
+              parent="menu_parcel_config"
+              action="action_parcel_type"
+              sequence="10"/>
+    <menuitem id="menu_storage_type"
+              name="寄放類型"
+              parent="menu_parcel_config"
+              action="action_storage_type"
+              sequence="20"/>
+
+</odoo>

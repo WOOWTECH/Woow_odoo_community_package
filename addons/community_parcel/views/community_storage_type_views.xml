@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_storage_type_form" model="ir.ui.view">
+        <field name="name">community.storage.type.form</field>
+        <field name="model">community.storage.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="name"/>
+                        <field name="color" widget="color_picker"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_storage_type_list" model="ir.ui.view">
+        <field name="name">community.storage.type.list</field>
+        <field name="model">community.storage.type</field>
+        <field name="arch" type="xml">
+            <list editable="bottom">
+                <field name="name"/>
+                <field name="color" widget="color_picker"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_storage_type" model="ir.actions.act_window">
+        <field name="name">寄放類型</field>
+        <field name="res_model">community.storage.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+</odoo>
