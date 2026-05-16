@@ -119,6 +119,19 @@ class CommunityVisit(models.Model):
         if 'badge_id' in vals:
             for rec in self:
                 old_badges[rec.id] = rec.badge_id
+            # B7: Block assigning an in-use badge to another visit
+            if vals['badge_id']:
+                new_badge = self.env['community.visitor.badge'].browse(
+                    vals['badge_id']
+                )
+                if new_badge.state == 'in_use':
+                    current = new_badge.current_visit_id
+                    # Allow re-writing the same badge to the same visit
+                    if not (len(self) == 1 and current.id == self.id):
+                        raise UserError(
+                            _('訪客證 %s 目前使用中，無法重複發放。')
+                            % new_badge.name
+                        )
         res = super().write(vals)
         if 'badge_id' in vals:
             for rec in self:
@@ -223,6 +236,12 @@ class CommunityVisit(models.Model):
         self.ensure_one()
         if self.state != 'confirmed':
             raise UserError(_('只有已確認的訪問記錄可以登記入場。'))
+        # B7: Check badge is not already in use by another visit
+        if (self.badge_id and self.badge_id.state == 'in_use'
+                and self.badge_id.current_visit_id != self):
+            raise UserError(
+                _('訪客證 %s 目前使用中，無法重複發放。') % self.badge_id.name
+            )
         self.write({
             'state': 'checked_in',
             'checkin_time': fields.Datetime.now(),

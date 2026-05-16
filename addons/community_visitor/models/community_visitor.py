@@ -47,12 +47,14 @@ class CommunityVisitor(models.Model):
     @api.depends('visit_ids', 'visit_ids.state')
     def _compute_visit_stats(self):
         for rec in self:
+            # B8: Count both checked_in and checked_out visits
             visits = rec.visit_ids.filtered(
-                lambda v: v.state == 'checked_in'
+                lambda v: v.state in ('checked_in', 'checked_out')
             )
             rec.visit_count = len(visits)
             if visits:
-                rec.last_visit = max(visits.mapped('checkin_time') or [False])
+                times = visits.mapped('checkin_time')
+                rec.last_visit = max([t for t in times if t] or [False])
             else:
                 rec.last_visit = False
 

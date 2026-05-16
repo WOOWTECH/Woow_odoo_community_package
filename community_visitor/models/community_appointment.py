@@ -142,19 +142,35 @@ class CommunityAppointment(models.Model):
 
     def action_validate_appointment(self, code):
         """Validate an appointment access code and create a visit if valid."""
+        # Search across all states first to give specific error messages
         appointment = self.search([
             ('access_token', '=', code.upper()),
-            ('state', '=', 'active'),
         ], limit=1)
 
         if not appointment:
             return {'success': False, 'error': '無效的驗證碼或預約已失效。'}
 
+        # B6: Check cancelled state
+        if appointment.state == 'cancelled':
+            return {'success': False, 'error': '此預約已被撤銷，無法核銷。'}
+
+        # B5: Check expired state
+        if appointment.state == 'expired':
+            return {'success': False, 'error': '此預約已過期，無法核銷。'}
+
+        if appointment.state != 'active':
+            return {'success': False, 'error': '此預約狀態無效，無法核銷。'}
+
         now = fields.Datetime.now()
 
+        # B5: Also check actual date range (state may not have been updated)
+        if now > appointment.valid_until:
+            appointment.write({'state': 'expired'})
+            return {'success': False, 'error': '此預約已過期，無法核銷。'}
+
         # Check date range
-        if now < appointment.valid_from or now > appointment.valid_until:
-            return {'success': False, 'error': '預約不在有效期間內。'}
+        if now < appointment.valid_from:
+            return {'success': False, 'error': '預約尚未生效。'}
 
         # Check recurring schedule
         if appointment.appointment_type == 'recurring':
