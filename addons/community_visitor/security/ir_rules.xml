@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Portal: visits only for own units -->
+    <record id="rule_visit_portal" model="ir.rule">
+        <field name="name">Visit: Portal 住戶僅看自己戶號</field>
+        <field name="model_id" ref="model_community_visit"/>
+        <field name="domain_force">[('unit_id.resident_ids', 'in', [user.partner_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Portal: appointments only for own units -->
+    <record id="rule_appointment_portal" model="ir.rule">
+        <field name="name">Appointment: Portal 住戶僅看自己戶號</field>
+        <field name="model_id" ref="model_community_appointment"/>
+        <field name="domain_force">[('unit_id.resident_ids', 'in', [user.partner_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
+    <!-- Guard / Manager: see all visits -->
+    <record id="rule_visit_guard" model="ir.rule">
+        <field name="name">Visit: 警衛/主任看全部</field>
+        <field name="model_id" ref="model_community_visit"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_guard'))]"/>
+    </record>
+
+    <!-- Guard / Manager: see all appointments -->
+    <record id="rule_appointment_guard" model="ir.rule">
+        <field name="name">Appointment: 警衛/主任看全部</field>
+        <field name="model_id" ref="model_community_appointment"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('group_guard'))]"/>
+    </record>
+
+</odoo>

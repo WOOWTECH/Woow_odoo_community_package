@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+        <!-- 模組分類 -->
+        <record id="module_category_community_parcel" model="ir.module.category">
+            <field name="name">社區包裹管理</field>
+            <field name="description">社區包裹收發與寄放物品管理</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <!-- 群組：管理室人員（完整讀寫建立，不可刪除） -->
+        <record id="community_parcel_group_office_staff" model="res.groups">
+            <field name="name">管理室人員</field>
+            <field name="category_id" ref="module_category_community_parcel"/>
+            <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+        </record>
+
+        <!-- 群組：社區主任（繼承管理室人員，含刪除 + 設定） -->
+        <record id="community_parcel_group_manager" model="res.groups">
+            <field name="name">社區主任</field>
+            <field name="category_id" ref="module_category_community_parcel"/>
+            <field name="implied_ids" eval="[(4, ref('community_parcel_group_office_staff'))]"/>
+        </record>
+
+        <!-- Record Rules：管理室人員可看所有記錄 -->
+        <record id="rule_parcel_office_staff" model="ir.rule">
+            <field name="name">Parcel: Office Staff See All</field>
+            <field name="model_id" ref="model_community_parcel"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('community_parcel_group_office_staff'))]"/>
+        </record>
+
+        <record id="rule_storage_office_staff" model="ir.rule">
+            <field name="name">Storage: Office Staff See All</field>
+            <field name="model_id" ref="model_community_storage"/>
+            <field name="domain_force">[(1, '=', 1)]</field>
+            <field name="groups" eval="[(4, ref('community_parcel_group_office_staff'))]"/>
+        </record>
+    </data>
+</odoo>
