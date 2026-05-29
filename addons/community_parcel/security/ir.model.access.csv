@@ -9,3 +9,7 @@ access_community_parcel_type_staff,community.parcel.type staff,model_community_p
 access_community_parcel_type_manager,community.parcel.type manager,model_community_parcel_type,community_parcel_group_manager,1,1,1,1
 access_community_storage_type_staff,community.storage.type staff,model_community_storage_type,community_parcel_group_office_staff,1,0,0,0
 access_community_storage_type_manager,community.storage.type manager,model_community_storage_type,community_parcel_group_manager,1,1,1,1
+access_community_parcel_portal,community.parcel portal,model_community_parcel,base.group_portal,1,0,0,0
+access_community_parcel_type_portal,community.parcel.type portal,model_community_parcel_type,base.group_portal,1,0,0,0
+access_community_storage_portal,community.storage portal,model_community_storage,base.group_portal,1,0,1,0
+access_community_storage_type_portal,community.storage.type portal,model_community_storage_type,base.group_portal,1,0,0,0

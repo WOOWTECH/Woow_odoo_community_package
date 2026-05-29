@@ -1,0 +1,287 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* community_parcel
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 18.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-05-29 00:00+0000\n"
+"PO-Revision-Date: 2026-05-29 00:00+0000\n"
+"Last-Translator: \n"
+"Language-Team: Chinese (Traditional) <>\n"
+"Language: zh_TW\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=1; plural=0;\n"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+msgid "Community Management"
+msgstr "社區管理"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+msgid "Parcels"
+msgstr "包裹收件"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+msgid "Storage"
+msgstr "物品寄放"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+msgid "New Storage Request"
+msgstr "新增寄放申請"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "No parcel records"
+msgstr "暫無包裹記錄"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "#"
+msgstr "編號"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Tracking No."
+msgstr "追蹤編號"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Type"
+msgstr "類型"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Unit"
+msgstr "戶號"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Received"
+msgstr "收件日期"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Status"
+msgstr "狀態"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Pending Notification"
+msgstr "待通知"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Notified"
+msgstr "已通知"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Picked Up"
+msgstr "已領取"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Returned"
+msgstr "已退回"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Overdue"
+msgstr "逾期"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_parcels
+msgid "Scrapped"
+msgstr "已銷毀"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Details"
+msgstr "詳情"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "History"
+msgstr "歷史訊息"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Actions"
+msgstr "操作"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Confirm Pickup"
+msgstr "確認領取"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Confirm pickup?"
+msgstr "確認領取？"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Tracking No.:"
+msgstr "追蹤編號："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Parcel Type:"
+msgstr "包裹類型："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Unit:"
+msgstr "戶號："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Office:"
+msgstr "管理室："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Received:"
+msgstr "收件時間："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Notified:"
+msgstr "通知時間："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Picked Up:"
+msgstr "領取時間："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Picked Up By:"
+msgstr "領取人："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "Description"
+msgstr "描述"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_storage
+msgid "No storage records"
+msgstr "暫無寄放記錄"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_storage
+msgid "Recipient"
+msgstr "收件人"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_storage
+msgid "Deposited"
+msgstr "寄放日期"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_storage
+msgid "Pending"
+msgstr "待處理"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_storage
+msgid "Storing"
+msgstr "寄放中"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_storage
+msgid "Ready for Pickup"
+msgstr "可領取"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_my_storage
+msgid "Completed"
+msgstr "已完成"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "Recipient:"
+msgstr "收件人："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "Storage Type:"
+msgstr "寄放類型："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "Storage Location:"
+msgstr "存放位置："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "Deposited:"
+msgstr "寄放時間："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "Expected Pickup:"
+msgstr "預計領取："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "Actual Pickup:"
+msgstr "實際領取："
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "Item Description"
+msgstr "物品說明"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Select unit"
+msgstr "請選擇戶號"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Storage Type"
+msgstr "寄放類型"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Select..."
+msgstr "請選擇..."
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Recipient"
+msgstr "收件人"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Enter recipient name"
+msgstr "請輸入收件人姓名"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Expected Pickup Date"
+msgstr "預計領取日期"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Describe the items to store..."
+msgstr "請描述要寄放的物品..."
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Submit Request"
+msgstr "提交申請"
+
+#. module: community_parcel
+#: model:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "Cancel"
+msgstr "取消"

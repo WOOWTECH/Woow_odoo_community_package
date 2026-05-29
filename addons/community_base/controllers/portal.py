@@ -1,6 +1,9 @@
-from odoo import http
+from collections import OrderedDict
+
+from odoo import http, _
 from odoo.http import request
-from odoo.addons.portal.controllers.portal import CustomerPortal
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
+from odoo.osv.expression import AND
 
 
 class CommunityPortal(CustomerPortal):
@@ -9,120 +12,242 @@ class CommunityPortal(CustomerPortal):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
 
-        if 'announcement_count' in counters:
+        if 'community_count' in counters:
+            # Aggregate pending count across all community sub-modules
+            count = 0
             office_ids = partner.unit_ids.office_id.ids
-            values['announcement_count'] = request.env[
-                'community.announcement'
-            ].search_count([
-                ('state', '=', 'published'),
-                ('office_id', 'in', office_ids),
-            ])
+            unit_ids = partner.unit_ids.ids
 
-        if 'feedback_count' in counters:
-            values['feedback_count'] = request.env[
-                'community.feedback'
-            ].search_count([
+            # Pending feedbacks
+            count += request.env['community.feedback'].search_count([
                 ('partner_id', '=', partner.id),
                 ('state', 'in', ['pending', 'in_progress']),
             ])
 
+            # Pending visits (if module installed)
+            if 'community.visit' in request.env:
+                count += request.env['community.visit'].sudo().search_count([
+                    ('unit_id', 'in', unit_ids),
+                    ('state', '=', 'pending_confirm'),
+                ])
+
+            # Notified parcels (if module installed)
+            if 'community.parcel' in request.env:
+                count += request.env['community.parcel'].sudo().search_count([
+                    ('unit_id', 'in', unit_ids),
+                    ('state', 'in', ['notified', 'overdue']),
+                ])
+
+            # Ready storage (if module installed)
+            if 'community.storage' in request.env:
+                count += request.env['community.storage'].sudo().search_count([
+                    ('unit_id', 'in', unit_ids),
+                    ('state', '=', 'ready'),
+                ])
+
+            values['community_count'] = count
+
         return values
 
-    # --- Community Landing Page ---
+    # ===================================================================
+    # Community Hub
+    # ===================================================================
 
-    @http.route(
-        '/my/community',
-        type='http',
-        auth='user',
-        website=True,
-    )
+    @http.route('/my/community', type='http', auth='user', website=True)
     def portal_community_home(self, **kwargs):
         return request.render(
             'community_base.portal_my_community',
-            {
-                'page_name': 'community',
-            },
+            {'page_name': 'community'},
         )
 
-    # --- Announcements ---
+    # ===================================================================
+    # Announcements
+    # ===================================================================
 
-    @http.route(
-        '/my/announcements',
-        type='http',
-        auth='user',
-        website=True,
-    )
-    def portal_announcements(self, category=None, **kwargs):
+    @http.route('/my/announcements', type='http', auth='user', website=True)
+    def portal_announcements(self, page=1, sortby=None, filterby=None,
+                             search=None, search_in='title', **kwargs):
         partner = request.env.user.partner_id
+        Announcement = request.env['community.announcement']
         office_ids = partner.unit_ids.office_id.ids
 
-        domain = [
+        base_domain = [
             ('state', '=', 'published'),
             ('office_id', 'in', office_ids),
         ]
 
-        current_category = False
-        if category:
-            category = int(category)
-            domain.append(('category_id', '=', category))
-            current_category = category
+        # Sort
+        searchbar_sortings = OrderedDict([
+            ('date_desc', {'label': _('Newest'), 'order': 'publish_date desc'}),
+            ('date_asc', {'label': _('Oldest'), 'order': 'publish_date asc'}),
+        ])
+        if not sortby:
+            sortby = 'date_desc'
+        order = searchbar_sortings[sortby]['order']
 
-        announcements = request.env['community.announcement'].search(
-            domain, order='publish_date desc'
-        )
+        # Filter (dynamic categories)
         categories = request.env['community.announcement.category'].search([])
+        searchbar_filters = OrderedDict([
+            ('all', {'label': _('All'), 'domain': []}),
+        ])
+        for cat in categories:
+            searchbar_filters[str(cat.id)] = {
+                'label': cat.name,
+                'domain': [('category_id', '=', cat.id)],
+            }
+        if not filterby or filterby not in searchbar_filters:
+            filterby = 'all'
+
+        # Search
+        searchbar_inputs = OrderedDict([
+            ('title', {'input': 'title', 'label': _('Title')}),
+            ('content', {'input': 'content', 'label': _('Content')}),
+        ])
+        search_domain = []
+        if search and search_in:
+            if search_in == 'title':
+                search_domain = [('title', 'ilike', search)]
+            elif search_in == 'content':
+                search_domain = [('content', 'ilike', search)]
+
+        domain = AND([
+            base_domain,
+            searchbar_filters[filterby]['domain'],
+            search_domain,
+        ])
+
+        # Count + pager
+        count = Announcement.search_count(domain)
+        pager = portal_pager(
+            url='/my/announcements',
+            url_args={'sortby': sortby, 'filterby': filterby,
+                      'search_in': search_in, 'search': search},
+            total=count,
+            page=page,
+            step=10,
+        )
+
+        announcements = Announcement.search(
+            domain, order=order, limit=10, offset=pager['offset']
+        )
 
         return request.render(
             'community_base.portal_announcements',
             {
                 'announcements': announcements,
-                'categories': categories,
-                'current_category': current_category,
                 'page_name': 'announcements',
+                'pager': pager,
+                'default_url': '/my/announcements',
+                'searchbar_sortings': searchbar_sortings,
+                'sortby': sortby,
+                'searchbar_filters': searchbar_filters,
+                'filterby': filterby,
+                'searchbar_inputs': searchbar_inputs,
+                'search_in': search_in,
+                'search': search,
             },
         )
 
-    @http.route(
-        '/my/announcements/<int:announcement_id>',
-        type='http',
-        auth='user',
-        website=True,
-    )
+    @http.route('/my/announcements/<int:announcement_id>', type='http',
+                auth='user', website=True)
     def portal_announcement_detail(self, announcement_id, **kwargs):
+        partner = request.env.user.partner_id
+        office_ids = partner.unit_ids.office_id.ids
+
         announcement = request.env['community.announcement'].browse(
             announcement_id
         )
-        if not announcement.exists() or announcement.state != 'published':
+        if (not announcement.exists()
+                or announcement.state != 'published'
+                or announcement.office_id.id not in office_ids):
             return request.redirect('/my/announcements')
 
-        # Security: check user belongs to announcement's office
-        partner = request.env.user.partner_id
-        office_ids = partner.unit_ids.office_id.ids
-        if announcement.office_id.id not in office_ids:
-            return request.redirect('/my/announcements')
+        # Prev/Next
+        base_domain = [
+            ('state', '=', 'published'),
+            ('office_id', 'in', office_ids),
+        ]
+        all_ids = request.env['community.announcement'].search(
+            base_domain, order='publish_date desc'
+        ).ids
+        idx = all_ids.index(announcement.id) if announcement.id in all_ids else -1
+        prev_record = '/my/announcements/%d' % all_ids[idx - 1] if idx > 0 else None
+        next_record = (
+            '/my/announcements/%d' % all_ids[idx + 1]
+            if 0 <= idx < len(all_ids) - 1 else None
+        )
 
         return request.render(
             'community_base.portal_announcement_detail',
             {
                 'announcement': announcement,
-                'page_name': 'announcements',
+                'page_name': 'announcement_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )
 
-    # --- Feedbacks ---
+    # ===================================================================
+    # Feedbacks
+    # ===================================================================
 
-    @http.route(
-        '/my/feedbacks',
-        type='http',
-        auth='user',
-        website=True,
-    )
-    def portal_feedbacks(self, **kwargs):
+    @http.route('/my/feedbacks', type='http', auth='user', website=True)
+    def portal_feedbacks(self, page=1, sortby=None, filterby=None,
+                         search=None, search_in='title', **kwargs):
         partner = request.env.user.partner_id
+        Feedback = request.env['community.feedback']
 
-        feedbacks = request.env['community.feedback'].search(
-            [('partner_id', '=', partner.id)],
-            order='create_date desc',
+        base_domain = [('partner_id', '=', partner.id)]
+
+        # Sort
+        searchbar_sortings = OrderedDict([
+            ('date_desc', {'label': _('Newest'), 'order': 'create_date desc'}),
+            ('date_asc', {'label': _('Oldest'), 'order': 'create_date asc'}),
+        ])
+        if not sortby:
+            sortby = 'date_desc'
+        order = searchbar_sortings[sortby]['order']
+
+        # Filter
+        searchbar_filters = OrderedDict([
+            ('all', {'label': _('All'), 'domain': []}),
+            ('pending', {'label': _('Pending'), 'domain': [('state', '=', 'pending')]}),
+            ('in_progress', {'label': _('In Progress'), 'domain': [('state', '=', 'in_progress')]}),
+            ('closed', {'label': _('Closed'), 'domain': [('state', '=', 'closed')]}),
+        ])
+        if not filterby or filterby not in searchbar_filters:
+            filterby = 'all'
+
+        # Search
+        searchbar_inputs = OrderedDict([
+            ('title', {'input': 'title', 'label': _('Title')}),
+            ('name', {'input': 'name', 'label': _('Reference')}),
+        ])
+        search_domain = []
+        if search and search_in:
+            if search_in == 'title':
+                search_domain = [('title', 'ilike', search)]
+            elif search_in == 'name':
+                search_domain = [('name', 'ilike', search)]
+
+        domain = AND([
+            base_domain,
+            searchbar_filters[filterby]['domain'],
+            search_domain,
+        ])
+
+        count = Feedback.search_count(domain)
+        pager = portal_pager(
+            url='/my/feedbacks',
+            url_args={'sortby': sortby, 'filterby': filterby,
+                      'search_in': search_in, 'search': search},
+            total=count,
+            page=page,
+            step=10,
+        )
+
+        feedbacks = Feedback.search(
+            domain, order=order, limit=10, offset=pager['offset']
         )
 
         return request.render(
@@ -130,15 +255,19 @@ class CommunityPortal(CustomerPortal):
             {
                 'feedbacks': feedbacks,
                 'page_name': 'feedbacks',
+                'pager': pager,
+                'default_url': '/my/feedbacks',
+                'searchbar_sortings': searchbar_sortings,
+                'sortby': sortby,
+                'searchbar_filters': searchbar_filters,
+                'filterby': filterby,
+                'searchbar_inputs': searchbar_inputs,
+                'search_in': search_in,
+                'search': search,
             },
         )
 
-    @http.route(
-        '/my/feedbacks/new',
-        type='http',
-        auth='user',
-        website=True,
-    )
+    @http.route('/my/feedbacks/new', type='http', auth='user', website=True)
     def portal_feedback_new(self, **kwargs):
         partner = request.env.user.partner_id
         units = partner.unit_ids
@@ -149,18 +278,12 @@ class CommunityPortal(CustomerPortal):
             {
                 'units': units,
                 'categories': categories,
-                'page_name': 'feedbacks',
+                'page_name': 'feedback_new',
             },
         )
 
-    @http.route(
-        '/my/feedbacks/create',
-        type='http',
-        auth='user',
-        website=True,
-        methods=['POST'],
-        csrf=True,
-    )
+    @http.route('/my/feedbacks/create', type='http', auth='user',
+                website=True, methods=['POST'], csrf=True)
     def portal_feedback_create(self, **kwargs):
         partner = request.env.user.partner_id
 
@@ -184,29 +307,34 @@ class CommunityPortal(CustomerPortal):
         }
 
         feedback = request.env['community.feedback'].sudo().create(vals)
+        return request.redirect('/my/feedbacks/%d' % feedback.id)
 
-        return request.redirect(f'/my/feedbacks/{feedback.id}')
-
-    @http.route(
-        '/my/feedbacks/<int:feedback_id>',
-        type='http',
-        auth='user',
-        website=True,
-    )
+    @http.route('/my/feedbacks/<int:feedback_id>', type='http',
+                auth='user', website=True)
     def portal_feedback_detail(self, feedback_id, **kwargs):
+        partner = request.env.user.partner_id
+
         feedback = request.env['community.feedback'].browse(feedback_id)
-        if not feedback.exists():
+        if not feedback.exists() or feedback.partner_id.id != partner.id:
             return request.redirect('/my/feedbacks')
 
-        # Security: only own feedbacks
-        partner = request.env.user.partner_id
-        if feedback.partner_id.id != partner.id:
-            return request.redirect('/my/feedbacks')
+        # Prev/Next
+        all_ids = request.env['community.feedback'].search(
+            [('partner_id', '=', partner.id)], order='create_date desc'
+        ).ids
+        idx = all_ids.index(feedback.id) if feedback.id in all_ids else -1
+        prev_record = '/my/feedbacks/%d' % all_ids[idx - 1] if idx > 0 else None
+        next_record = (
+            '/my/feedbacks/%d' % all_ids[idx + 1]
+            if 0 <= idx < len(all_ids) - 1 else None
+        )
 
         return request.render(
             'community_base.portal_feedback_detail',
             {
                 'feedback': feedback,
-                'page_name': 'feedbacks',
+                'page_name': 'feedback_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )

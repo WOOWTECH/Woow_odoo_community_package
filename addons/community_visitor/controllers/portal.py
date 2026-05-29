@@ -1,6 +1,9 @@
+from collections import OrderedDict
+
 from odoo import http, fields, _
 from odoo.http import request
-from odoo.addons.portal.controllers.portal import CustomerPortal
+from odoo.addons.portal.controllers.portal import CustomerPortal, pager as portal_pager
+from odoo.osv.expression import AND
 
 
 class VisitorPortal(CustomerPortal):
@@ -18,35 +21,13 @@ class VisitorPortal(CustomerPortal):
             return int(parts[0]) + int(parts[1]) / 60.0
         return float(value)
 
-    def _prepare_home_portal_values(self, counters):
-        values = super()._prepare_home_portal_values(counters)
-        partner = request.env.user.partner_id
-
-        if 'pending_visit_count' in counters:
-            values['pending_visit_count'] = request.env[
-                'community.visit'
-            ].search_count([
-                ('unit_id.resident_ids', 'in', [partner.id]),
-                ('state', '=', 'pending_confirm'),
-            ])
-
-        if 'appointment_count' in counters:
-            values['appointment_count'] = request.env[
-                'community.appointment'
-            ].search_count([
-                ('unit_id.resident_ids', 'in', [partner.id]),
-                ('state', '=', 'active'),
-            ])
-
-        return values
-
-    # --- Token-based confirmation (public, no login required) ---
+    # ===================================================================
+    # Token-based confirmation (public, no login required)
+    # ===================================================================
 
     @http.route(
         '/visitor/confirm/<string:token>',
-        type='http',
-        auth='public',
-        website=True,
+        type='http', auth='public', website=True,
     )
     def visitor_confirm_page(self, token, **kwargs):
         visit = request.env['community.visit'].sudo().search([
@@ -78,11 +59,8 @@ class VisitorPortal(CustomerPortal):
 
     @http.route(
         '/visitor/confirm/<string:token>/accept',
-        type='http',
-        auth='public',
-        website=True,
-        methods=['POST'],
-        csrf=True,
+        type='http', auth='public', website=True,
+        methods=['POST'], csrf=True,
     )
     def visitor_confirm_accept(self, token, **kwargs):
         visit = request.env['community.visit'].sudo().search([
@@ -115,11 +93,8 @@ class VisitorPortal(CustomerPortal):
 
     @http.route(
         '/visitor/confirm/<string:token>/reject',
-        type='http',
-        auth='public',
-        website=True,
-        methods=['POST'],
-        csrf=True,
+        type='http', auth='public', website=True,
+        methods=['POST'], csrf=True,
     )
     def visitor_confirm_reject(self, token, **kwargs):
         visit = request.env['community.visit'].sudo().search([
@@ -150,118 +125,282 @@ class VisitorPortal(CustomerPortal):
             {'visit': visit, 'result': 'rejected'},
         )
 
-    # --- Portal pages (login required) ---
+    # ===================================================================
+    # Visitors (login required)
+    # ===================================================================
 
-    @http.route(
-        '/my/visitors',
-        type='http',
-        auth='user',
-        website=True,
-    )
-    def portal_my_visitors(self, **kwargs):
+    @http.route('/my/visitors', type='http', auth='user', website=True)
+    def portal_my_visitors(self, page=1, sortby=None, filterby=None,
+                           search=None, search_in='visitor', **kwargs):
         partner = request.env.user.partner_id
         unit_ids = partner.unit_ids.ids
+        Visit = request.env['community.visit']
 
-        pending_visits = request.env['community.visit'].search([
-            ('unit_id', 'in', unit_ids),
-            ('state', '=', 'pending_confirm'),
-        ], order='create_date desc')
+        base_domain = [('unit_id', 'in', unit_ids)]
 
-        recent_visits = request.env['community.visit'].search([
-            ('unit_id', 'in', unit_ids),
-            ('state', 'in', [
-                'confirmed', 'checked_in', 'checked_out',
-                'rejected', 'timeout',
-            ]),
-        ], order='create_date desc', limit=50)
+        # Sort
+        searchbar_sortings = OrderedDict([
+            ('date_desc', {'label': _('Newest'), 'order': 'create_date desc'}),
+            ('date_asc', {'label': _('Oldest'), 'order': 'create_date asc'}),
+        ])
+        if not sortby:
+            sortby = 'date_desc'
+        order = searchbar_sortings[sortby]['order']
+
+        # Filter
+        searchbar_filters = OrderedDict([
+            ('all', {'label': _('All'), 'domain': []}),
+            ('pending', {'label': _('Pending Confirm'),
+                         'domain': [('state', '=', 'pending_confirm')]}),
+            ('confirmed', {'label': _('Confirmed'),
+                           'domain': [('state', '=', 'confirmed')]}),
+            ('checked_in', {'label': _('Checked In'),
+                            'domain': [('state', '=', 'checked_in')]}),
+        ])
+        if not filterby or filterby not in searchbar_filters:
+            filterby = 'all'
+
+        # Search
+        searchbar_inputs = OrderedDict([
+            ('visitor', {'input': 'visitor', 'label': _('Visitor Name')}),
+        ])
+        search_domain = []
+        if search and search_in:
+            if search_in == 'visitor':
+                search_domain = [('visitor_id.name', 'ilike', search)]
+
+        domain = AND([
+            base_domain,
+            searchbar_filters[filterby]['domain'],
+            search_domain,
+        ])
+
+        # Count + pager
+        count = Visit.search_count(domain)
+        pager = portal_pager(
+            url='/my/visitors',
+            url_args={'sortby': sortby, 'filterby': filterby,
+                      'search_in': search_in, 'search': search},
+            total=count,
+            page=page,
+            step=10,
+        )
+
+        visits = Visit.search(
+            domain, order=order, limit=10, offset=pager['offset']
+        )
 
         return request.render(
             'community_visitor.portal_my_visitors',
             {
-                'pending_visits': pending_visits,
-                'recent_visits': recent_visits,
+                'visits': visits,
                 'page_name': 'visitors',
+                'pager': pager,
+                'default_url': '/my/visitors',
+                'searchbar_sortings': searchbar_sortings,
+                'sortby': sortby,
+                'searchbar_filters': searchbar_filters,
+                'filterby': filterby,
+                'searchbar_inputs': searchbar_inputs,
+                'search_in': search_in,
+                'search': search,
             },
         )
 
-    @http.route(
-        '/my/visitors/<int:visit_id>',
-        type='http',
-        auth='user',
-        website=True,
-    )
+    @http.route('/my/visitors/<int:visit_id>', type='http',
+                auth='user', website=True)
     def portal_visit_detail(self, visit_id, **kwargs):
+        partner = request.env.user.partner_id
+        unit_ids = partner.unit_ids.ids
+
         visit = request.env['community.visit'].browse(visit_id)
-        if not visit.exists():
+        if not visit.exists() or visit.unit_id.id not in unit_ids:
             return request.redirect('/my/visitors')
 
-        # Security check: only residents of the unit can view
-        partner = request.env.user.partner_id
         if partner.id not in visit.unit_id.resident_ids.ids:
             return request.redirect('/my/visitors')
+
+        # Prev/Next
+        all_ids = request.env['community.visit'].search(
+            [('unit_id', 'in', unit_ids)], order='create_date desc'
+        ).ids
+        idx = all_ids.index(visit.id) if visit.id in all_ids else -1
+        prev_record = '/my/visitors/%d' % all_ids[idx - 1] if idx > 0 else None
+        next_record = (
+            '/my/visitors/%d' % all_ids[idx + 1]
+            if 0 <= idx < len(all_ids) - 1 else None
+        )
 
         return request.render(
             'community_visitor.portal_visit_detail',
             {
                 'visit': visit,
-                'page_name': 'visitors',
+                'page_name': 'visit_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )
 
-    @http.route(
-        '/my/appointments',
-        type='http',
-        auth='user',
-        website=True,
-    )
-    def portal_my_appointments(self, **kwargs):
+    @http.route('/my/visitors/<int:visit_id>/confirm', type='http',
+                auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_visit_confirm(self, visit_id, **kwargs):
+        partner = request.env.user.partner_id
+        visit = request.env['community.visit'].browse(visit_id)
+
+        if not visit.exists() or partner.id not in visit.unit_id.resident_ids.ids:
+            return request.redirect('/my/visitors')
+
+        if visit.state == 'pending_confirm' and visit.confirm_token:
+            try:
+                visit.sudo().action_confirm(
+                    visit.confirm_token, partner=partner
+                )
+            except Exception:
+                pass
+
+        return request.redirect('/my/visitors/%d' % visit_id)
+
+    @http.route('/my/visitors/<int:visit_id>/reject', type='http',
+                auth='user', website=True, methods=['POST'], csrf=True)
+    def portal_visit_reject(self, visit_id, **kwargs):
+        partner = request.env.user.partner_id
+        visit = request.env['community.visit'].browse(visit_id)
+
+        if not visit.exists() or partner.id not in visit.unit_id.resident_ids.ids:
+            return request.redirect('/my/visitors')
+
+        if visit.state == 'pending_confirm' and visit.confirm_token:
+            try:
+                visit.sudo().action_reject(
+                    visit.confirm_token, partner=partner
+                )
+            except Exception:
+                pass
+
+        return request.redirect('/my/visitors/%d' % visit_id)
+
+    # ===================================================================
+    # Appointments (login required)
+    # ===================================================================
+
+    @http.route('/my/appointments', type='http', auth='user', website=True)
+    def portal_my_appointments(self, page=1, sortby=None, filterby=None,
+                               search=None, search_in='name', **kwargs):
         partner = request.env.user.partner_id
         unit_ids = partner.unit_ids.ids
+        Appointment = request.env['community.appointment']
 
-        appointments = request.env['community.appointment'].search([
-            ('unit_id', 'in', unit_ids),
-        ], order='create_date desc')
+        base_domain = [('unit_id', 'in', unit_ids)]
+
+        # Sort
+        searchbar_sortings = OrderedDict([
+            ('date_desc', {'label': _('Newest'), 'order': 'create_date desc'}),
+            ('date_asc', {'label': _('Oldest'), 'order': 'create_date asc'}),
+        ])
+        if not sortby:
+            sortby = 'date_desc'
+        order = searchbar_sortings[sortby]['order']
+
+        # Filter
+        searchbar_filters = OrderedDict([
+            ('all', {'label': _('All'), 'domain': []}),
+            ('active', {'label': _('Active'),
+                        'domain': [('state', '=', 'active')]}),
+            ('expired', {'label': _('Expired'),
+                         'domain': [('state', '=', 'expired')]}),
+            ('cancelled', {'label': _('Cancelled'),
+                           'domain': [('state', '=', 'cancelled')]}),
+        ])
+        if not filterby or filterby not in searchbar_filters:
+            filterby = 'all'
+
+        # Search
+        searchbar_inputs = OrderedDict([
+            ('name', {'input': 'name', 'label': _('Reference Number')}),
+            ('visitor', {'input': 'visitor', 'label': _('Visitor Name')}),
+        ])
+        search_domain = []
+        if search and search_in:
+            if search_in == 'name':
+                search_domain = [('name', 'ilike', search)]
+            elif search_in == 'visitor':
+                search_domain = [('visitor_name', 'ilike', search)]
+
+        domain = AND([
+            base_domain,
+            searchbar_filters[filterby]['domain'],
+            search_domain,
+        ])
+
+        # Count + pager
+        count = Appointment.search_count(domain)
+        pager = portal_pager(
+            url='/my/appointments',
+            url_args={'sortby': sortby, 'filterby': filterby,
+                      'search_in': search_in, 'search': search},
+            total=count,
+            page=page,
+            step=10,
+        )
+
+        appointments = Appointment.search(
+            domain, order=order, limit=10, offset=pager['offset']
+        )
 
         return request.render(
             'community_visitor.portal_my_appointments',
             {
                 'appointments': appointments,
                 'page_name': 'appointments',
+                'pager': pager,
+                'default_url': '/my/appointments',
+                'searchbar_sortings': searchbar_sortings,
+                'sortby': sortby,
+                'searchbar_filters': searchbar_filters,
+                'filterby': filterby,
+                'searchbar_inputs': searchbar_inputs,
+                'search_in': search_in,
+                'search': search,
             },
         )
 
-    @http.route(
-        '/my/appointments/<int:appointment_id>',
-        type='http',
-        auth='user',
-        website=True,
-    )
+    @http.route('/my/appointments/<int:appointment_id>', type='http',
+                auth='user', website=True)
     def portal_appointment_detail(self, appointment_id, **kwargs):
+        partner = request.env.user.partner_id
+        unit_ids = partner.unit_ids.ids
+
         appointment = request.env['community.appointment'].browse(
             appointment_id
         )
-        if not appointment.exists():
+        if not appointment.exists() or appointment.unit_id.id not in unit_ids:
             return request.redirect('/my/appointments')
 
-        # Security check
-        partner = request.env.user.partner_id
         if partner.id not in appointment.unit_id.resident_ids.ids:
             return request.redirect('/my/appointments')
+
+        # Prev/Next
+        all_ids = request.env['community.appointment'].search(
+            [('unit_id', 'in', unit_ids)], order='create_date desc'
+        ).ids
+        idx = all_ids.index(appointment.id) if appointment.id in all_ids else -1
+        prev_record = '/my/appointments/%d' % all_ids[idx - 1] if idx > 0 else None
+        next_record = (
+            '/my/appointments/%d' % all_ids[idx + 1]
+            if 0 <= idx < len(all_ids) - 1 else None
+        )
 
         return request.render(
             'community_visitor.portal_appointment_detail',
             {
                 'appointment': appointment,
-                'page_name': 'appointments',
+                'page_name': 'appointment_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )
 
-    @http.route(
-        '/my/appointments/new',
-        type='http',
-        auth='user',
-        website=True,
-    )
+    @http.route('/my/appointments/new', type='http', auth='user', website=True)
     def portal_appointment_new(self, **kwargs):
         partner = request.env.user.partner_id
         units = partner.unit_ids
@@ -270,18 +409,12 @@ class VisitorPortal(CustomerPortal):
             'community_visitor.portal_appointment_new',
             {
                 'units': units,
-                'page_name': 'appointments',
+                'page_name': 'appointment_new',
             },
         )
 
-    @http.route(
-        '/my/appointments/create',
-        type='http',
-        auth='user',
-        website=True,
-        methods=['POST'],
-        csrf=True,
-    )
+    @http.route('/my/appointments/create', type='http', auth='user',
+                website=True, methods=['POST'], csrf=True)
     def portal_appointment_create(self, **kwargs):
         partner = request.env.user.partner_id
 
@@ -316,16 +449,10 @@ class VisitorPortal(CustomerPortal):
 
         appointment = request.env['community.appointment'].sudo().create(vals)
 
-        return request.redirect(f'/my/appointments/{appointment.id}')
+        return request.redirect('/my/appointments/%d' % appointment.id)
 
-    @http.route(
-        '/my/appointments/<int:appointment_id>/cancel',
-        type='http',
-        auth='user',
-        website=True,
-        methods=['POST'],
-        csrf=True,
-    )
+    @http.route('/my/appointments/<int:appointment_id>/cancel', type='http',
+                auth='user', website=True, methods=['POST'], csrf=True)
     def portal_appointment_cancel(self, appointment_id, **kwargs):
         appointment = request.env['community.appointment'].browse(
             appointment_id
@@ -333,7 +460,6 @@ class VisitorPortal(CustomerPortal):
         if not appointment.exists():
             return request.redirect('/my/appointments')
 
-        # Security check: only residents of the unit can cancel
         partner = request.env.user.partner_id
         if partner.id not in appointment.unit_id.resident_ids.ids:
             return request.redirect('/my/appointments')
@@ -343,4 +469,4 @@ class VisitorPortal(CustomerPortal):
         except Exception:
             pass
 
-        return request.redirect(f'/my/appointments/{appointment.id}')
+        return request.redirect('/my/appointments/%d' % appointment.id)

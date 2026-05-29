@@ -1,6 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" fill="none">
-  <circle cx="24" cy="14" r="8" fill="#714B67"/>
-  <path d="M8 40c0-8.837 7.163-16 16-16s16 7.163 16 16" fill="#714B67" opacity="0.6"/>
-  <circle cx="36" cy="12" r="6" fill="#21b799" stroke="#fff" stroke-width="2"/>
-  <path d="M33 12l2 2 4-4" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Person silhouette -->
+  <circle cx="32" cy="20" r="10" fill="#C1DBF6"/>
+  <path d="M14 52c0-9.941 8.059-18 18-18s18 8.059 18 18" fill="#FBDBD0"/>
+  <!-- Check badge -->
+  <circle cx="46" cy="18" r="8" fill="#374874"/>
+  <path d="M42 18l3 3 5-5" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>

@@ -1,0 +1,11 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Community / building icon -->
+  <rect x="12" y="24" width="40" height="30" rx="2" fill="#C1DBF6"/>
+  <rect x="14" y="22" width="36" height="4" rx="1" fill="#374874"/>
+  <path d="M32 10L50 22H14L32 10Z" fill="#374874"/>
+  <rect x="19" y="30" width="8" height="8" rx="1" fill="white"/>
+  <rect x="37" y="30" width="8" height="8" rx="1" fill="white"/>
+  <rect x="26" y="40" width="12" height="14" rx="1" fill="#FBDBD0"/>
+  <rect x="30" y="46" width="4" height="2" rx="0.5" fill="#374874"/>
+  <path d="M12 54H52" stroke="#374874" stroke-width="1.5"/>
+</svg>
