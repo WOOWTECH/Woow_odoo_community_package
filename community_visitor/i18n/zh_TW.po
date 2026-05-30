@@ -1,357 +1,1661 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* community_visitor
+#	* community_visitor
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-29 00:00+0000\n"
-"PO-Revision-Date: 2026-05-29 00:00+0000\n"
+"POT-Creation-Date: 2026-05-30 00:00+0000\n"
+"PO-Revision-Date: 2026-05-30 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: Chinese (Traditional) <>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
-msgid "Community Management"
-msgstr "社區管理"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
-msgid "My Visitors"
-msgstr "我的訪客"
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__max_entries
+msgid "0 表示無限次"
+msgstr "0 表示無限次"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
-msgid "My Appointments"
-msgstr "我的預約"
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "0,1,2,3,4 (0=週一, 6=週日)"
+msgstr "0,1,2,3,4 (0=週一, 6=週日)"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
-msgid "New Appointment"
-msgstr "新增預約"
+#: model:mail.template,body_html:community_visitor.mail_template_blacklist_alert
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <h3 style=\"color: #dc3545;\">黑名單訪客警示</h3>\n"
+"    <p>以下黑名單訪客嘗試進入社區：</p>\n"
+"    <table style=\"margin: 10px 0;\">\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">姓名：</td>\n"
+"            <td style=\"padding: 4px 8px;\"><strong>{{ object.name }}</strong></td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">電話：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.phone }}</td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">黑名單原因：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.blacklist_reason or '未說明' }}</td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">列入日期：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.blacklist_date }}</td></tr>\n"
+"    </table>\n"
+"    <p>請即時處理。</p>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <h3 style=\"color: #dc3545;\">黑名單訪客警示</h3>\n"
+"    <p>以下黑名單訪客嘗試進入社區：</p>\n"
+"    <table style=\"margin: 10px 0;\">\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">姓名：</td>\n"
+"            <td style=\"padding: 4px 8px;\"><strong>{{ object.name }}</strong></td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">電話：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.phone }}</td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">黑名單原因：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.blacklist_reason or '未說明' }}</td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">列入日期：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.blacklist_date }}</td></tr>\n"
+"    </table>\n"
+"    <p>請即時處理。</p>\n"
+"</div>\n"
+"        "
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_token_error
-msgid "Error"
-msgstr "錯誤"
+#: model:mail.template,body_html:community_visitor.mail_template_appointment_visitor_arrived
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>您好，</p>\n"
+"    <p>您的預約訪客 <strong>{{ object.visitor_id.name }}</strong> 已於\n"
+"       <strong>{{ object.checkin_time }}</strong> 入場。</p>\n"
+"    <table style=\"margin: 10px 0;\">\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">戶號：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.unit_id.name }}</td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">目的：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.purpose_id.name }}</td></tr>\n"
+"    </table>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <p>您好，</p>\n"
+"    <p>您的預約訪客 <strong>{{ object.visitor_id.name }}</strong> 已於\n"
+"       <strong>{{ object.checkin_time }}</strong> 入場。</p>\n"
+"    <table style=\"margin: 10px 0;\">\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">戶號：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.unit_id.name }}</td></tr>\n"
+"        <tr><td style=\"padding: 4px 8px; color: #666;\">目的：</td>\n"
+"            <td style=\"padding: 4px 8px;\">{{ object.purpose_id.name }}</td></tr>\n"
+"    </table>\n"
+"</div>\n"
+"        "
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
-msgid "Visitor Confirmation"
-msgstr "訪客確認"
+#: model:mail.template,body_html:community_visitor.mail_template_visit_confirm_request
+msgid ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <table style=\"width: 100%; background-color: #f5f5f5; padding: 20px;\">\n"
+"        <tr>\n"
+"            <td align=\"center\">\n"
+"                <table style=\"width: 600px; background-color: white; border-radius: 8px; padding: 30px;\">\n"
+"                    <tr>\n"
+"                        <td>\n"
+"                            <h2 style=\"color: #333;\">您有訪客等待確認</h2>\n"
+"                            <table style=\"width: 100%; margin: 20px 0;\">\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">訪客姓名：</td>\n"
+"                                    <td style=\"padding: 8px 0;\"><strong>{{ object.visitor_id.name }}</strong></td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">來訪目的：</td>\n"
+"                                    <td style=\"padding: 8px 0;\">{{ object.purpose_id.name }}</td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">訪問戶號：</td>\n"
+"                                    <td style=\"padding: 8px 0;\">{{ object.unit_id.name }}</td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">登記時間：</td>\n"
+"                                    <td style=\"padding: 8px 0;\">{{ object.create_date }}</td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                            <div style=\"text-align: center; margin: 30px 0;\">\n"
+"                                <a href=\"%7B%7B%20ctx.get('confirm_url',%20'#')%20%7D%7D\" style=\"background-color: #28a745; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
+"                                    確認放行\n"
+"                                </a>\n"
+"                                <a href=\"%7B%7B%20ctx.get('reject_url',%20'#')%20%7D%7D\" style=\"background-color: #dc3545; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
+"                                    拒絕\n"
+"                                </a>\n"
+"                            </div>\n"
+"                            <p style=\"color: #999; font-size: 12px; text-align: center;\">\n"
+"                                此連結將在 20 分鐘後失效。\n"
+"                            </p>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                </table>\n"
+"            </td>\n"
+"        </tr>\n"
+"    </table>\n"
+"</div>\n"
+"        "
+msgstr ""
+"<div style=\"margin: 0px; padding: 0px;\">\n"
+"    <table style=\"width: 100%; background-color: #f5f5f5; padding: 20px;\">\n"
+"        <tr>\n"
+"            <td align=\"center\">\n"
+"                <table style=\"width: 600px; background-color: white; border-radius: 8px; padding: 30px;\">\n"
+"                    <tr>\n"
+"                        <td>\n"
+"                            <h2 style=\"color: #333;\">您有訪客等待確認</h2>\n"
+"                            <table style=\"width: 100%; margin: 20px 0;\">\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">訪客姓名：</td>\n"
+"                                    <td style=\"padding: 8px 0;\"><strong>{{ object.visitor_id.name }}</strong></td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">來訪目的：</td>\n"
+"                                    <td style=\"padding: 8px 0;\">{{ object.purpose_id.name }}</td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">訪問戶號：</td>\n"
+"                                    <td style=\"padding: 8px 0;\">{{ object.unit_id.name }}</td>\n"
+"                                </tr>\n"
+"                                <tr>\n"
+"                                    <td style=\"padding: 8px 0; color: #666;\">登記時間：</td>\n"
+"                                    <td style=\"padding: 8px 0;\">{{ object.create_date }}</td>\n"
+"                                </tr>\n"
+"                            </table>\n"
+"                            <div style=\"text-align: center; margin: 30px 0;\">\n"
+"                                <a href=\"%7B%7B%20ctx.get('confirm_url',%20'#')%20%7D%7D\" style=\"background-color: #28a745; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
+"                                    確認放行\n"
+"                                </a>\n"
+"                                <a href=\"%7B%7B%20ctx.get('reject_url',%20'#')%20%7D%7D\" style=\"background-color: #dc3545; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
+"                                    拒絕\n"
+"                                </a>\n"
+"                            </div>\n"
+"                            <p style=\"color: #999; font-size: 12px; text-align: center;\">\n"
+"                                此連結將在 20 分鐘後失效。\n"
+"                            </p>\n"
+"                        </td>\n"
+"                    </tr>\n"
+"                </table>\n"
+"            </td>\n"
+"        </tr>\n"
+"    </table>\n"
+"</div>\n"
+"        "
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
-msgid "Visitor Name"
-msgstr "訪客姓名"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
+msgid "<i class=\"fa fa-check\"/> Approve"
+msgstr "<i class=\"fa fa-check\"/> 核准"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
-msgid "Visit Purpose"
-msgstr "來訪目的"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
+msgid "<i class=\"fa fa-check-circle\"/> Approved"
+msgstr "<i class=\"fa fa-check-circle\"/> 已核准"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
-msgid "Unit"
-msgstr "戶號"
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "<i class=\"fa fa-check-circle\"/> 驗證成功"
+msgstr "<i class=\"fa fa-check-circle\"/> 驗證成功"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
-msgid "Registered"
-msgstr "登記時間"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_token_error
+msgid "<i class=\"fa fa-exclamation-triangle\"/> Error"
+msgstr "<i class=\"fa fa-exclamation-triangle\"/> 錯誤"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
-msgid "Approve"
-msgstr "確認放行"
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_kanban
+msgid "<i class=\"fa fa-home\" title=\"戶號\"/>"
+msgstr "<i class=\"fa fa-home\" title=\"戶號\"/>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
-msgid "Reject"
-msgstr "拒絕"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "<i class=\"fa fa-plus\"/> Create Appointment"
+msgstr "<i class=\"fa fa-plus\"/> 建立預約"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
-msgid "Approved"
-msgstr "已確認放行"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "<i class=\"fa fa-plus\"/> New Appointment"
+msgstr "<i class=\"fa fa-plus\"/> 新增預約"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
-msgid "has been granted entry."
-msgstr "已獲得放行許可。"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+msgid "<i class=\"fa fa-times\"/> Cancel Appointment"
+msgstr "<i class=\"fa fa-times\"/> 取消預約"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
-msgid "Rejected"
-msgstr "已拒絕"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
+msgid "<i class=\"fa fa-times\"/> Reject"
+msgstr "<i class=\"fa fa-times\"/> 拒絕"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
-msgid "has been denied entry."
-msgstr "已被拒絕進入。"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
+msgid "<i class=\"fa fa-times-circle\"/> Rejected"
+msgstr "<i class=\"fa fa-times-circle\"/> 已拒絕"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "No visitor records"
-msgstr "暫無訪客記錄"
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "<i class=\"fa fa-times-circle\"/> 驗證失敗"
+msgstr "<i class=\"fa fa-times-circle\"/> 驗證失敗"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "#"
-msgstr "編號"
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_kanban
+msgid "<i class=\"fa fa-user\" title=\"訪客\"/>"
+msgstr "<i class=\"fa fa-user\" title=\"訪客\"/>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "Visitor"
-msgstr "訪客"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "<option value=\"\">Select...</option>"
+msgstr "<option value=\"\">選擇...</option>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "Status"
-msgstr "狀態"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid ""
+"<select name=\"appointment_type\" class=\"form-select\">\n"
+"                                    <option value=\"one_time\">One-time</option>\n"
+"                                    <option value=\"recurring\">Recurring</option>\n"
+"                                    <option value=\"permanent\">Permanent</option>\n"
+"                                </select>"
+msgstr ""
+"<select name=\"appointment_type\" class=\"form-select\">\n"
+"                                    <option value=\"one_time\">單次</option>\n"
+"                                    <option value=\"recurring\">定期</option>\n"
+"                                    <option value=\"permanent\">永久</option>\n"
+"                                </select>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "Pending"
-msgstr "待確認"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "<small class=\"text-muted\">0 means unlimited</small>"
+msgstr "<small class=\"text-muted\">0 表示無限制</small>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "Confirmed"
-msgstr "已確認"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<small class=\"text-muted\">Actions</small>"
+msgstr "<small class=\"text-muted\">操作</small>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "Checked In"
-msgstr "已入場"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<small class=\"text-muted\">Status</small>"
+msgstr "<small class=\"text-muted\">狀態</small>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "Checked Out"
-msgstr "已離場"
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_form
+msgid "<strong><i class=\"fa fa-ban\"/> 黑名單訪客</strong>"
+msgstr "<strong><i class=\"fa fa-ban\"/> 黑名單訪客</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_visitors
-msgid "Timeout"
-msgstr "逾時"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+msgid "<strong>Access Token:</strong>"
+msgstr "<strong>存取令牌：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Details"
-msgstr "詳情"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+msgid "<strong>Appointment Type:</strong>"
+msgstr "<strong>預約類型：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Draft"
-msgstr "草稿"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Check-in Time:</strong>"
+msgstr "<strong>報到時間：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Actions"
-msgstr "操作"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Check-out Time:</strong>"
+msgstr "<strong>離開時間：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Visitor Name:"
-msgstr "訪客姓名："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+msgid "<strong>Max Entries:</strong>"
+msgstr "<strong>最大入場次數：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Visitor Phone:"
-msgstr "訪客電話："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Registered:</strong>"
+msgstr "<strong>登記日期：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Visit Purpose:"
-msgstr "來訪目的："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Unit:</strong>"
+msgstr "<strong>戶號：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Unit:"
-msgstr "訪問戶號："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+msgid "<strong>Used Entries:</strong>"
+msgstr "<strong>已使用次數：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Registered:"
-msgstr "登記時間："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+msgid "<strong>Valid Period:</strong>"
+msgstr "<strong>有效期間：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Check-in Time:"
-msgstr "入場時間："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Visit Purpose:</strong>"
+msgstr "<strong>訪問目的：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Check-out Time:"
-msgstr "離場時間："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Visitor Badge:</strong>"
+msgstr "<strong>訪客識別證：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Visitor Badge:"
-msgstr "訪客證："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Visitor Name:</strong>"
+msgstr "<strong>訪客姓名：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_visit_detail
-msgid "Visit Description"
-msgstr "訪問敘述"
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "<strong>Visitor Phone:</strong>"
+msgstr "<strong>訪客電話：</strong>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "New Appointment"
-msgstr "新增預約"
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__access_warning
+msgid "Access warning"
+msgstr "存取警告"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "No appointment records"
-msgstr "暫無預約記錄"
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_needaction
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_needaction
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_needaction
+msgid "Action Needed"
+msgstr "需要操作"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "Type"
-msgstr "類型"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "Valid Period"
-msgstr "有效期"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "Entries"
-msgstr "次數"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "Unlimited"
-msgstr "無限"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
 msgid "Active"
 msgstr "有效"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "Expired"
-msgstr "已過期"
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_ids
+msgid "Activities"
+msgstr "活動"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_my_appointments
-msgid "Cancelled"
-msgstr "已撤銷"
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr "活動異常標記"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Are you sure you want to cancel this appointment?"
-msgstr "確定要撤銷此預約嗎？"
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_state
+msgid "Activity State"
+msgstr "活動狀態"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Cancel Appointment"
-msgstr "撤銷預約"
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_type_icon
+msgid "Activity Type Icon"
+msgstr "活動類型圖示"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Visitor Name:"
-msgstr "訪客姓名："
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+msgid "All"
+msgstr "全部"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Visitor Phone:"
-msgstr "訪客電話："
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Appointment Type <span class=\"text-danger\">*</span>"
+msgstr "預約類型 <span class=\"text-danger\">*</span>"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Appointment Type:"
-msgstr "預約類型："
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_attachment_count
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_attachment_count
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_attachment_count
+msgid "Attachment Count"
+msgstr "附件數量"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Valid Period:"
-msgstr "有效期間："
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Max Entries:"
-msgstr "最大入場次數："
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Used Entries:"
-msgstr "已使用次數："
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Access Token:"
-msgstr "驗證碼："
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
-msgid "Purpose"
-msgstr "授權目的"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Select..."
-msgstr "請選擇..."
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Appointment Type"
-msgstr "預約類型"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "One-time"
-msgstr "一次性"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Recurring"
-msgstr "週期性"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Permanent"
-msgstr "永久"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Valid From"
-msgstr "有效起始"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Valid Until"
-msgstr "有效截止"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Max Entries"
-msgstr "最大入場次數"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "0 means unlimited"
-msgstr "0 表示無限次"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "Create Appointment"
-msgstr "建立預約"
-
-#. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
 msgid "Cancel"
 msgstr "取消"
 
 #. module: community_visitor
-#: model:ir.ui.view,arch_db:community_visitor.portal_appointment_new
-msgid "History"
-msgstr "歷史訊息"
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "Cancelled"
+msgstr "已撤銷"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Checked In"
+msgstr "已入場"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Checked Out"
+msgstr "已離場"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
+msgid "Community Management"
+msgstr "社區管理"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Confirmed"
+msgstr "已確認"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__create_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__create_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__create_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__create_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__create_uid
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__create_uid
+msgid "Created by"
+msgstr "建立者"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__create_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__create_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__create_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__create_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__create_date
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__create_date
+msgid "Created on"
+msgstr "建立日期"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__access_url
+msgid "Customer Portal URL"
+msgstr "客戶入口網址"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Details"
+msgstr "詳情"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__display_name
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__display_name
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__display_name
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__display_name
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__display_name
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__display_name
+msgid "Display Name"
+msgstr "顯示名稱"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Draft"
+msgstr "草稿"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "Entries"
+msgstr "次數"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "Expired"
+msgstr "已過期"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_follower_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_follower_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_follower_ids
+msgid "Followers"
+msgstr "關注者"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_partner_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_partner_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "關注者（合作夥伴）"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_visit__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr "Font awesome 圖示，例如 fa-tasks"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__has_message
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__has_message
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__has_message
+msgid "Has Message"
+msgstr "有訊息"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__id
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__id
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__id
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__id
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__id
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__id
+msgid "ID"
+msgstr "ID"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_exception_icon
+msgid "Icon"
+msgstr "圖示"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_visit__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr "表示異常活動的圖示。"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__message_needaction
+#: model:ir.model.fields,help:community_visitor.field_community_visit__message_needaction
+#: model:ir.model.fields,help:community_visitor.field_community_visitor__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "如勾選，表示有新訊息需要您注意。"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__message_has_error
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__message_has_sms_error
+#: model:ir.model.fields,help:community_visitor.field_community_visit__message_has_error
+#: model:ir.model.fields,help:community_visitor.field_community_visit__message_has_sms_error
+#: model:ir.model.fields,help:community_visitor.field_community_visitor__message_has_error
+#: model:ir.model.fields,help:community_visitor.field_community_visitor__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "如勾選，表示部分訊息發送失敗。"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_is_follower
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_is_follower
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_is_follower
+msgid "Is Follower"
+msgstr "是否為關注者"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__write_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__write_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__write_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__write_uid
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__write_uid
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__write_uid
+msgid "Last Updated by"
+msgstr "最後更新者"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__write_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__write_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__write_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__write_date
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__write_date
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__write_date
+msgid "Last Updated on"
+msgstr "最後更新日期"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Max Entries"
+msgstr "最大入場次數"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_has_error
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_has_error
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_has_error
+msgid "Message Delivery error"
+msgstr "訊息傳遞錯誤"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_ids
+msgid "Messages"
+msgstr "訊息"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr "我的活動截止日"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "My Appointments"
+msgstr "我的預約"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+msgid "My Visitors"
+msgstr "我的訪客"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_breadcrumbs_visitor
+msgid "New Appointment"
+msgstr "新增預約"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+msgid "Newest"
+msgstr "最新"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_calendar_event_id
+msgid "Next Activity Calendar Event"
+msgstr "下一個活動行事曆事件"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr "下一個活動截止日"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_summary
+msgid "Next Activity Summary"
+msgstr "下一個活動摘要"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_type_id
+msgid "Next Activity Type"
+msgstr "下一個活動類型"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "No appointment records"
+msgstr "暫無預約記錄"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+msgid "No visitor records"
+msgstr "暫無訪客記錄"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_needaction_counter
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_needaction_counter
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_needaction_counter
+msgid "Number of Actions"
+msgstr "操作數量"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_has_error_counter
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_has_error_counter
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_has_error_counter
+msgid "Number of errors"
+msgstr "錯誤數量"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__message_needaction_counter
+#: model:ir.model.fields,help:community_visitor.field_community_visit__message_needaction_counter
+#: model:ir.model.fields,help:community_visitor.field_community_visitor__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "需要操作的訊息數量"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__message_has_error_counter
+#: model:ir.model.fields,help:community_visitor.field_community_visit__message_has_error_counter
+#: model:ir.model.fields,help:community_visitor.field_community_visitor__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "傳遞錯誤的訊息數量"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+msgid "Oldest"
+msgstr "最舊"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Pending"
+msgstr "待確認"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+msgid "Pending Confirm"
+msgstr "待確認"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__access_url
+msgid "Portal Access URL"
+msgstr "入口網址"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Purpose"
+msgstr "授權目的"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__qr_code
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+msgid "QR Code"
+msgstr "QR Code"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__rating_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__rating_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__rating_ids
+msgid "Ratings"
+msgstr "評分"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+msgid "Reference Number"
+msgstr "參考編號"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
+msgid "Registered"
+msgstr "登記時間"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Rejected"
+msgstr "已拒絕"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__activity_user_id
+msgid "Responsible User"
+msgstr "負責人"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__message_has_sms_error
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__message_has_sms_error
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "簡訊傳遞錯誤"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__state
+msgid "State"
+msgstr "狀態"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+msgid "Status"
+msgstr "狀態"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_visit__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Timeout"
+msgstr "逾時"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__token_expiry
+msgid "Token 過期時間"
+msgstr "Token 過期時間"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "Type"
+msgstr "類型"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_visit__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr "此紀錄上異常活動的類型。"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
+msgid "Unit"
+msgstr "戶號"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Unit <span class=\"text-danger\">*</span>"
+msgstr "戶號 <span class=\"text-danger\">*</span>"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_detail
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "Unlimited"
+msgstr "無限"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Valid From <span class=\"text-danger\">*</span>"
+msgstr "有效起始 <span class=\"text-danger\">*</span>"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+msgid "Valid Period"
+msgstr "有效期"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Valid Until <span class=\"text-danger\">*</span>"
+msgstr "有效截止 <span class=\"text-danger\">*</span>"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visit_detail
+msgid "Visit Description"
+msgstr "訪問敘述"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
+msgid "Visit Purpose"
+msgstr "來訪目的"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_appointments
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
+msgid "Visitor"
+msgstr "訪客"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
+msgid "Visitor Confirmation"
+msgstr "訪客確認"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_page
+msgid "Visitor Name"
+msgstr "訪客姓名"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Visitor Name <span class=\"text-danger\">*</span>"
+msgstr "訪客姓名 <span class=\"text-danger\">*</span>"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "Visitor Phone"
+msgstr "訪客電話"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__website_message_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__website_message_ids
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__website_message_ids
+msgid "Website Messages"
+msgstr "網站訊息"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__website_message_ids
+#: model:ir.model.fields,help:community_visitor.field_community_visit__website_message_ids
+#: model:ir.model.fields,help:community_visitor.field_community_visitor__website_message_ids
+msgid "Website communication history"
+msgstr "網站通訊記錄"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
+msgid "has been denied entry."
+msgstr "已被拒絕進入。"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_visitor_confirm_result
+msgid "has been granted entry."
+msgstr "已獲得放行許可。"
+
+#. module: community_visitor
+#: model:mail.template,subject:community_visitor.mail_template_visit_confirm_request
+msgid "【社區通知】您有訪客等待確認 - {{ object.visitor_id.name }}"
+msgstr "【社區通知】您有訪客等待確認 - {{ object.visitor_id.name }}"
+
+#. module: community_visitor
+#: model:mail.template,subject:community_visitor.mail_template_appointment_visitor_arrived
+msgid "【社區通知】您的預約訪客 {{ object.visitor_id.name }} 已入場"
+msgstr "【社區通知】您的預約訪客 {{ object.visitor_id.name }} 已入場"
+
+#. module: community_visitor
+#: model:mail.template,subject:community_visitor.mail_template_blacklist_alert
+msgid "【警示】黑名單訪客嘗試進入 - {{ object.name }}"
+msgstr "【警示】黑名單訪客嘗試進入 - {{ object.name }}"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_appointment__appointment_type__one_time
+msgid "一次性"
+msgstr "一次性"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "今日"
+msgstr "今日"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__recurring_days
+msgid "以逗號分隔的星期數字（0=週一, 6=週日），例如 0,1,2,3,4"
+msgstr "以逗號分隔的星期數字（0=週一, 6=週日），例如 0,1,2,3,4"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__resident_confirm_time
+msgid "住戶確認時間"
+msgstr "住戶確認時間"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visitor_badge__state__in_use
+msgid "使用中"
+msgstr "使用中"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__visit_count
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_form
+msgid "來訪次數"
+msgstr "來訪次數"
+
+#. module: community_visitor
+#: model:ir.actions.act_window,name:community_visitor.action_visit_purpose
+#: model:ir.model,name:community_visitor.model_community_visit_purpose
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__purpose_id
+#: model:ir.ui.menu,name:community_visitor.menu_visit_purpose
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "來訪目的"
+msgstr "來訪目的"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visitor.py:0
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__visit_ids
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_form
+msgid "來訪記錄"
+msgstr "來訪記錄"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__checkin_time
+msgid "入場時間"
+msgstr "入場時間"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "入場次數"
+msgstr "入場次數"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_appointment.py:0
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__visit_ids
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "入場記錄"
+msgstr "入場記錄"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__note
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "內部備註"
+msgstr "內部備註"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "內部備註..."
+msgstr "內部備註..."
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__company
+msgid "公司/單位"
+msgstr "公司/單位"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "前往訪問記錄"
+msgstr "前往訪問記錄"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__remaining
+msgid "剩餘次數"
+msgstr "剩餘次數"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_form
+msgid "加入黑名單"
+msgstr "加入黑名單"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__blacklist_date
+msgid "加入黑名單日期"
+msgstr "加入黑名單日期"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "只有已入場的訪問記錄可以登記離場。"
+msgstr "只有已入場的訪問記錄可以登記離場。"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "只有已確認的訪問記錄可以登記入場。"
+msgstr "只有已確認的訪問記錄可以登記入場。"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_appointment.py:0
+msgid "只有有效的預約單可以撤銷。"
+msgstr "只有有效的預約單可以撤銷。"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "只有草稿狀態的訪問記錄可以發送確認請求。"
+msgstr "只有草稿狀態的訪問記錄可以發送確認請求。"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visitor_badge__state__available
+msgid "可用"
+msgstr "可用"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__validate_appointment_wizard__state__fail
+msgid "失敗"
+msgstr "失敗"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__name
+msgid "姓名"
+msgstr "姓名"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__properties
+msgid "屬性"
+msgstr "屬性"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__used_entries
+msgid "已使用次數"
+msgstr "已使用次數"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__state__checked_in
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "已入場"
+msgstr "已入場"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__state__rejected
+msgid "已拒絕"
+msgstr "已拒絕"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_appointment__state__cancelled
+msgid "已撤銷"
+msgstr "已撤銷"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__state__confirmed
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "已確認"
+msgstr "已確認"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_appointment__state__expired
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_search
+msgid "已過期"
+msgstr "已過期"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__state__checked_out
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "已離場"
+msgstr "已離場"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__visit_type__recurring
+msgid "常態授權"
+msgstr "常態授權"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__state__pending_confirm
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "待確認"
+msgstr "待確認"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__validate_appointment_wizard__state__success
+msgid "成功"
+msgstr "成功"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__unit_id
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_search
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "戶號"
+msgstr "戶號"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "戶號 %s 沒有登記住戶，無法發送確認請求。"
+msgstr "戶號 %s 沒有登記住戶，無法發送確認請求。"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__resident_id
+msgid "授權住戶"
+msgstr "授權住戶"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__recurring_days
+msgid "授權星期"
+msgstr "授權星期"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__purpose
+msgid "授權目的"
+msgstr "授權目的"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "授權資訊"
+msgstr "授權資訊"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "搜尋訪問記錄"
+msgstr "搜尋訪問記錄"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_search
+msgid "搜尋訪客"
+msgstr "搜尋訪客"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_search
+msgid "搜尋預約通行單"
+msgstr "搜尋預約通行單"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "撤銷"
+msgstr "撤銷"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "日期"
+msgstr "日期"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__max_entries
+msgid "最大入場次數"
+msgstr "最大入場次數"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__last_visit
+msgid "最後來訪"
+msgstr "最後來訪"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_appointment__state__active
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_search
+msgid "有效"
+msgstr "有效"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__valid_until
+msgid "有效截止"
+msgstr "有效截止"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_appointment.py:0
+msgid "有效截止時間必須晚於有效起始時間。"
+msgstr "有效截止時間必須晚於有效起始時間。"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "有效期間"
+msgstr "有效期間"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__valid_from
+msgid "有效起始"
+msgstr "有效起始"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "此訪問記錄不在待確認狀態。"
+msgstr "此訪問記錄不在待確認狀態。"
+
+#. module: community_visitor
+#: model:ir.model.constraint,message:community_visitor.constraint_community_visitor_unique_phone
+msgid "此電話號碼已存在！"
+msgstr "此電話號碼已存在！"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__recurring_until
+msgid "每日截止時間"
+msgstr "每日截止時間"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_appointment.py:0
+msgid "每日截止時間必須晚於每日起始時間。"
+msgstr "每日截止時間必須晚於每日起始時間。"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__recurring_from
+msgid "每日起始時間"
+msgstr "每日起始時間"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_appointment__appointment_type__permanent
+msgid "永久"
+msgstr "永久"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "無效的確認碼。"
+msgstr "無效的確認碼。"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__photo
+msgid "照片"
+msgstr "照片"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__state
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__state
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__state
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "狀態"
+msgstr "狀態"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__guard_in_id
+msgid "登記警衛"
+msgstr "登記警衛"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "發送確認"
+msgstr "發送確認"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__current_visit_id
+msgid "目前訪問記錄"
+msgstr "目前訪問記錄"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__name
+msgid "目的名稱"
+msgstr "目的名稱"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__confirm_token
+msgid "確認 Token"
+msgstr "確認 Token"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__resident_id
+msgid "確認住戶"
+msgstr "確認住戶"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "確認入場"
+msgstr "確認入場"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "確認連結已過期。"
+msgstr "確認連結已過期。"
+
+#. module: community_visitor
+#: model:res.groups,name:community_visitor.group_manager
+msgid "社區主任"
+msgstr "社區主任"
+
+#. module: community_visitor
+#: model:ir.module.category,name:community_visitor.module_category_community_visitor
+msgid "社區訪客管理"
+msgstr "社區訪客管理"
+
+#. module: community_visitor
+#: model:ir.actions.server,name:community_visitor.cron_visit_timeout_check_ir_actions_server
+msgid "社區訪客：逾時檢查"
+msgstr "社區訪客：逾時檢查"
+
+#. module: community_visitor
+#: model:ir.actions.server,name:community_visitor.cron_appointment_expiry_ir_actions_server
+msgid "社區訪客：預約過期檢查"
+msgstr "社區訪客：預約過期檢查"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_form
+msgid "移除黑名單"
+msgstr "移除黑名單"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__office_id
+msgid "管理室"
+msgstr "管理室"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__result_message
+msgid "結果"
+msgstr "結果"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor_badge__name
+msgid "編號"
+msgstr "編號"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_search
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "群組"
+msgstr "群組"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__visit_type__walk_in
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "臨時訪客"
+msgstr "臨時訪客"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__state__draft
+msgid "草稿"
+msgstr "草稿"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__unit_id
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__unit_name
+msgid "訪問戶號"
+msgstr "訪問戶號"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__description
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "訪問敘述"
+msgstr "訪問敘述"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "訪問敘述..."
+msgstr "訪問敘述..."
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__name
+msgid "訪問編號"
+msgstr "訪問編號"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/wizards/validate_appointment_wizard.py:0
+#: model:ir.actions.act_window,name:community_visitor.action_community_visit
+#: model:ir.model,name:community_visitor.model_community_visit
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__visit_id
+#: model:ir.ui.menu,name:community_visitor.menu_community_visit
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_list
+msgid "訪問記錄"
+msgstr "訪問記錄"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__visit_type
+msgid "訪問類型"
+msgstr "訪問類型"
+
+#. module: community_visitor
+#: model:ir.actions.act_window,name:community_visitor.action_community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__visitor_id
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_form
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_list
+msgid "訪客"
+msgstr "訪客"
+
+#. module: community_visitor
+#: model:ir.model,name:community_visitor.model_community_visitor
+msgid "訪客主檔"
+msgstr "訪客主檔"
+
+#. module: community_visitor
+#: model:mail.template,name:community_visitor.mail_template_visit_confirm_request
+msgid "訪客到達通知"
+msgstr "訪客到達通知"
+
+#. module: community_visitor
+#: model:ir.ui.menu,name:community_visitor.menu_community_visitor_list
+msgid "訪客名單"
+msgstr "訪客名單"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__visitor_name
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__visitor_name
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_form
+msgid "訪客姓名"
+msgstr "訪客姓名"
+
+#. module: community_visitor
+#: model:ir.ui.menu,name:community_visitor.menu_community_visitor_root
+msgid "訪客管理"
+msgstr "訪客管理"
+
+#. module: community_visitor
+#: model:ir.model,name:community_visitor.model_community_visitor_badge
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__badge_id
+msgid "訪客證"
+msgstr "訪客證"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visitor_badge.py:0
+msgid "訪客證 %s 目前使用中，無法發放。"
+msgstr "訪客證 %s 目前使用中，無法發放。"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "訪客證 %s 目前使用中，無法重複發放。"
+msgstr "訪客證 %s 目前使用中，無法重複發放。"
+
+#. module: community_visitor
+#: model:ir.actions.act_window,name:community_visitor.action_visitor_badge
+#: model:ir.ui.menu,name:community_visitor.menu_visitor_badge
+msgid "訪客證管理"
+msgstr "訪客證管理"
+
+#. module: community_visitor
+#: model:ir.model.constraint,message:community_visitor.constraint_community_visitor_badge_unique_name
+msgid "訪客證編號不可重複！"
+msgstr "訪客證編號不可重複！"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "訪客資訊"
+msgstr "訪客資訊"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__visitor_phone
+msgid "訪客電話"
+msgstr "訪客電話"
+
+#. module: community_visitor
+#: model:ir.ui.menu,name:community_visitor.menu_community_visitor_settings
+msgid "設定"
+msgstr "設定"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "請輸入驗證碼"
+msgstr "請輸入驗證碼"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__id_last4
+msgid "證件末4碼"
+msgstr "證件末4碼"
+
+#. module: community_visitor
+#: model:res.groups,name:community_visitor.group_guard
+msgid "警衛"
+msgstr "警衛"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__validate_appointment_wizard__state__input
+msgid "輸入"
+msgstr "輸入"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_visit__resident_id
+msgid "透過確認連結自動記錄"
+msgstr "透過確認連結自動記錄"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_appointment__appointment_type__recurring
+msgid "週期性"
+msgstr "週期性"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "週期設定"
+msgstr "週期設定"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__state__timeout
+msgid "逾時"
+msgstr "逾時"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "重新輸入"
+msgstr "重新輸入"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "關閉"
+msgstr "關閉"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__checkout_time
+msgid "離場時間"
+msgstr "離場時間"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "離場登記"
+msgstr "離場登記"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__guard_out_id
+msgid "離場警衛"
+msgstr "離場警衛"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__phone
+msgid "電話"
+msgstr "電話"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_search
+msgid "非黑名單"
+msgstr "非黑名單"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit__appointment_id
+msgid "預約單"
+msgstr "預約單"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__name
+msgid "預約單編號"
+msgstr "預約單編號"
+
+#. module: community_visitor
+#: model:ir.model.fields.selection,name:community_visitor.selection__community_visit__visit_type__pre_registered
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "預約訪客"
+msgstr "預約訪客"
+
+#. module: community_visitor
+#: model:mail.template,name:community_visitor.mail_template_appointment_visitor_arrived
+msgid "預約訪客已入場通知"
+msgstr "預約訪客已入場通知"
+
+#. module: community_visitor
+#: model:ir.actions.act_window,name:community_visitor.action_community_appointment
+#: model:ir.model,name:community_visitor.model_community_appointment
+#: model:ir.ui.menu,name:community_visitor.menu_community_appointment
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_list
+msgid "預約通行單"
+msgstr "預約通行單"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visit_purpose__color
+msgid "顏色"
+msgstr "顏色"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__appointment_type
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_search
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_search
+msgid "類型"
+msgstr "類型"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "驗證"
+msgstr "驗證"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__access_token
+#: model:ir.model.fields,field_description:community_visitor.field_validate_appointment_wizard__access_code
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "驗證碼"
+msgstr "驗證碼"
+
+#. module: community_visitor
+#. odoo-python
+#: code:addons/community_visitor/wizards/validate_appointment_wizard.py:0
+#: model:ir.actions.act_window,name:community_visitor.action_validate_appointment_wizard
+#: model:ir.model,name:community_visitor.model_validate_appointment_wizard
+#: model:ir.ui.menu,name:community_visitor.menu_validate_appointment
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_validate_appointment_wizard_form
+msgid "驗證碼查驗"
+msgstr "驗證碼查驗"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "驗證資訊"
+msgstr "驗證資訊"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__blacklisted
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visitor_search
+msgid "黑名單"
+msgstr "黑名單"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_visitor__blacklist_reason
+msgid "黑名單原因"
+msgstr "黑名單原因"
+
+#. module: community_visitor
+#: model:mail.template,name:community_visitor.mail_template_blacklist_alert
+msgid "黑名單觸發警示"
+msgstr "黑名單觸發警示"

@@ -1,242 +1,938 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-# 	* community_base
+#	* community_base
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Odoo Server 18.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-29 00:00+0000\n"
-"PO-Revision-Date: 2026-05-29 00:00+0000\n"
+"POT-Creation-Date: 2026-05-30 00:00+0000\n"
+"PO-Revision-Date: 2026-05-30 00:00+0000\n"
 "Last-Translator: \n"
 "Language-Team: Chinese (Traditional) <>\n"
 "Language: zh_TW\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
-"Content-Transfer-Encoding: 8bit\n"
+"Content-Transfer-Encoding: \n"
 "Plural-Forms: nplurals=1; plural=0;\n"
 
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_home_community
-msgid "Community Management"
-msgstr "社區管理"
 
 #. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_home_community
-msgid "Manage announcements, feedbacks, visitors and parcels"
-msgstr "管理社區公告、意見反映、訪客與包裹"
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "<i class=\"fa fa-paper-plane\"/> Submit"
+msgstr "<i class=\"fa fa-paper-plane\"/> 送出"
 
 #. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "<i class=\"fa fa-plus\"/> New Feedback"
+msgstr "<i class=\"fa fa-plus\"/> 新增意見反映"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "<option value=\"\">Select category</option>"
+msgstr "<option value=\"\">選擇分類</option>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "<option value=\"\">Select unit</option>"
+msgstr "<option value=\"\">選擇戶號</option>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "<small class=\"text-muted\">Status</small>"
+msgstr "<small class=\"text-muted\">狀態</small>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "<span class=\"mx-1\">-</span>"
+msgstr "<span class=\"mx-1\">-</span>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcement_detail
+msgid "<strong>Author:</strong>"
+msgstr "<strong>作者：</strong>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcement_detail
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "<strong>Category:</strong>"
+msgstr "<strong>分類：</strong>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcement_detail
+msgid "<strong>Office:</strong>"
+msgstr "<strong>管理室：</strong>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcement_detail
+msgid "<strong>Published:</strong>"
+msgstr "<strong>發布日期：</strong>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "<strong>Submitted:</strong>"
+msgstr "<strong>提交日期：</strong>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "<strong>Unit:</strong>"
+msgstr "<strong>戶號：</strong>"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_needaction
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_needaction
+msgid "Action Needed"
+msgstr "需要操作"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+msgid "All"
+msgstr "全部"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcements
+#: model_terms:ir.ui.view,arch_db:community_base.portal_breadcrumbs_community
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
 msgid "Announcements"
 msgstr "社區公告"
 
 #. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "Browse community bulletin board"
-msgstr "瀏覽社區公布欄"
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_attachment_count
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_attachment_count
+msgid "Attachment Count"
+msgstr "附件數量"
 
 #. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "Feedbacks"
-msgstr "意見反映"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "Submit feedback or check progress"
-msgstr "提交意見或查看處理進度"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "My Visitors"
-msgstr "我的訪客"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "View and manage pending visitors"
-msgstr "查看與管理待確認的訪客"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "My Appointments"
-msgstr "我的預約"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "Manage visitor appointment passes"
-msgstr "管理訪客預約通行單"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "Parcels"
-msgstr "包裹收件"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "View parcels awaiting pickup"
-msgstr "查看待取包裹"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "Storage"
-msgstr "物品寄放"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_my_community
-msgid "View stored item status"
-msgstr "查看寄放物品狀態"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcements
-msgid "No announcements at this time"
-msgstr "目前尚無公告"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcements
-msgid "Title"
-msgstr "標題"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcements
-msgid "Category"
-msgstr "分類"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcements
-msgid "Published Date"
-msgstr "發布日期"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcement_detail
-msgid "Details"
-msgstr "詳情"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcement_detail
-msgid "History"
-msgstr "歷史訊息"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcement_detail
-msgid "Category:"
-msgstr "公告分類："
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcement_detail
-msgid "Office:"
-msgstr "發布管理室："
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcement_detail
-msgid "Published:"
-msgstr "發布時間："
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcement_detail
-msgid "Author:"
-msgstr "發布者："
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_announcement_detail
-msgid "Content"
-msgstr "公告內容"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "New Feedback"
-msgstr "新增意見"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "No feedbacks yet"
-msgstr "暫無意見反映記錄"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "#"
-msgstr "編號"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "Unit"
-msgstr "戶號"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "Submitted"
-msgstr "提交時間"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "Status"
-msgstr "狀態"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "Pending"
-msgstr "待處理"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "In Progress"
-msgstr "處理中"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedbacks
-msgid "Closed"
-msgstr "已結案"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_detail
-msgid "Category:"
-msgstr "類別："
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_detail
-msgid "Unit:"
-msgstr "戶號："
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_detail
-msgid "Submitted:"
-msgstr "提交時間："
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
-msgid "Dear resident, community maintenance is everyone's responsibility. Please share any suggestions for the management committee's reference."
-msgstr "親愛的住戶 您好，社區維護不分你我，大家一起共同維護，對社區有任何建議可提供管委會參考。"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
-msgid "Select unit"
-msgstr "請選擇戶號"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
-msgid "Select category"
-msgstr "請選擇項目"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
-msgid "Description"
-msgstr "描述"
-
-#. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
 msgid "Brief summary of your feedback"
 msgstr "簡述您的意見"
 
 #. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "Browse community bulletin board"
+msgstr "瀏覽社區公布欄"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "Cancel"
+msgstr "取消"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcements
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "Category"
+msgstr "分類"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "Category <span class=\"text-danger\">*</span>"
+msgstr "分類 <span class=\"text-danger\">*</span>"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "Closed"
+msgstr "已結案"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_breadcrumbs_community
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_home_community
+msgid "Community Management"
+msgstr "社區管理"
+
+#. module: community_base
+#: model:ir.model,name:community_base.model_res_partner
+msgid "Contact"
+msgstr "聯絡人"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcement_detail
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "Content"
+msgstr "公告內容"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__create_uid
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__create_uid
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__create_uid
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__create_uid
+#: model:ir.model.fields,field_description:community_base.field_community_office__create_uid
+#: model:ir.model.fields,field_description:community_base.field_community_unit__create_uid
+msgid "Created by"
+msgstr "建立者"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__create_date
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__create_date
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__create_date
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__create_date
+#: model:ir.model.fields,field_description:community_base.field_community_office__create_date
+#: model:ir.model.fields,field_description:community_base.field_community_unit__create_date
+msgid "Created on"
+msgstr "建立日期"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid ""
+"Dear resident, community maintenance is everyone's responsibility.\n"
+"                        Please share any suggestions for the management committee's reference."
+msgstr ""
+"親愛的住戶，社區維護是每個人的責任。\n"
+"                        請分享任何建議供管委會參考。"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "Description <span class=\"text-danger\">*</span>"
+msgstr "說明 <span class=\"text-danger\">*</span>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcement_detail
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "Details"
+msgstr "詳情"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__display_name
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__display_name
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__display_name
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__display_name
+#: model:ir.model.fields,field_description:community_base.field_community_office__display_name
+#: model:ir.model.fields,field_description:community_base.field_community_unit__display_name
+msgid "Display Name"
+msgstr "顯示名稱"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_breadcrumbs_community
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "Feedbacks"
+msgstr "意見反映"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_follower_ids
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_follower_ids
+msgid "Followers"
+msgstr "關注者"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_partner_ids
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_partner_ids
+msgid "Followers (Partners)"
+msgstr "關注者（合作夥伴）"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__has_message
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__has_message
+msgid "Has Message"
+msgstr "有訊息"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcement_detail
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+msgid "History"
+msgstr "歷史訊息"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__id
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__id
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__id
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__id
+#: model:ir.model.fields,field_description:community_base.field_community_office__id
+#: model:ir.model.fields,field_description:community_base.field_community_unit__id
+msgid "ID"
+msgstr "ID"
+
+#. module: community_base
+#: model:ir.model.fields,help:community_base.field_community_announcement__message_needaction
+#: model:ir.model.fields,help:community_base.field_community_feedback__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr "如勾選，表示有新訊息需要您注意。"
+
+#. module: community_base
+#: model:ir.model.fields,help:community_base.field_community_announcement__message_has_error
+#: model:ir.model.fields,help:community_base.field_community_announcement__message_has_sms_error
+#: model:ir.model.fields,help:community_base.field_community_feedback__message_has_error
+#: model:ir.model.fields,help:community_base.field_community_feedback__message_has_sms_error
+msgid "If checked, some messages have a delivery error."
+msgstr "如勾選，表示部分訊息發送失敗。"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "In Progress"
+msgstr "處理中"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_is_follower
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_is_follower
+msgid "Is Follower"
+msgstr "是否為關注者"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__write_uid
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__write_uid
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__write_uid
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__write_uid
+#: model:ir.model.fields,field_description:community_base.field_community_office__write_uid
+#: model:ir.model.fields,field_description:community_base.field_community_unit__write_uid
+msgid "Last Updated by"
+msgstr "最後更新者"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__write_date
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__write_date
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__write_date
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__write_date
+#: model:ir.model.fields,field_description:community_base.field_community_office__write_date
+#: model:ir.model.fields,field_description:community_base.field_community_unit__write_date
+msgid "Last Updated on"
+msgstr "最後更新日期"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_home_community
+msgid "Manage announcements, feedbacks, visitors and parcels"
+msgstr "管理社區公告、意見反映、訪客與包裹"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "Manage visitor appointment passes"
+msgstr "管理訪客預約通行單"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_has_error
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_has_error
+msgid "Message Delivery error"
+msgstr "訊息傳遞錯誤"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_ids
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_ids
+msgid "Messages"
+msgstr "訊息"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "My Appointments"
+msgstr "我的預約"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "My Visitors"
+msgstr "我的訪客"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_breadcrumbs_community
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "New Feedback"
+msgstr "新增意見"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+msgid "Newest"
+msgstr "最新"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcements
+msgid "No announcements at this time"
+msgstr "目前尚無公告"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "No feedbacks yet"
+msgstr "暫無意見反映記錄"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_needaction_counter
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_needaction_counter
+msgid "Number of Actions"
+msgstr "操作數量"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_has_error_counter
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_has_error_counter
+msgid "Number of errors"
+msgstr "錯誤數量"
+
+#. module: community_base
+#: model:ir.model.fields,help:community_base.field_community_announcement__message_needaction_counter
+#: model:ir.model.fields,help:community_base.field_community_feedback__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr "需要操作的訊息數量"
+
+#. module: community_base
+#: model:ir.model.fields,help:community_base.field_community_announcement__message_has_error_counter
+#: model:ir.model.fields,help:community_base.field_community_feedback__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr "傳遞錯誤的訊息數量"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+msgid "Oldest"
+msgstr "最舊"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "Parcels"
+msgstr "包裹收件"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_detail
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "Pending"
+msgstr "待處理"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
 msgid "Please describe your feedback or issue in detail..."
 msgstr "請詳細描述您的意見或問題..."
 
 #. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
-msgid "Submit"
-msgstr "提交"
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcements
+msgid "Published Date"
+msgstr "發布日期"
 
 #. module: community_base
-#: model:ir.ui.view,arch_db:community_base.portal_feedback_new
-msgid "Cancel"
-msgstr "取消"
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__rating_ids
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__rating_ids
+msgid "Ratings"
+msgstr "評分"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+msgid "Reference"
+msgstr "參考"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__message_has_sms_error
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__message_has_sms_error
+msgid "SMS Delivery error"
+msgstr "簡訊傳遞錯誤"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "Status"
+msgstr "狀態"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "Storage"
+msgstr "物品寄放"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "Submit feedback or check progress"
+msgstr "提交意見或查看處理進度"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "Submitted"
+msgstr "提交時間"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_base.portal_announcements
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "Title"
+msgstr "標題"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "Title <span class=\"text-danger\">*</span>"
+msgstr "標題 <span class=\"text-danger\">*</span>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedbacks
+msgid "Unit"
+msgstr "戶號"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "Unit <span class=\"text-danger\">*</span>"
+msgstr "戶號 <span class=\"text-danger\">*</span>"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "View and manage pending visitors"
+msgstr "查看與管理待確認的訪客"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "View parcels awaiting pickup"
+msgstr "查看待取包裹"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_my_community
+msgid "View stored item status"
+msgstr "查看寄放物品狀態"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__website_message_ids
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__website_message_ids
+msgid "Website Messages"
+msgstr "網站訊息"
+
+#. module: community_base
+#: model:ir.model.fields,help:community_base.field_community_announcement__website_message_ids
+#: model:ir.model.fields,help:community_base.field_community_feedback__website_message_ids
+msgid "Website communication history"
+msgstr "網站通訊記錄"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+msgid "下架"
+msgstr "下架"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_unit__resident_ids
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_form
+msgid "住戶"
+msgstr "住戶"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__content
+msgid "內容"
+msgstr "內容"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__internal_note
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__internal_note
+#: model:ir.model.fields,field_description:community_base.field_community_office__internal_note
+#: model:ir.model.fields,field_description:community_base.field_community_unit__internal_note
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_form
+msgid "內部備註"
+msgstr "內部備註"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_form
+msgid "內部備註..."
+msgstr "內部備註..."
+
+#. module: community_base
+#: model:ir.actions.act_window,name:community_base.action_community_announcement
+msgid "公告"
+msgstr "公告"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__content
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+msgid "公告內容"
+msgstr "公告內容"
+
+#. module: community_base
+#: model:ir.actions.act_window,name:community_base.action_announcement_category
+#: model:ir.model,name:community_base.model_community_announcement_category
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__category_id
+#: model:ir.ui.menu,name:community_base.menu_community_announcement_category
+msgid "公告分類"
+msgstr "公告分類"
+
+#. module: community_base
+#: model:ir.ui.menu,name:community_base.menu_community_announcement_list
+msgid "公告列表"
+msgstr "公告列表"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__announcement_properties_definition
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+msgid "公告屬性定義"
+msgstr "公告屬性定義"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+msgid "公告標題"
+msgstr "公告標題"
+
+#. module: community_base
+#: model:ir.ui.menu,name:community_base.menu_community_announcement_root
+msgid "公布欄"
+msgstr "公布欄"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_search
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "分組"
+msgstr "分組"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_search
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "分類"
+msgstr "分類"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__name
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__name
+msgid "分類名稱"
+msgstr "分類名稱"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+msgid "反映屬性定義"
+msgstr "反映屬性定義"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_form
+msgid "受理"
+msgstr "受理"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/models/community_announcement.py:0
+msgid "只有已下架的公告可以重新發布。"
+msgstr "只有已下架的公告可以重新發布。"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/models/community_announcement.py:0
+msgid "只有已發布的公告可以下架。"
+msgstr "只有已發布的公告可以下架。"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/models/community_feedback.py:0
+msgid "只有已結案的反映可以重新開啟。"
+msgstr "只有已結案的反映可以重新開啟。"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/models/community_feedback.py:0
+msgid "只有待處理的反映可以接受處理。"
+msgstr "只有待處理的反映可以接受處理。"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/models/community_announcement.py:0
+msgid "只有草稿狀態的公告可以發布。"
+msgstr "只有草稿狀態的公告可以發布。"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/models/community_feedback.py:0
+msgid "只有處理中的反映可以結案。"
+msgstr "只有處理中的反映可以結案。"
+
+#. module: community_base
+#: model:ir.model.constraint,message:community_base.constraint_community_unit_unique_unit
+msgid "同一棟別、樓層、門牌號不可重複！"
+msgstr "同一棟別、樓層、門牌號不可重複！"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_unit__active
+msgid "啟用"
+msgstr "啟用"
+
+#. module: community_base
+#: model:ir.ui.menu,name:community_base.menu_community_config
+msgid "基礎設定"
+msgstr "基礎設定"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__properties
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__properties
+#: model:ir.model.fields,field_description:community_base.field_community_unit__properties
+msgid "屬性"
+msgstr "屬性"
+
+#. module: community_base
+#: model:ir.model.fields.selection,name:community_base.selection__community_announcement__state__archived
+msgid "已下架"
+msgstr "已下架"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_search
+msgid "已啟用"
+msgstr "已啟用"
+
+#. module: community_base
+#: model:ir.model.fields.selection,name:community_base.selection__community_announcement__state__published
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_search
+msgid "已發布"
+msgstr "已發布"
+
+#. module: community_base
+#: model:ir.model.fields.selection,name:community_base.selection__community_feedback__state__done
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "已結案"
+msgstr "已結案"
+
+#. module: community_base
+#: model:ir.model.fields.selection,name:community_base.selection__community_feedback__state__pending
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "待處理"
+msgstr "待處理"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_form
+msgid "意見內容"
+msgstr "意見內容"
+
+#. module: community_base
+#: model:ir.actions.act_window,name:community_base.action_feedback_category
+#: model:ir.ui.menu,name:community_base.menu_community_feedback_category
+msgid "意見分類"
+msgstr "意見分類"
+
+#. module: community_base
+#: model:ir.ui.menu,name:community_base.menu_community_feedback_list
+msgid "意見列表"
+msgstr "意見列表"
+
+#. module: community_base
+#: model:ir.actions.act_window,name:community_base.action_community_feedback
+#: model:ir.model,name:community_base.model_community_feedback
+#: model:ir.ui.menu,name:community_base.menu_community_feedback_root
+msgid "意見反映"
+msgstr "意見反映"
+
+#. module: community_base
+#: model:ir.model,name:community_base.model_community_feedback_category
+msgid "意見反映分類"
+msgstr "意見反映分類"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__feedback_properties_definition
+msgid "意見屬性定義"
+msgstr "意見屬性定義"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_form
+msgid "意見描述..."
+msgstr "意見描述..."
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__category_id
+msgid "意見類別"
+msgstr "意見類別"
+
+#. module: community_base
+#: model:ir.actions.act_window,name:community_base.action_community_unit
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__unit_id
+#: model:ir.model.fields,field_description:community_base.field_community_unit__name
+#: model:ir.model.fields,field_description:community_base.field_res_partner__unit_ids
+#: model:ir.model.fields,field_description:community_base.field_res_users__unit_ids
+#: model:ir.ui.menu,name:community_base.menu_community_unit
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_list
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "戶號"
+msgstr "戶號"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__unit_properties_definition
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+msgid "戶號屬性定義"
+msgstr "戶號屬性定義"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_partner_form_inherit_community
+msgid "所屬戶號"
+msgstr "所屬戶號"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_unit__office_id
+msgid "所屬管理室"
+msgstr "所屬管理室"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__partner_id
+msgid "提交住戶"
+msgstr "提交住戶"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_search
+msgid "搜尋戶號"
+msgstr "搜尋戶號"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_search
+msgid "搜尋管理室"
+msgstr "搜尋管理室"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_unit__building
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_search
+msgid "棟別"
+msgstr "棟別"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__building_name
+msgid "棟別名稱"
+msgstr "棟別名稱"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_unit__floor
+msgid "樓層"
+msgstr "樓層"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__name
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__title
+msgid "標題"
+msgstr "標題"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__state
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__state
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_search
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "狀態"
+msgstr "狀態"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+msgid "發布"
+msgstr "發布"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__publish_date
+msgid "發布時間"
+msgstr "發布時間"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__office_id
+msgid "發布管理室"
+msgstr "發布管理室"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement__author_id
+msgid "發布者"
+msgstr "發布者"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+msgid "確定要下架此公告嗎？"
+msgstr "確定要下架此公告嗎？"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_res_partner__is_resident
+#: model:ir.model.fields,field_description:community_base.field_res_users__is_resident
+msgid "社區住戶"
+msgstr "社區住戶"
+
+#. module: community_base
+#: model:ir.model,name:community_base.model_community_announcement
+msgid "社區公告"
+msgstr "社區公告"
+
+#. module: community_base
+#: model:ir.model,name:community_base.model_community_unit
+msgid "社區戶號"
+msgstr "社區戶號"
+
+#. module: community_base
+#: model:ir.ui.menu,name:community_base.menu_community_root
+msgid "社區管理"
+msgstr "社區管理"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_partner_form_inherit_community
+msgid "社區資訊"
+msgstr "社區資訊"
+
+#. module: community_base
+#: model:ir.actions.act_window,name:community_base.action_community_office
+#: model:ir.model,name:community_base.model_community_office
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__office_id
+#: model:ir.ui.menu,name:community_base.menu_community_office
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_search
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_list
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_search
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "管理室"
+msgstr "管理室"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__name
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+msgid "管理室名稱"
+msgstr "管理室名稱"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_form
+msgid "結案"
+msgstr "結案"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_feedback__name
+msgid "編號"
+msgstr "編號"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_unit_search
+msgid "群組"
+msgstr "群組"
+
+#. module: community_base
+#: model:ir.model.fields.selection,name:community_base.selection__community_announcement__state__draft
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_search
+msgid "草稿"
+msgstr "草稿"
+
+#. module: community_base
+#: model:ir.model.fields.selection,name:community_base.selection__community_feedback__state__in_progress
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_search
+msgid "處理中"
+msgstr "處理中"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__visit_properties_definition
+#: model_terms:ir.ui.view,arch_db:community_base.view_community_office_form
+msgid "訪問屬性定義"
+msgstr "訪問屬性定義"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__responsible_id
+msgid "負責人"
+msgstr "負責人"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+msgid "輸入公告內容..."
+msgstr "輸入公告內容..."
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_office__unit_ids
+msgid "轄下戶號"
+msgstr "轄下戶號"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_announcement_form
+msgid "重新發布"
+msgstr "重新發布"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.view_feedback_form
+msgid "重新開啟"
+msgstr "重新開啟"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_unit__number
+msgid "門牌號"
+msgstr "門牌號"
+
+#. module: community_base
+#: model:ir.model.fields,field_description:community_base.field_community_announcement_category__color
+#: model:ir.model.fields,field_description:community_base.field_community_feedback_category__color
+msgid "顏色"
+msgstr "顏色"
