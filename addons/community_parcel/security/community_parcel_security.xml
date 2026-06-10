@@ -36,5 +36,21 @@
             <field name="domain_force">[(1, '=', 1)]</field>
             <field name="groups" eval="[(4, ref('community_parcel_group_office_staff'))]"/>
         </record>
+
+        <!-- Portal: parcels only for own units -->
+        <record id="rule_parcel_portal" model="ir.rule">
+            <field name="name">Parcel: Portal 住戶僅看自己戶號</field>
+            <field name="model_id" ref="model_community_parcel"/>
+            <field name="domain_force">[('unit_id.resident_ids', 'in', [user.partner_id.id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+
+        <!-- Portal: storage only for own units -->
+        <record id="rule_storage_portal" model="ir.rule">
+            <field name="name">Storage: Portal 住戶僅看自己戶號</field>
+            <field name="model_id" ref="model_community_storage"/>
+            <field name="domain_force">[('unit_id.resident_ids', 'in', [user.partner_id.id])]</field>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
     </data>
 </odoo>

@@ -27,21 +27,21 @@ class CommunityParcelDashboard(models.Model):
                 SELECT 1 AS id,
                        '今日到件' AS name,
                        (SELECT COUNT(*) FROM community_parcel
-                        WHERE received_date >= (NOW() AT TIME ZONE 'UTC')::date
-                          AND received_date < ((NOW() AT TIME ZONE 'UTC')::date + INTERVAL '1 day')
+                        WHERE received_date >= (NOW() AT TIME ZONE 'Asia/Taipei')::date
+                          AND received_date < ((NOW() AT TIME ZONE 'Asia/Taipei')::date + INTERVAL '1 day')
                        )::integer AS count,
                        'community.parcel' AS target_model,
                        'today_received' AS domain_filter,
                        (SELECT COUNT(*) FROM community_parcel
-                        WHERE received_date >= (NOW() AT TIME ZONE 'UTC')::date
-                          AND received_date < ((NOW() AT TIME ZONE 'UTC')::date + INTERVAL '1 day')
+                        WHERE received_date >= (NOW() AT TIME ZONE 'Asia/Taipei')::date
+                          AND received_date < ((NOW() AT TIME ZONE 'Asia/Taipei')::date + INTERVAL '1 day')
                           AND state = 'notified'
                        )::integer AS count_stat1,
                        '已通知' AS stat1_label,
                        'today_notified' AS stat1_filter,
                        (SELECT COUNT(*) FROM community_parcel
-                        WHERE received_date >= (NOW() AT TIME ZONE 'UTC')::date
-                          AND received_date < ((NOW() AT TIME ZONE 'UTC')::date + INTERVAL '1 day')
+                        WHERE received_date >= (NOW() AT TIME ZONE 'Asia/Taipei')::date
+                          AND received_date < ((NOW() AT TIME ZONE 'Asia/Taipei')::date + INTERVAL '1 day')
                           AND state = 'overdue'
                        )::integer AS count_stat2,
                        '逾期' AS stat2_label,

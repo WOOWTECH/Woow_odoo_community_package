@@ -36,6 +36,7 @@
                             <field name="barcode"/>
                             <field name="unit_id"/>
                             <field name="type_id"/>
+                            <field name="courier"/>
                             <field name="office_id"/>
                         </group>
                         <group string="時間記錄">

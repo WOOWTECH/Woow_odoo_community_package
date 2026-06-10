@@ -1,6 +1,11 @@
+import logging
+
 from odoo import http, fields, _
+from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
+
+_logger = logging.getLogger(__name__)
 
 
 class VisitorPortal(CustomerPortal):
@@ -102,7 +107,7 @@ class VisitorPortal(CustomerPortal):
                 else None
             )
             visit.action_confirm(token, partner=partner)
-        except Exception as e:
+        except (UserError, ValidationError) as e:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
                 {'error': str(e)},
@@ -139,7 +144,7 @@ class VisitorPortal(CustomerPortal):
                 else None
             )
             visit.action_reject(token, partner=partner)
-        except Exception as e:
+        except (UserError, ValidationError) as e:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
                 {'error': str(e)},
@@ -165,7 +170,7 @@ class VisitorPortal(CustomerPortal):
         pending_visits = request.env['community.visit'].search([
             ('unit_id', 'in', unit_ids),
             ('state', '=', 'pending_confirm'),
-        ], order='create_date desc')
+        ], order='create_date desc', limit=100)
 
         recent_visits = request.env['community.visit'].search([
             ('unit_id', 'in', unit_ids),
@@ -220,7 +225,7 @@ class VisitorPortal(CustomerPortal):
 
         appointments = request.env['community.appointment'].search([
             ('unit_id', 'in', unit_ids),
-        ], order='create_date desc')
+        ], order='create_date desc', limit=100)
 
         return request.render(
             'community_visitor.portal_my_appointments',
@@ -290,23 +295,24 @@ class VisitorPortal(CustomerPortal):
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/appointments')
 
+        valid_until_raw = (kwargs.get('valid_until') or '').replace('T', ' ')
         vals = {
             'resident_id': partner.id,
             'unit_id': unit_id,
             'visitor_name': kwargs.get('visitor_name', ''),
             'visitor_phone': kwargs.get('visitor_phone', ''),
             'valid_from': (kwargs.get('valid_from') or '').replace('T', ' '),
-            'valid_until': (kwargs.get('valid_until') or '').replace('T', ' '),
             'max_entries': int(kwargs.get('max_entries', 1)),
             'appointment_type': kwargs.get('appointment_type', 'one_time'),
             'purpose': kwargs.get('purpose', ''),
         }
+        # Only set valid_until if provided (permanent type can omit)
+        if valid_until_raw.strip():
+            vals['valid_until'] = valid_until_raw
 
         if vals['appointment_type'] == 'recurring':
-            days = kwargs.getlist('recurring_days') if hasattr(
-                kwargs, 'getlist'
-            ) else []
-            vals['recurring_days'] = ','.join(days)
+            recurring_days = kwargs.get('recurring_days', '')
+            vals['recurring_days'] = recurring_days.strip()
             vals['recurring_from'] = self._parse_time_to_float(
                 kwargs.get('recurring_from', 0)
             )
@@ -314,7 +320,19 @@ class VisitorPortal(CustomerPortal):
                 kwargs.get('recurring_until', 0)
             )
 
-        appointment = request.env['community.appointment'].sudo().create(vals)
+        try:
+            appointment = request.env['community.appointment'].sudo().create(
+                vals,
+            )
+        except (UserError, ValidationError) as e:
+            return request.render(
+                'community_visitor.portal_appointment_new',
+                {
+                    'error': str(e),
+                    'units': partner.unit_ids,
+                    'page_name': 'appointments',
+                },
+            )
 
         return request.redirect(f'/my/appointments/{appointment.id}')
 
@@ -339,8 +357,19 @@ class VisitorPortal(CustomerPortal):
             return request.redirect('/my/appointments')
 
         try:
-            appointment.sudo().action_cancel()
-        except Exception:
-            pass
+            appointment.action_cancel()
+        except (UserError, ValidationError) as e:
+            _logger.warning(
+                'Portal appointment cancel failed (id=%s): %s',
+                appointment_id, e,
+            )
+            return request.render(
+                'community_visitor.portal_appointment_detail',
+                {
+                    'appointment': appointment,
+                    'error': str(e),
+                    'page_name': 'appointments',
+                },
+            )
 
         return request.redirect(f'/my/appointments/{appointment.id}')

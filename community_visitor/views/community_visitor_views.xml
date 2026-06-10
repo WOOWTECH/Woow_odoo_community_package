@@ -45,6 +45,7 @@
                             <field name="phone"/>
                             <field name="id_last4"/>
                             <field name="company"/>
+                            <field name="vehicle_plate"/>
                         </group>
                         <group>
                             <field name="last_visit"/>

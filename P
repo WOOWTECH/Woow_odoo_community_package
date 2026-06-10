@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8"/>
+        <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        <title>Odoo</title>
+        <link type="image/x-icon" rel="shortcut icon" href="/web/static/img/favicon.ico"/>
+        <link rel="preload" href="/web/static/src/libs/fontawesome/fonts/fontawesome-webfont.woff2?v=4.7.0" as="font" crossorigin=""/>
+        <link type="text/css" rel="stylesheet" href="/web/assets/71aa866/web.assets_frontend.min.css"/>
+        <script id="web.layout.odooscript" type="text/javascript">
+            var odoo = {
+                csrf_token: "866b4384697dc91d9c4a921025380cf8c5bb8706o1812625535",
+                debug: "",
+            };
+        </script>
+        <script type="text/javascript">
+            odoo.__session_info__ = {"is_admin": false, "is_system": false, "is_public": true, "is_internal_user": false, "is_website_user": false, "uid": null, "is_frontend": true, "profile_session": null, "profile_collectors": null, "profile_params": null, "show_effect": true, "currencies": {"1": {"symbol": "$", "position": "before", "digits": [69, 2]}}, "quick_login": true, "bundle_params": {"lang": "en_US"}, "test_mode": false, "websocket_worker_version": "18.0-7", "translationURL": "/website/translations", "cache_hashes": {"translations": "2881cbddf7ea979f1cf909e8ac4f790ee47984c9"}};
+            if (!/(^|;\s)tz=/.test(document.cookie)) {
+                const userTZ = Intl.DateTimeFormat().resolvedOptions().timeZone;
+                document.cookie = `tz=${userTZ}; path=/`;
+            }
+        </script>
+        <script type="text/javascript" defer="defer" src="/web/assets/944fe34/web.assets_frontend_minimal.min.js" onerror="__odooAssetError=1"></script>
+        <script type="text/javascript" defer="defer" data-src="/web/assets/e5888da/web.assets_frontend_lazy.min.js" onerror="__odooAssetError=1"></script>
+        
+    </head>
+    <body>
+        <div id="wrapwrap" class="  ">
+            <a class="o_skip_to_content btn btn-primary rounded-0 visually-hidden-focusable position-absolute start-0" href="#wrap">Skip to Content</a>
+                <header id="top" data-anchor="true">
+                    
+                <nav class="navbar navbar-expand navbar-light bg-light">
+                    <div class="container">
+                        <a href="/" class="navbar-brand logo">
+                            <img src="/logo.png?company=1" alt="Logo of My Company" title="My Company"/>
+                        </a>
+                        <ul id="top_menu" class="nav navbar-nav ms-auto">
+            <li class="nav-item o_no_autohide_item">
+                <a href="/web/login" class="nav-link">Sign in</a>
+            </li>
+        
+        
+                        </ul>
+                    </div>
+                </nav>
+            
+        </header>
+                <main>
+                    
+            <div class="container mt-4">
+                <div class="alert alert-danger text-center" role="alert">
+                    <h4><i class="fa fa-exclamation-triangle"></i> 錯誤</h4>
+                    <p>無效的確認連結。</p>
+                </div>
+            </div>
+        
+                </main>
+                <footer id="bottom" data-anchor="true" class="bg-light o_footer">
+                    <div id="footer"></div>
+                    <div class="o_footer_copyright">
+                        <div class="container py-3">
+                            <div class="row">
+                                <div class="col-sm text-center text-sm-start text-muted">
+                                    <span class="o_footer_copyright_name me-2">Copyright &copy; <span itemprop="name">My Company</span></span>
+        
+        
+                                </div>
+                                <div class="col-sm text-center text-sm-end">
+        <div class="o_brand_promotion">
+        Powered by 
+            <a target="_blank" class="badge text-bg-light" href="http://www.odoo.com?utm_source=db&amp;utm_medium=portal">
+                <img alt="Odoo" src="/web/static/img/odoo_logo_tiny.png" width="62" height="20" style="width: auto; height: 1em; vertical-align: baseline;"/>
+            </a>
+        
+        </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </footer>
+            </div>
+        </body>
+</html>

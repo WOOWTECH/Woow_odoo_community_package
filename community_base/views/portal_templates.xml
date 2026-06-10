@@ -13,6 +13,20 @@
                     <t t-set="text">管理社區公告、意見反映、訪客與包裹</t>
                     <t t-set="config_card" t-value="True"/>
                 </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon">/community_base/static/src/img/community-announcement.svg</t>
+                    <t t-set="title">社區公告</t>
+                    <t t-set="url" t-value="'/my/announcements'"/>
+                    <t t-set="text">瀏覽社區公布欄</t>
+                    <t t-set="placeholder_count" t-value="'announcement_count'"/>
+                </t>
+                <t t-call="portal.portal_docs_entry">
+                    <t t-set="icon">/community_base/static/src/img/community-feedback.svg</t>
+                    <t t-set="title">意見反映</t>
+                    <t t-set="url" t-value="'/my/feedbacks'"/>
+                    <t t-set="text">提交意見或查看處理進度</t>
+                    <t t-set="placeholder_count" t-value="'feedback_count'"/>
+                </t>
             </div>
         </xpath>
     </template>
@@ -22,6 +36,8 @@
               inherit_id="portal.portal_breadcrumbs" priority="30">
         <xpath expr="//ol" position="inside">
             <li t-if="page_name == 'community'" class="breadcrumb-item active">社區管理</li>
+            <li t-if="page_name == 'announcements'" class="breadcrumb-item active">社區公告</li>
+            <li t-if="page_name == 'feedbacks'" class="breadcrumb-item active">意見反映</li>
         </xpath>
     </template>
 
@@ -355,6 +371,9 @@
                     <h5 class="mb-0">新增意見反映</h5>
                 </div>
                 <div class="card-body">
+                    <div t-if="error" class="alert alert-danger" role="alert">
+                        <t t-esc="error"/>
+                    </div>
                     <p class="text-muted">
                         親愛的住戶 您好，社區維護不分你我，大家一起共同維護，
                         對社區有任何建議可提供管委會參考。
@@ -398,6 +417,19 @@
                                       placeholder="請詳細描述您的意見或問題..."
                                       required="required"></textarea>
                         </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                document.querySelectorAll('form').forEach(function(form) {
+                                    form.addEventListener('submit', function() {
+                                        var btn = form.querySelector('button[type="submit"]');
+                                        if (btn) {
+                                            btn.disabled = true;
+                                            btn.textContent = '處理中...';
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-paper-plane"/> 提交
                         </button>

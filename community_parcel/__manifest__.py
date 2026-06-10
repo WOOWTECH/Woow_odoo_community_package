@@ -12,7 +12,7 @@
     """,
     'author': 'WoowTech',
     'license': 'LGPL-3',
-    'depends': ['community_base', 'mail'],
+    'depends': ['community_base', 'mail', 'portal'],
     'data': [
         # Security
         'security/community_parcel_security.xml',
@@ -27,6 +27,7 @@
         'views/community_storage_views.xml',
         'views/community_parcel_dashboard_kanban.xml',
         'views/menu_views.xml',
+        'views/portal_parcel_templates.xml',
     ],
     'demo': [
         'data/demo_data.xml',

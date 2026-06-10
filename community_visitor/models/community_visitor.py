@@ -1,5 +1,7 @@
+import re
+
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo.exceptions import UserError, ValidationError
 
 
 class CommunityVisitor(models.Model):
@@ -12,6 +14,7 @@ class CommunityVisitor(models.Model):
     phone = fields.Char(string='電話', required=True, tracking=True)
     id_last4 = fields.Char(string='證件末4碼', size=4)
     company = fields.Char(string='公司/單位')
+    vehicle_plate = fields.Char(string='車牌號碼', tracking=True)
     photo = fields.Binary(string='照片', attachment=True)
 
     # Blacklist
@@ -43,6 +46,15 @@ class CommunityVisitor(models.Model):
             '此電話號碼已存在！',
         ),
     ]
+
+    @api.constrains('phone')
+    def _check_phone(self):
+        phone_re = re.compile(r'^[\d\-\+\(\)\s]{7,20}$')
+        for rec in self:
+            if rec.phone and not phone_re.match(rec.phone):
+                raise ValidationError(
+                    _('訪客電話格式不正確，請輸入有效的電話號碼。')
+                )
 
     @api.depends('visit_ids', 'visit_ids.state')
     def _compute_visit_stats(self):

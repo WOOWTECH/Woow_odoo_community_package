@@ -43,7 +43,8 @@
                     <group>
                         <group string="有效期間">
                             <field name="valid_from"/>
-                            <field name="valid_until"/>
+                            <field name="valid_until"
+                                   required="appointment_type != 'permanent'"/>
                         </group>
                         <group string="驗證資訊">
                             <field name="access_token"/>

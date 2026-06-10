@@ -35,6 +35,7 @@
                         </group>
                         <group>
                             <field name="office_id"/>
+                            <field name="vehicle_plate"/>
                             <field name="guard_in_id"/>
                             <field name="badge_id"/>
                             <field name="checkin_time"/>

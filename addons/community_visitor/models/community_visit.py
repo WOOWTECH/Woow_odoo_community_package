@@ -92,6 +92,7 @@ class CommunityVisit(models.Model):
         'community.office',
         string='管理室',
     )
+    vehicle_plate = fields.Char(string='車牌號碼')
     description = fields.Text(string='訪問敘述')
     note = fields.Text(string='內部備註')
     properties = fields.Properties(
@@ -188,7 +189,7 @@ class CommunityVisit(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param(
             'web.base.url'
         )
-        return f"{base_url}/visitor/confirm/{token}/accept"
+        return f"{base_url}/visitor/confirm/{token}"
 
     def _get_reject_url(self, token):
         base_url = self.env['ir.config_parameter'].sudo().get_param(
@@ -236,6 +237,11 @@ class CommunityVisit(models.Model):
         self.ensure_one()
         if self.state != 'confirmed':
             raise UserError(_('只有已確認的訪問記錄可以登記入場。'))
+        # Check blacklist before allowing entry
+        if self.visitor_id.blacklisted:
+            raise UserError(
+                _('訪客 %s 已被列入黑名單，無法入場。') % self.visitor_id.name
+            )
         # B7: Check badge is not already in use by another visit
         if (self.badge_id and self.badge_id.state == 'in_use'
                 and self.badge_id.current_visit_id != self):

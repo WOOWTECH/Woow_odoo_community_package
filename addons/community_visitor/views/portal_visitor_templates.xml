@@ -24,6 +24,15 @@
         </xpath>
     </template>
 
+    <!-- Portal Breadcrumbs for visitors and appointments -->
+    <template id="portal_breadcrumbs_visitor"
+              inherit_id="portal.portal_breadcrumbs" priority="35">
+        <xpath expr="//ol" position="inside">
+            <li t-if="page_name == 'visitors'" class="breadcrumb-item active">我的訪客</li>
+            <li t-if="page_name == 'appointments'" class="breadcrumb-item active">我的預約</li>
+        </xpath>
+    </template>
+
     <!-- Token error page -->
     <template id="portal_visitor_token_error" name="Visitor Token Error">
         <t t-call="portal.frontend_layout">
@@ -317,6 +326,9 @@
                           class="badge bg-danger">已撤銷</span>
                 </div>
                 <div class="card-body">
+                    <div t-if="error" class="alert alert-danger" role="alert">
+                        <t t-esc="error"/>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <table class="table table-borderless">
@@ -428,6 +440,10 @@
                                     <td class="text-muted">訪問戶號</td>
                                     <td t-esc="visit.unit_id.name"/>
                                 </tr>
+                                <tr t-if="visit.visitor_id.vehicle_plate">
+                                    <td class="text-muted">車牌號碼</td>
+                                    <td t-esc="visit.visitor_id.vehicle_plate"/>
+                                </tr>
                             </table>
                         </div>
                         <div class="col-md-6">
@@ -500,6 +516,9 @@
                     <h5 class="mb-0">新增預約</h5>
                 </div>
                 <div class="card-body">
+                    <div t-if="error" class="alert alert-danger" role="alert">
+                        <t t-esc="error"/>
+                    </div>
                     <form action="/my/appointments/create" method="post">
                         <input type="hidden" name="csrf_token"
                                t-att-value="request.csrf_token()"/>
@@ -534,8 +553,9 @@
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">訪客電話</label>
-                                <input type="text" name="visitor_phone"
-                                       class="form-control"/>
+                                <input type="tel" name="visitor_phone"
+                                       class="form-control"
+                                       required="required"/>
                             </div>
                         </div>
                         <div class="row">
@@ -545,11 +565,32 @@
                                        class="form-control"
                                        required="required"/>
                             </div>
-                            <div class="col-md-6 mb-3">
+                            <div class="col-md-6 mb-3" id="valid_until_group">
                                 <label class="form-label">有效截止</label>
                                 <input type="datetime-local" name="valid_until"
                                        class="form-control"
-                                       required="required"/>
+                                       id="valid_until_input"/>
+                                <small class="text-muted">永久授權可不填</small>
+                            </div>
+                        </div>
+                        <!-- Recurring schedule fields (shown when type=recurring) -->
+                        <div class="row d-none" id="recurring_fields">
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">授權星期</label>
+                                <input type="text" name="recurring_days"
+                                       class="form-control"
+                                       placeholder="0,1,2,3,4"/>
+                                <small class="text-muted">0=週一, 6=週日，以逗號分隔</small>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">每日起始時間</label>
+                                <input type="time" name="recurring_from"
+                                       class="form-control"/>
+                            </div>
+                            <div class="col-md-4 mb-3">
+                                <label class="form-label">每日截止時間</label>
+                                <input type="time" name="recurring_until"
+                                       class="form-control"/>
                             </div>
                         </div>
                         <div class="row">
@@ -566,6 +607,38 @@
                             <textarea name="purpose" class="form-control"
                                       rows="2"></textarea>
                         </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                var typeSelect = document.querySelector('select[name="appointment_type"]');
+                                var validUntilInput = document.getElementById('valid_until_input');
+                                var recurringFields = document.getElementById('recurring_fields');
+                                if (typeSelect) {
+                                    typeSelect.addEventListener('change', function() {
+                                        if (this.value === 'permanent') {
+                                            validUntilInput.removeAttribute('required');
+                                        } else {
+                                            validUntilInput.setAttribute('required', 'required');
+                                        }
+                                        if (this.value === 'recurring') {
+                                            recurringFields.classList.remove('d-none');
+                                        } else {
+                                            recurringFields.classList.add('d-none');
+                                        }
+                                    });
+                                    typeSelect.dispatchEvent(new Event('change'));
+                                }
+                                // Double-click protection
+                                document.querySelectorAll('form').forEach(function(form) {
+                                    form.addEventListener('submit', function() {
+                                        var btn = form.querySelector('button[type="submit"]');
+                                        if (btn) {
+                                            btn.disabled = true;
+                                            btn.textContent = '處理中...';
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
                         <button type="submit" class="btn btn-primary">
                             <i class="fa fa-plus"/> 建立預約
                         </button>

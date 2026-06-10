@@ -1,4 +1,5 @@
 import base64
+import re
 import secrets
 from datetime import timedelta
 
@@ -32,7 +33,10 @@ class CommunityAppointment(models.Model):
     visitor_name = fields.Char(string='訪客姓名', required=True)
     visitor_phone = fields.Char(string='訪客電話', required=True)
     valid_from = fields.Datetime(string='有效起始', required=True)
-    valid_until = fields.Datetime(string='有效截止', required=True)
+    valid_until = fields.Datetime(
+        string='有效截止',
+        help='永久授權可不填',
+    )
     max_entries = fields.Integer(
         string='最大入場次數',
         default=1,
@@ -86,6 +90,14 @@ class CommunityAppointment(models.Model):
     )
     purpose = fields.Text(string='授權目的')
 
+    _sql_constraints = [
+        (
+            'access_token_unique',
+            'UNIQUE(access_token)',
+            '驗證碼必須唯一，請重新建立預約。',
+        ),
+    ]
+
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
@@ -94,14 +106,28 @@ class CommunityAppointment(models.Model):
                     'community.appointment'
                 ) or '/'
             if not vals.get('access_token'):
-                vals['access_token'] = secrets.token_hex(3).upper()
+                vals['access_token'] = secrets.token_hex(4).upper()
+            # F10: Check if visitor phone belongs to a blacklisted visitor
+            phone = vals.get('visitor_phone')
+            if phone:
+                blacklisted = self.env['community.visitor'].sudo().search([
+                    ('phone', '=', phone),
+                    ('blacklisted', '=', True),
+                ], limit=1)
+                if blacklisted:
+                    raise UserError(
+                        _('訪客 %s（電話：%s）已被列入黑名單，無法建立預約。')
+                        % (blacklisted.name, phone)
+                    )
         return super().create(vals_list)
 
     @api.depends('visit_ids', 'visit_ids.state')
     def _compute_used_entries(self):
         for rec in self:
             rec.used_entries = len(
-                rec.visit_ids.filtered(lambda v: v.state == 'checked_in')
+                rec.visit_ids.filtered(
+                    lambda v: v.state in ('checked_in', 'checked_out')
+                )
             )
 
     @api.depends('access_token')
@@ -117,28 +143,68 @@ class CommunityAppointment(models.Model):
                         height=200,
                     )
                     rec.qr_code = base64.b64encode(qr_png)
-                except Exception:
+                except (ValueError, TypeError):
                     rec.qr_code = False
             else:
                 rec.qr_code = False
 
-    @api.constrains('valid_from', 'valid_until')
+    @api.constrains('valid_from', 'valid_until', 'appointment_type')
     def _check_dates(self):
         for rec in self:
+            # Permanent appointments don't require valid_until
+            if rec.appointment_type != 'permanent' and not rec.valid_until:
+                raise ValidationError(
+                    _('非永久授權必須填寫有效截止時間。')
+                )
             if rec.valid_from and rec.valid_until:
                 if rec.valid_from >= rec.valid_until:
                     raise ValidationError(
                         _('有效截止時間必須晚於有效起始時間。')
+                    )
+                # F17: Prevent creating appointments entirely in the past
+                if rec.valid_until < fields.Datetime.now():
+                    raise ValidationError(
+                        _('有效截止時間不得早於目前時間。')
                     )
 
     @api.constrains('recurring_from', 'recurring_until')
     def _check_recurring_times(self):
         for rec in self:
             if rec.appointment_type == 'recurring':
-                if rec.recurring_from >= rec.recurring_until:
+                if rec.recurring_from and rec.recurring_until:
+                    if rec.recurring_from >= rec.recurring_until:
+                        raise ValidationError(
+                            _('每日截止時間必須晚於每日起始時間。')
+                        )
+
+    @api.constrains('max_entries')
+    def _check_max_entries(self):
+        for rec in self:
+            if rec.max_entries < 0:
+                raise ValidationError(
+                    _('最大入場次數不得為負數。')
+                )
+
+    @api.constrains('recurring_days')
+    def _check_recurring_days(self):
+        valid_re = re.compile(r'^[0-6](,[0-6])*$')
+        for rec in self:
+            if rec.recurring_days:
+                stripped = rec.recurring_days.replace(' ', '')
+                if not valid_re.match(stripped):
                     raise ValidationError(
-                        _('每日截止時間必須晚於每日起始時間。')
+                        _('授權星期格式不正確，請使用 0-6 的數字以逗號分隔'
+                          '（0=週一, 6=週日）。')
                     )
+
+    @api.constrains('visitor_phone')
+    def _check_visitor_phone(self):
+        phone_re = re.compile(r'^[\d\-+() ]{7,20}$')
+        for rec in self:
+            if rec.visitor_phone and not phone_re.match(rec.visitor_phone):
+                raise ValidationError(
+                    _('訪客電話格式不正確，請輸入有效的電話號碼。')
+                )
 
     def action_validate_appointment(self, code):
         """Validate an appointment access code and create a visit if valid."""
@@ -164,7 +230,7 @@ class CommunityAppointment(models.Model):
         now = fields.Datetime.now()
 
         # B5: Also check actual date range (state may not have been updated)
-        if now > appointment.valid_until:
+        if appointment.valid_until and now > appointment.valid_until:
             appointment.write({'state': 'expired'})
             return {'success': False, 'error': '此預約已過期，無法核銷。'}
 

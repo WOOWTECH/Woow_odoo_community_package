@@ -1,4 +1,5 @@
 from odoo import http
+from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
 
@@ -68,7 +69,7 @@ class CommunityPortal(CustomerPortal):
             current_category = category
 
         announcements = request.env['community.announcement'].search(
-            domain, order='publish_date desc'
+            domain, order='publish_date desc', limit=100,
         )
         categories = request.env['community.announcement.category'].search([])
 
@@ -123,6 +124,7 @@ class CommunityPortal(CustomerPortal):
         feedbacks = request.env['community.feedback'].search(
             [('partner_id', '=', partner.id)],
             order='create_date desc',
+            limit=100,
         )
 
         return request.render(
@@ -165,14 +167,14 @@ class CommunityPortal(CustomerPortal):
         partner = request.env.user.partner_id
 
         unit_id = int(kwargs.get('unit_id', 0))
-        unit = request.env['community.unit'].sudo().browse(unit_id)
+        unit = request.env['community.unit'].browse(unit_id)
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/feedbacks')
 
         category_id = int(kwargs.get('category_id', 0))
         if not category_id or not request.env[
             'community.feedback.category'
-        ].sudo().browse(category_id).exists():
+        ].browse(category_id).exists():
             return request.redirect('/my/feedbacks')
 
         vals = {
@@ -183,7 +185,21 @@ class CommunityPortal(CustomerPortal):
             'partner_id': partner.id,
         }
 
-        feedback = request.env['community.feedback'].sudo().create(vals)
+        try:
+            feedback = request.env['community.feedback'].sudo().create(vals)
+        except (UserError, ValidationError) as e:
+            categories = request.env[
+                'community.feedback.category'
+            ].search([])
+            return request.render(
+                'community_base.portal_feedback_new',
+                {
+                    'error': str(e),
+                    'categories': categories,
+                    'units': partner.unit_ids,
+                    'page_name': 'feedbacks',
+                },
+            )
 
         return request.redirect(f'/my/feedbacks/{feedback.id}')
 

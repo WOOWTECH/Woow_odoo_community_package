@@ -62,6 +62,7 @@ class CommunityParcel(models.Model):
         tracking=True,
         group_expand='_expand_states',
     )
+    courier = fields.Char(string='快遞業者', tracking=True)
     description = fields.Text(string='物品敘述')
     internal_note = fields.Text(string='內部備註')
     color = fields.Integer(string='Color Index')
@@ -153,8 +154,11 @@ class CommunityParcel(models.Model):
 
     def action_scrap(self):
         for rec in self:
-            if rec.state == 'scrapped':
-                raise UserError(_('此包裹已經報廢。'))
+            if rec.state in ('picked_up', 'returned', 'scrapped'):
+                raise UserError(
+                    _('只有未取件的包裹才能報廢（目前狀態：%s）。')
+                    % rec.state
+                )
         self.write({'state': 'scrapped'})
 
     # ── Cron ─────────────────────────────────────────────────

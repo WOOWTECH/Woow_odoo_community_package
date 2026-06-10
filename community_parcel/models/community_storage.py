@@ -91,6 +91,13 @@ class CommunityStorage(models.Model):
             if rec.state != 'storing':
                 raise UserError(_('只有「保管中」的物品才能標記為待取件。'))
             rec.write({'state': 'ready'})
+            # Notify residents that item is ready for pickup
+            template = self.env.ref(
+                'community_parcel.mail_template_storage_ready',
+                raise_if_not_found=False,
+            )
+            if template:
+                template.send_mail(rec.id, force_send=False)
 
     def action_done(self):
         for rec in self:
@@ -103,6 +110,9 @@ class CommunityStorage(models.Model):
 
     def action_scrap(self):
         for rec in self:
-            if rec.state == 'scrapped':
-                raise UserError(_('此寄放物品已經報廢。'))
+            if rec.state not in ('storing', 'ready'):
+                raise UserError(
+                    _('只有「保管中」或「待取件」的寄放物品才能報廢'
+                      '（目前狀態：%s）。') % rec.state
+                )
         self.write({'state': 'scrapped'})
