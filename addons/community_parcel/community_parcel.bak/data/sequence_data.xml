@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <!-- 包裹流水編號 -->
+        <record id="seq_community_parcel" model="ir.sequence">
+            <field name="name">包裹流水編號</field>
+            <field name="code">community.parcel</field>
+            <field name="prefix">PKL/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+
+        <!-- 寄放流水編號 -->
+        <record id="seq_community_storage" model="ir.sequence">
+            <field name="name">寄放流水編號</field>
+            <field name="code">community.storage</field>
+            <field name="prefix">STG/</field>
+            <field name="padding">4</field>
+            <field name="number_next">1</field>
+            <field name="number_increment">1</field>
+        </record>
+    </data>
+
+    <!-- 每日排程：檢查逾期包裹 (noupdate=0 to allow upgrades) -->
+    <data noupdate="0">
+        <record id="ir_cron_check_overdue_parcels" model="ir.cron">
+            <field name="name">檢查逾期包裹</field>
+            <field name="model_id" eval="ref('community_parcel.model_community_parcel')"/>
+            <field name="state">code</field>
+            <field name="code">model._cron_check_overdue()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>
