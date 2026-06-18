@@ -32,7 +32,7 @@ class ParcelPortal(CustomerPortal):
     # --- Parcels ---
 
     @http.route(
-        '/my/parcels',
+        ['/my/parcels', '/my/parcels/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -131,7 +131,7 @@ class ParcelPortal(CustomerPortal):
     # --- Storage ---
 
     @http.route(
-        '/my/storage',
+        ['/my/storage', '/my/storage/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
