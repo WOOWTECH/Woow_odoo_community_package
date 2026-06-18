@@ -15,3 +15,4 @@ access_validate_appointment_wizard_guard,validate.appointment.wizard.guard,model
 access_validate_appointment_wizard_manager,validate.appointment.wizard.manager,model_validate_appointment_wizard,community_visitor.group_manager,1,1,1,1
 access_community_visitor_portal,community.visitor.portal,model_community_visitor,base.group_portal,1,0,0,0
 access_visit_purpose_portal,community.visit.purpose.portal,model_community_visit_purpose,base.group_portal,1,0,0,0
+access_visitor_badge_portal,community.visitor.badge.portal,model_community_visitor_badge,base.group_portal,1,0,0,0
