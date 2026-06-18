@@ -1,0 +1,16 @@
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Calendar body -->
+  <rect x="10" y="14" width="44" height="40" rx="4" fill="#C1DBF6"/>
+  <!-- Calendar top bar -->
+  <rect x="10" y="14" width="44" height="12" rx="4" fill="#374874"/>
+  <!-- Calendar pins -->
+  <rect x="22" y="10" width="4" height="10" rx="2" fill="#374874"/>
+  <rect x="38" y="10" width="4" height="10" rx="2" fill="#374874"/>
+  <!-- Calendar lines -->
+  <rect x="18" y="32" width="12" height="3" rx="1.5" fill="#FBDBD0"/>
+  <rect x="18" y="40" width="18" height="3" rx="1.5" fill="#FBDBD0"/>
+  <rect x="18" y="48" width="10" height="3" rx="1.5" fill="#FBDBD0"/>
+  <!-- Clock badge -->
+  <circle cx="46" cy="46" r="10" fill="#374874"/>
+  <path d="M46 40v6h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+</svg>

@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_community_office_user,community.office.user,model_community_office,base.group_user,1,1,1,1
+access_community_unit_user,community.unit.user,model_community_unit,base.group_user,1,1,1,1
+access_community_announcement_category_user,community.announcement.category.user,model_community_announcement_category,base.group_user,1,1,1,1
+access_community_announcement_category_portal,community.announcement.category.portal,model_community_announcement_category,base.group_portal,1,0,0,0
+access_community_announcement_user,community.announcement.user,model_community_announcement,base.group_user,1,1,1,1
+access_community_announcement_portal,community.announcement.portal,model_community_announcement,base.group_portal,1,0,0,0
+access_community_feedback_category_user,community.feedback.category.user,model_community_feedback_category,base.group_user,1,1,1,1
+access_community_feedback_category_portal,community.feedback.category.portal,model_community_feedback_category,base.group_portal,1,0,0,0
+access_community_feedback_user,community.feedback.user,model_community_feedback,base.group_user,1,1,1,1
+access_community_office_portal,community.office.portal,model_community_office,base.group_portal,1,0,0,0
+access_community_unit_portal,community.unit.portal,model_community_unit,base.group_portal,1,0,0,0
+access_community_feedback_portal,community.feedback.portal,model_community_feedback,base.group_portal,1,0,1,0
