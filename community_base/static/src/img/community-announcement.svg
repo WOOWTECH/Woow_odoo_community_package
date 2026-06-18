@@ -1,1 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#714B67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 8h32a4 4 0 014 4v32a4 4 0 01-4 4H16a4 4 0 01-4-4V12a4 4 0 014-4z"/><path d="M22 20h20M22 28h20M22 36h12"/><circle cx="32" cy="52" r="4"/></svg>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Megaphone / announcement icon -->
+  <path d="M14 26C14 24.8954 14.8954 24 16 24H34L46 16V48L34 40H16C14.8954 40 14 39.1046 14 38V26Z" fill="#C1DBF6"/>
+  <path d="M46 16V48" stroke="#374874" stroke-width="2" stroke-linecap="round"/>
+  <path d="M34 24L46 16" stroke="#374874" stroke-width="1.5"/>
+  <path d="M34 40L46 48" stroke="#374874" stroke-width="1.5"/>
+  <rect x="14" y="24" width="20" height="16" rx="2" fill="#FBDBD0"/>
+  <path d="M50 28C52.2091 28 54 30.2386 54 33C54 35.7614 52.2091 38 50 38" stroke="#374874" stroke-width="2" stroke-linecap="round"/>
+  <rect x="22" y="40" width="6" height="10" rx="1" fill="#374874"/>
+</svg>

@@ -1,1 +1,12 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" stroke="#714B67" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="10" y="12" width="44" height="44" rx="4"/><path d="M10 24h44"/><path d="M22 8v8M42 8v8"/><path d="M26 36l4 4 8-8"/></svg>
+<svg width="64" height="64" viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Calendar with clock badge -->
+  <rect x="10" y="14" width="44" height="40" rx="4" fill="#C1DBF6"/>
+  <rect x="10" y="14" width="44" height="12" rx="4" fill="#374874"/>
+  <rect x="22" y="10" width="4" height="10" rx="2" fill="#374874"/>
+  <rect x="38" y="10" width="4" height="10" rx="2" fill="#374874"/>
+  <rect x="18" y="32" width="12" height="3" rx="1.5" fill="#FBDBD0"/>
+  <rect x="18" y="40" width="18" height="3" rx="1.5" fill="#FBDBD0"/>
+  <rect x="18" y="48" width="10" height="3" rx="1.5" fill="#FBDBD0"/>
+  <circle cx="46" cy="46" r="10" fill="#374874"/>
+  <path d="M46 40v6h4" stroke="#fff" stroke-width="2" stroke-linecap="round"/>
+</svg>
