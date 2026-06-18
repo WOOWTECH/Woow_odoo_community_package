@@ -1,4 +1,5 @@
 from odoo import http, _
+from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
@@ -226,3 +227,73 @@ class ParcelPortal(CustomerPortal):
                 'next_record': next_record,
             },
         )
+
+    # --- Storage New / Create ---
+
+    @http.route(
+        '/my/storage/new',
+        type='http',
+        auth='user',
+        website=True,
+    )
+    def portal_storage_new(self, **kwargs):
+        partner = request.env.user.partner_id
+        units = partner.unit_ids
+        storage_types = request.env['community.storage.type'].search([])
+
+        return request.render(
+            'community_parcel.portal_storage_new',
+            {
+                'units': units,
+                'storage_types': storage_types,
+                'page_name': 'storage_new',
+            },
+        )
+
+    @http.route(
+        '/my/storage/create',
+        type='http',
+        auth='user',
+        website=True,
+        methods=['POST'],
+        csrf=True,
+    )
+    def portal_storage_create(self, **kwargs):
+        partner = request.env.user.partner_id
+
+        # Security: validate unit ownership
+        unit_id = int(kwargs.get('unit_id', 0))
+        unit = request.env['community.unit'].browse(unit_id)
+        if not unit.exists() or partner.id not in unit.resident_ids.ids:
+            return request.redirect('/my/storage')
+
+        vals = {
+            'unit_id': unit_id,
+            'item_description': kwargs.get('item_description', ''),
+        }
+
+        # Optional: type_id
+        type_id = int(kwargs.get('type_id', 0) or 0)
+        if type_id and request.env['community.storage.type'].browse(type_id).exists():
+            vals['type_id'] = type_id
+
+        # Optional: expected_pickup
+        expected_pickup = kwargs.get('expected_pickup', '').strip()
+        if expected_pickup:
+            vals['expected_pickup'] = expected_pickup
+
+        try:
+            item = request.env['community.storage'].sudo().create(vals)
+        except (UserError, ValidationError) as e:
+            storage_types = request.env['community.storage.type'].search([])
+            return request.render(
+                'community_parcel.portal_storage_new',
+                {
+                    'error': str(e),
+                    'units': partner.unit_ids,
+                    'storage_types': storage_types,
+                    'page_name': 'storage_new',
+                },
+            )
+
+        return request.redirect(f'/my/storage/{item.id}')

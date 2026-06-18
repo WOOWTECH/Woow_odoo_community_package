@@ -219,6 +219,12 @@
                 <t t-set="title">物品寄放</t>
             </t>
 
+            <div class="d-flex justify-content-end mb-3">
+                <a href="/my/storage/new" class="btn btn-primary">
+                    <i class="fa fa-plus"/> 新增寄放申請
+                </a>
+            </div>
+
             <div t-if="not items" class="alert alert-warning" role="alert">
                 目前沒有寄放物品記錄
             </div>
@@ -367,6 +373,82 @@
                 </div>
             </div>
         </xpath>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- New Storage Request Form (card layout)                        -->
+    <!-- ============================================================ -->
+    <template id="portal_storage_new" name="New Storage Request">
+        <t t-call="portal.portal_layout">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">新增寄放申請</h5>
+                </div>
+                <div class="card-body">
+                    <div t-if="error" class="alert alert-danger" role="alert">
+                        <t t-esc="error"/>
+                    </div>
+                    <p class="text-muted">
+                        請填寫以下資訊申請物品寄放，提交後將由管理員確認接收。
+                    </p>
+                    <form action="/my/storage/create" method="post">
+                        <input type="hidden" name="csrf_token"
+                               t-att-value="request.csrf_token()"/>
+                        <div class="mb-3">
+                            <label class="form-label">戶號</label>
+                            <select name="unit_id" class="form-select"
+                                    required="required">
+                                <option value="">請選擇戶號</option>
+                                <t t-foreach="units" t-as="unit">
+                                    <option t-att-value="unit.id"
+                                            t-esc="unit.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">寄放類型</label>
+                            <select name="type_id" class="form-select">
+                                <option value="">請選擇類型（可不選）</option>
+                                <t t-foreach="storage_types" t-as="stype">
+                                    <option t-att-value="stype.id"
+                                            t-esc="stype.name"/>
+                                </t>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">物品敘述</label>
+                            <textarea name="item_description" class="form-control"
+                                      rows="4"
+                                      placeholder="請描述寄放的物品內容..."
+                                      required="required"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">預計取件日</label>
+                            <input type="date" name="expected_pickup"
+                                   class="form-control"/>
+                        </div>
+                        <script>
+                            document.addEventListener('DOMContentLoaded', function() {
+                                document.querySelectorAll('form').forEach(function(form) {
+                                    form.addEventListener('submit', function() {
+                                        var btn = form.querySelector('button[type="submit"]');
+                                        if (btn) {
+                                            btn.disabled = true;
+                                            btn.textContent = '處理中...';
+                                        }
+                                    });
+                                });
+                            });
+                        </script>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fa fa-paper-plane"/> 提交申請
+                        </button>
+                        <a href="/my/storage"
+                           class="btn btn-secondary ms-2">取消</a>
+                    </form>
+                </div>
+            </div>
+        </t>
     </template>
 
 </odoo>
