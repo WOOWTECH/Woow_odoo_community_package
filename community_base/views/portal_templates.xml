@@ -160,9 +160,6 @@
                     </tr>
                 </t>
             </t>
-            <div t-if="pager" class="d-flex justify-content-center mt-3">
-                <t t-call="portal.pager"/>
-            </div>
         </t>
     </template>
 
@@ -184,7 +181,7 @@
                                         <a class="nav-link p-0" href="#card_header">公告內容</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link p-0" href="#discussion">留言討論</a>
+                                        <a class="nav-link p-0" href="#discussion_section">留言討論</a>
                                     </li>
                                 </ul>
                             </div>
@@ -232,7 +229,7 @@
                     </div>
 
                     <hr/>
-                    <div id="discussion" data-anchor="true">
+                    <div id="discussion_section" data-anchor="true">
                         <h3>留言討論</h3>
                         <t t-call="portal.message_thread">
                             <t t-set="object" t-value="announcement"/>
@@ -240,7 +237,6 @@
                     </div>
                 </div>
             </div>
-            <t t-call="portal.record_pager"/>
         </xpath>
     </template>
 
@@ -298,9 +294,6 @@
                     </tr>
                 </t>
             </t>
-            <div t-if="pager" class="d-flex justify-content-center mt-3">
-                <t t-call="portal.pager"/>
-            </div>
         </t>
     </template>
 
@@ -322,7 +315,7 @@
                                         <a class="nav-link p-0" href="#card_header">意見內容</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link p-0" href="#discussion">留言討論</a>
+                                        <a class="nav-link p-0" href="#discussion_section">留言討論</a>
                                     </li>
                                 </ul>
                             </div>
@@ -385,7 +378,7 @@
                     </div>
 
                     <hr/>
-                    <div id="discussion" data-anchor="true">
+                    <div id="discussion_section" data-anchor="true">
                         <h3>留言討論</h3>
                         <t t-call="portal.message_thread">
                             <t t-set="object" t-value="feedback"/>
@@ -393,7 +386,6 @@
                     </div>
                 </div>
             </div>
-            <t t-call="portal.record_pager"/>
         </xpath>
     </template>
 
