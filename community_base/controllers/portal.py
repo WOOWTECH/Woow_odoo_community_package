@@ -1,7 +1,8 @@
-from odoo import http
+from odoo import http, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
+from odoo.addons.portal.controllers.portal import pager as portal_pager
 
 
 class CommunityPortal(CustomerPortal):
@@ -9,6 +10,18 @@ class CommunityPortal(CustomerPortal):
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
+
+        if 'community_count' in counters:
+            office_ids = partner.unit_ids.office_id.ids
+            ann_count = request.env['community.announcement'].search_count([
+                ('state', '=', 'published'),
+                ('office_id', 'in', office_ids),
+            ])
+            fb_count = request.env['community.feedback'].search_count([
+                ('partner_id', '=', partner.id),
+                ('state', 'in', ['pending', 'in_progress']),
+            ])
+            values['community_count'] = ann_count + fb_count
 
         if 'announcement_count' in counters:
             office_ids = partner.unit_ids.office_id.ids
@@ -53,7 +66,7 @@ class CommunityPortal(CustomerPortal):
         auth='user',
         website=True,
     )
-    def portal_announcements(self, category=None, **kwargs):
+    def portal_announcements(self, page=1, sortby=None, filterby=None, **kwargs):
         partner = request.env.user.partner_id
         office_ids = partner.unit_ids.office_id.ids
 
@@ -62,24 +75,56 @@ class CommunityPortal(CustomerPortal):
             ('office_id', 'in', office_ids),
         ]
 
-        current_category = False
-        if category:
-            category = int(category)
-            domain.append(('category_id', '=', category))
-            current_category = category
+        searchbar_sortings = {
+            'date_desc': {'label': _('最新優先'), 'order': 'publish_date desc'},
+            'date_asc': {'label': _('最舊優先'), 'order': 'publish_date asc'},
+        }
+
+        categories = request.env['community.announcement.category'].search([])
+        searchbar_filters = {
+            'all': {'label': _('全部'), 'domain': []},
+        }
+        for cat in categories:
+            searchbar_filters[str(cat.id)] = {
+                'label': cat.name,
+                'domain': [('category_id', '=', cat.id)],
+            }
+
+        if not sortby:
+            sortby = 'date_desc'
+        if not filterby:
+            filterby = 'all'
+
+        sort_order = searchbar_sortings[sortby]['order']
+        search_domain = domain + searchbar_filters[filterby]['domain']
+
+        total_count = request.env['community.announcement'].search_count(search_domain)
+        pager = portal_pager(
+            url='/my/announcements',
+            total=total_count,
+            page=int(page),
+            step=20,
+            url_args={'sortby': sortby, 'filterby': filterby},
+        )
 
         announcements = request.env['community.announcement'].search(
-            domain, order='publish_date desc', limit=100,
+            search_domain,
+            order=sort_order,
+            limit=20,
+            offset=pager['offset'],
         )
-        categories = request.env['community.announcement.category'].search([])
 
         return request.render(
             'community_base.portal_announcements',
             {
                 'announcements': announcements,
-                'categories': categories,
-                'current_category': current_category,
                 'page_name': 'announcements',
+                'default_url': '/my/announcements',
+                'pager': pager,
+                'searchbar_sortings': searchbar_sortings,
+                'searchbar_filters': searchbar_filters,
+                'sortby': sortby,
+                'filterby': filterby,
             },
         )
 
@@ -102,11 +147,23 @@ class CommunityPortal(CustomerPortal):
         if announcement.office_id.id not in office_ids:
             return request.redirect('/my/announcements')
 
+        # prev/next navigation
+        all_ann = request.env['community.announcement'].search([
+            ('state', '=', 'published'),
+            ('office_id', 'in', office_ids),
+        ], order='publish_date desc')
+        ann_ids = all_ann.ids
+        idx = ann_ids.index(announcement.id) if announcement.id in ann_ids else -1
+        prev_record = f'/my/announcements/{ann_ids[idx - 1]}' if idx > 0 else None
+        next_record = f'/my/announcements/{ann_ids[idx + 1]}' if 0 <= idx < len(ann_ids) - 1 else None
+
         return request.render(
             'community_base.portal_announcement_detail',
             {
                 'announcement': announcement,
-                'page_name': 'announcements',
+                'page_name': 'announcement_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )
 
@@ -118,13 +175,43 @@ class CommunityPortal(CustomerPortal):
         auth='user',
         website=True,
     )
-    def portal_feedbacks(self, **kwargs):
+    def portal_feedbacks(self, page=1, sortby=None, filterby=None, **kwargs):
         partner = request.env.user.partner_id
+        domain = [('partner_id', '=', partner.id)]
+
+        searchbar_sortings = {
+            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+        }
+        searchbar_filters = {
+            'all': {'label': _('全部'), 'domain': []},
+            'pending': {'label': _('待處理'), 'domain': [('state', '=', 'pending')]},
+            'in_progress': {'label': _('處理中'), 'domain': [('state', '=', 'in_progress')]},
+            'done': {'label': _('已結案'), 'domain': [('state', '=', 'done')]},
+        }
+
+        if not sortby:
+            sortby = 'date_desc'
+        if not filterby:
+            filterby = 'all'
+
+        sort_order = searchbar_sortings[sortby]['order']
+        search_domain = domain + searchbar_filters[filterby]['domain']
+
+        total_count = request.env['community.feedback'].search_count(search_domain)
+        pager = portal_pager(
+            url='/my/feedbacks',
+            total=total_count,
+            page=int(page),
+            step=20,
+            url_args={'sortby': sortby, 'filterby': filterby},
+        )
 
         feedbacks = request.env['community.feedback'].search(
-            [('partner_id', '=', partner.id)],
-            order='create_date desc',
-            limit=100,
+            search_domain,
+            order=sort_order,
+            limit=20,
+            offset=pager['offset'],
         )
 
         return request.render(
@@ -132,6 +219,12 @@ class CommunityPortal(CustomerPortal):
             {
                 'feedbacks': feedbacks,
                 'page_name': 'feedbacks',
+                'default_url': '/my/feedbacks',
+                'pager': pager,
+                'searchbar_sortings': searchbar_sortings,
+                'searchbar_filters': searchbar_filters,
+                'sortby': sortby,
+                'filterby': filterby,
             },
         )
 
@@ -151,7 +244,7 @@ class CommunityPortal(CustomerPortal):
             {
                 'units': units,
                 'categories': categories,
-                'page_name': 'feedbacks',
+                'page_name': 'feedback_new',
             },
         )
 
@@ -197,7 +290,7 @@ class CommunityPortal(CustomerPortal):
                     'error': str(e),
                     'categories': categories,
                     'units': partner.unit_ids,
-                    'page_name': 'feedbacks',
+                    'page_name': 'feedback_new',
                 },
             )
 
@@ -219,10 +312,22 @@ class CommunityPortal(CustomerPortal):
         if feedback.partner_id.id != partner.id:
             return request.redirect('/my/feedbacks')
 
+        # prev/next navigation
+        all_fb = request.env['community.feedback'].search(
+            [('partner_id', '=', partner.id)],
+            order='create_date desc',
+        )
+        fb_ids = all_fb.ids
+        idx = fb_ids.index(feedback.id) if feedback.id in fb_ids else -1
+        prev_record = f'/my/feedbacks/{fb_ids[idx - 1]}' if idx > 0 else None
+        next_record = f'/my/feedbacks/{fb_ids[idx + 1]}' if 0 <= idx < len(fb_ids) - 1 else None
+
         return request.render(
             'community_base.portal_feedback_detail',
             {
                 'feedback': feedback,
-                'page_name': 'feedbacks',
+                'page_name': 'feedback_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )

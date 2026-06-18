@@ -4,6 +4,7 @@ from odoo import http, fields, _
 from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
+from odoo.addons.portal.controllers.portal import pager as portal_pager
 
 _logger = logging.getLogger(__name__)
 
@@ -163,29 +164,58 @@ class VisitorPortal(CustomerPortal):
         auth='user',
         website=True,
     )
-    def portal_my_visitors(self, **kwargs):
+    def portal_my_visitors(self, page=1, sortby=None, filterby=None, **kwargs):
         partner = request.env.user.partner_id
         unit_ids = partner.unit_ids.ids
+        domain = [('unit_id', 'in', unit_ids)]
 
-        pending_visits = request.env['community.visit'].search([
-            ('unit_id', 'in', unit_ids),
-            ('state', '=', 'pending_confirm'),
-        ], order='create_date desc', limit=100)
+        searchbar_sortings = {
+            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+        }
+        searchbar_filters = {
+            'all': {'label': _('全部'), 'domain': []},
+            'pending': {'label': _('待確認'), 'domain': [('state', '=', 'pending_confirm')]},
+            'confirmed': {'label': _('已確認'), 'domain': [('state', '=', 'confirmed')]},
+            'checked_in': {'label': _('已入場'), 'domain': [('state', '=', 'checked_in')]},
+            'checked_out': {'label': _('已離場'), 'domain': [('state', '=', 'checked_out')]},
+        }
 
-        recent_visits = request.env['community.visit'].search([
-            ('unit_id', 'in', unit_ids),
-            ('state', 'in', [
-                'confirmed', 'checked_in', 'checked_out',
-                'rejected', 'timeout',
-            ]),
-        ], order='create_date desc', limit=50)
+        if not sortby:
+            sortby = 'date_desc'
+        if not filterby:
+            filterby = 'all'
+
+        sort_order = searchbar_sortings[sortby]['order']
+        search_domain = domain + searchbar_filters[filterby]['domain']
+
+        total_count = request.env['community.visit'].search_count(search_domain)
+        pager = portal_pager(
+            url='/my/visitors',
+            total=total_count,
+            page=int(page),
+            step=20,
+            url_args={'sortby': sortby, 'filterby': filterby},
+        )
+
+        visits = request.env['community.visit'].search(
+            search_domain,
+            order=sort_order,
+            limit=20,
+            offset=pager['offset'],
+        )
 
         return request.render(
             'community_visitor.portal_my_visitors',
             {
-                'pending_visits': pending_visits,
-                'recent_visits': recent_visits,
+                'visits': visits,
                 'page_name': 'visitors',
+                'default_url': '/my/visitors',
+                'pager': pager,
+                'searchbar_sortings': searchbar_sortings,
+                'searchbar_filters': searchbar_filters,
+                'sortby': sortby,
+                'filterby': filterby,
             },
         )
 
@@ -205,11 +235,23 @@ class VisitorPortal(CustomerPortal):
         if partner.id not in visit.unit_id.resident_ids.ids:
             return request.redirect('/my/visitors')
 
+        # prev/next navigation
+        all_visits = request.env['community.visit'].search(
+            [('unit_id', 'in', partner.unit_ids.ids)],
+            order='create_date desc',
+        )
+        visit_ids = all_visits.ids
+        idx = visit_ids.index(visit.id) if visit.id in visit_ids else -1
+        prev_record = f'/my/visitors/{visit_ids[idx - 1]}' if idx > 0 else None
+        next_record = f'/my/visitors/{visit_ids[idx + 1]}' if 0 <= idx < len(visit_ids) - 1 else None
+
         return request.render(
             'community_visitor.portal_visit_detail',
             {
                 'visit': visit,
-                'page_name': 'visitors',
+                'page_name': 'visit_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )
 
@@ -219,19 +261,57 @@ class VisitorPortal(CustomerPortal):
         auth='user',
         website=True,
     )
-    def portal_my_appointments(self, **kwargs):
+    def portal_my_appointments(self, page=1, sortby=None, filterby=None, **kwargs):
         partner = request.env.user.partner_id
         unit_ids = partner.unit_ids.ids
+        domain = [('unit_id', 'in', unit_ids)]
 
-        appointments = request.env['community.appointment'].search([
-            ('unit_id', 'in', unit_ids),
-        ], order='create_date desc', limit=100)
+        searchbar_sortings = {
+            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+        }
+        searchbar_filters = {
+            'all': {'label': _('全部'), 'domain': []},
+            'active': {'label': _('有效'), 'domain': [('state', '=', 'active')]},
+            'expired': {'label': _('已過期'), 'domain': [('state', '=', 'expired')]},
+            'cancelled': {'label': _('已撤銷'), 'domain': [('state', '=', 'cancelled')]},
+        }
+
+        if not sortby:
+            sortby = 'date_desc'
+        if not filterby:
+            filterby = 'all'
+
+        sort_order = searchbar_sortings[sortby]['order']
+        search_domain = domain + searchbar_filters[filterby]['domain']
+
+        total_count = request.env['community.appointment'].search_count(search_domain)
+        pager = portal_pager(
+            url='/my/appointments',
+            total=total_count,
+            page=int(page),
+            step=20,
+            url_args={'sortby': sortby, 'filterby': filterby},
+        )
+
+        appointments = request.env['community.appointment'].search(
+            search_domain,
+            order=sort_order,
+            limit=20,
+            offset=pager['offset'],
+        )
 
         return request.render(
             'community_visitor.portal_my_appointments',
             {
                 'appointments': appointments,
                 'page_name': 'appointments',
+                'default_url': '/my/appointments',
+                'pager': pager,
+                'searchbar_sortings': searchbar_sortings,
+                'searchbar_filters': searchbar_filters,
+                'sortby': sortby,
+                'filterby': filterby,
             },
         )
 
@@ -253,11 +333,23 @@ class VisitorPortal(CustomerPortal):
         if partner.id not in appointment.unit_id.resident_ids.ids:
             return request.redirect('/my/appointments')
 
+        # prev/next navigation
+        all_apts = request.env['community.appointment'].search(
+            [('unit_id', 'in', partner.unit_ids.ids)],
+            order='create_date desc',
+        )
+        apt_ids = all_apts.ids
+        idx = apt_ids.index(appointment.id) if appointment.id in apt_ids else -1
+        prev_record = f'/my/appointments/{apt_ids[idx - 1]}' if idx > 0 else None
+        next_record = f'/my/appointments/{apt_ids[idx + 1]}' if 0 <= idx < len(apt_ids) - 1 else None
+
         return request.render(
             'community_visitor.portal_appointment_detail',
             {
                 'appointment': appointment,
-                'page_name': 'appointments',
+                'page_name': 'appointment_detail',
+                'prev_record': prev_record,
+                'next_record': next_record,
             },
         )
 
@@ -275,7 +367,7 @@ class VisitorPortal(CustomerPortal):
             'community_visitor.portal_appointment_new',
             {
                 'units': units,
-                'page_name': 'appointments',
+                'page_name': 'appointment_new',
             },
         )
 
@@ -330,7 +422,7 @@ class VisitorPortal(CustomerPortal):
                 {
                     'error': str(e),
                     'units': partner.unit_ids,
-                    'page_name': 'appointments',
+                    'page_name': 'appointment_new',
                 },
             )
 
@@ -368,7 +460,7 @@ class VisitorPortal(CustomerPortal):
                 {
                     'appointment': appointment,
                     'error': str(e),
-                    'page_name': 'appointments',
+                    'page_name': 'appointment_detail',
                 },
             )
 

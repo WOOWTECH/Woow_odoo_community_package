@@ -1,148 +1,131 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Portal My Home: single Community Management card -->
+    <!-- ============================================================ -->
+    <!-- Portal Home: single Community Management hub card             -->
+    <!-- Uses portal_service_category like office_enhance              -->
+    <!-- ============================================================ -->
     <template id="portal_my_home_community" name="Portal My Home - Community"
-              inherit_id="portal.portal_my_home" priority="30">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <div class="o_portal_category row g-2 mt-3" id="portal_community_category">
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon">/community_base/static/src/img/community-home.svg</t>
-                    <t t-set="title">社區管理</t>
-                    <t t-set="url" t-value="'/my/community'"/>
-                    <t t-set="text">管理社區公告、意見反映、訪客與包裹</t>
-                    <t t-set="config_card" t-value="True"/>
-                </t>
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon">/community_base/static/src/img/community-announcement.svg</t>
-                    <t t-set="title">社區公告</t>
-                    <t t-set="url" t-value="'/my/announcements'"/>
-                    <t t-set="text">瀏覽社區公布欄</t>
-                    <t t-set="placeholder_count" t-value="'announcement_count'"/>
-                </t>
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon">/community_base/static/src/img/community-feedback.svg</t>
-                    <t t-set="title">意見反映</t>
-                    <t t-set="url" t-value="'/my/feedbacks'"/>
-                    <t t-set="text">提交意見或查看處理進度</t>
-                    <t t-set="placeholder_count" t-value="'feedback_count'"/>
-                </t>
-            </div>
+              inherit_id="portal.portal_my_home" customize_show="True" priority="30">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="before">
+            <t t-set="portal_service_category_enable" t-value="True"/>
         </xpath>
+        <div id="portal_service_category" position="inside">
+            <t t-call="portal.portal_docs_entry">
+                <t t-set="icon" t-value="'/community_base/static/src/img/community-home.svg'"/>
+                <t t-set="title">社區管理</t>
+                <t t-set="text">管理社區公告、意見反映、訪客與包裹</t>
+                <t t-set="url" t-value="'/my/community'"/>
+                <t t-set="placeholder_count" t-value="'community_count'"/>
+                <t t-set="config_card" t-value="True"/>
+            </t>
+        </div>
     </template>
 
-    <!-- Portal Breadcrumb: add community page -->
+    <!-- ============================================================ -->
+    <!-- Breadcrumbs: hierarchical (Home > 社區管理 > Section > Detail) -->
+    <!-- ============================================================ -->
     <template id="portal_breadcrumbs_community"
               inherit_id="portal.portal_breadcrumbs" priority="30">
-        <xpath expr="//ol" position="inside">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- Hub page -->
             <li t-if="page_name == 'community'" class="breadcrumb-item active">社區管理</li>
+
+            <!-- Announcements -->
+            <li t-if="page_name in ('announcements', 'announcement_detail')"
+                class="breadcrumb-item">
+                <a href="/my/community">社區管理</a>
+            </li>
             <li t-if="page_name == 'announcements'" class="breadcrumb-item active">社區公告</li>
+            <li t-if="page_name == 'announcement_detail'" class="breadcrumb-item">
+                <a href="/my/announcements">社區公告</a>
+            </li>
+            <li t-if="page_name == 'announcement_detail'" class="breadcrumb-item active">
+                <t t-esc="announcement.name"/>
+            </li>
+
+            <!-- Feedbacks -->
+            <li t-if="page_name in ('feedbacks', 'feedback_detail', 'feedback_new')"
+                class="breadcrumb-item">
+                <a href="/my/community">社區管理</a>
+            </li>
             <li t-if="page_name == 'feedbacks'" class="breadcrumb-item active">意見反映</li>
+            <li t-if="page_name in ('feedback_detail', 'feedback_new')" class="breadcrumb-item">
+                <a href="/my/feedbacks">意見反映</a>
+            </li>
+            <li t-if="page_name == 'feedback_detail'" class="breadcrumb-item active">
+                <t t-esc="feedback.name"/>
+            </li>
+            <li t-if="page_name == 'feedback_new'" class="breadcrumb-item active">新增意見</li>
         </xpath>
     </template>
 
-    <!-- Portal: Community Management Landing Page -->
-    <template id="portal_my_community" name="Community Management">
+    <!-- ============================================================ -->
+    <!-- Hub Page: /my/community                                       -->
+    <!-- Cards use portal.portal_docs_entry (same as office_enhance)   -->
+    <!-- No title header                                               -->
+    <!-- ============================================================ -->
+    <template id="portal_my_community" name="Community Management Hub">
         <t t-call="portal.portal_layout">
-
-            <h3 class="mb-4">社區管理</h3>
-
-            <div class="row g-3">
-                <!-- 1. 社區公告 -->
-                <div class="col-lg-4 col-md-6 col-12">
-                    <a href="/my/announcements"
-                       class="d-flex gap-3 py-3 px-3 h-100 rounded text-decoration-none bg-100">
-                        <div class="o_portal_icon d-block align-self-start">
-                            <img src="/community_base/static/src/img/community-announcement.svg"
-                                 width="64" height="64" alt="社區公告"/>
-                        </div>
-                        <div>
-                            <div class="fs-5 fw-normal lh-1 mb-1">社區公告</div>
-                            <div class="opacity-75">瀏覽社區公布欄</div>
-                        </div>
-                    </a>
+            <div class="o_portal_community_hub">
+                <div class="oe_structure" id="oe_structure_portal_community_1"/>
+                <div class="o_portal_category row g-2 mt-3">
+                    <!-- 1. 社區公告 -->
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="icon" t-value="'/community_base/static/src/img/community-announcement.svg'"/>
+                        <t t-set="title">社區公告</t>
+                        <t t-set="text">瀏覽社區公布欄</t>
+                        <t t-set="url" t-value="'/my/announcements'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <!-- 2. 意見反映 -->
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="icon" t-value="'/community_base/static/src/img/community-feedback.svg'"/>
+                        <t t-set="title">意見反映</t>
+                        <t t-set="text">提交意見或查看處理進度</t>
+                        <t t-set="url" t-value="'/my/feedbacks'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <!-- 3. 我的訪客 -->
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="icon" t-value="'/community_base/static/src/img/community-visitor.svg'"/>
+                        <t t-set="title">我的訪客</t>
+                        <t t-set="text">查看與管理待確認的訪客</t>
+                        <t t-set="url" t-value="'/my/visitors'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <!-- 4. 我的預約 -->
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="icon" t-value="'/community_base/static/src/img/community-appointment.svg'"/>
+                        <t t-set="title">我的預約</t>
+                        <t t-set="text">管理訪客預約通行單</t>
+                        <t t-set="url" t-value="'/my/appointments'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <!-- 5. 包裹收件 -->
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="icon" t-value="'/community_base/static/src/img/community-parcel.svg'"/>
+                        <t t-set="title">包裹收件</t>
+                        <t t-set="text">查看待取包裹</t>
+                        <t t-set="url" t-value="'/my/parcels'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
+                    <!-- 6. 物品寄放 -->
+                    <t t-call="portal.portal_docs_entry">
+                        <t t-set="icon" t-value="'/community_base/static/src/img/community-storage.svg'"/>
+                        <t t-set="title">物品寄放</t>
+                        <t t-set="text">查看寄放物品狀態</t>
+                        <t t-set="url" t-value="'/my/storage'"/>
+                        <t t-set="config_card" t-value="True"/>
+                    </t>
                 </div>
-                <!-- 2. 意見反映 -->
-                <div class="col-lg-4 col-md-6 col-12">
-                    <a href="/my/feedbacks"
-                       class="d-flex gap-3 py-3 px-3 h-100 rounded text-decoration-none bg-100">
-                        <div class="o_portal_icon d-block align-self-start">
-                            <img src="/community_base/static/src/img/community-feedback.svg"
-                                 width="64" height="64" alt="意見反映"/>
-                        </div>
-                        <div>
-                            <div class="fs-5 fw-normal lh-1 mb-1">意見反映</div>
-                            <div class="opacity-75">提交意見或查看處理進度</div>
-                        </div>
-                    </a>
-                </div>
-                <!-- 3. 我的訪客 -->
-                <div class="col-lg-4 col-md-6 col-12">
-                    <a href="/my/visitors"
-                       class="d-flex gap-3 py-3 px-3 h-100 rounded text-decoration-none bg-100">
-                        <div class="o_portal_icon d-block align-self-start">
-                            <img src="/community_base/static/src/img/community-visitor.svg"
-                                 width="64" height="64" alt="我的訪客"/>
-                        </div>
-                        <div>
-                            <div class="fs-5 fw-normal lh-1 mb-1">我的訪客</div>
-                            <div class="opacity-75">查看與管理待確認的訪客</div>
-                        </div>
-                    </a>
-                </div>
-                <!-- 4. 我的預約 -->
-                <div class="col-lg-4 col-md-6 col-12">
-                    <a href="/my/appointments"
-                       class="d-flex gap-3 py-3 px-3 h-100 rounded text-decoration-none bg-100">
-                        <div class="o_portal_icon d-block align-self-start">
-                            <img src="/community_base/static/src/img/community-appointment.svg"
-                                 width="64" height="64" alt="我的預約"/>
-                        </div>
-                        <div>
-                            <div class="fs-5 fw-normal lh-1 mb-1">我的預約</div>
-                            <div class="opacity-75">管理訪客預約通行單</div>
-                        </div>
-                    </a>
-                </div>
-                <!-- 5. 包裹收件 -->
-                <div class="col-lg-4 col-md-6 col-12">
-                    <a href="/my/parcels"
-                       class="d-flex gap-3 py-3 px-3 h-100 rounded text-decoration-none bg-100">
-                        <div class="o_portal_icon d-block align-self-start">
-                            <img src="/community_base/static/src/img/community-parcel.svg"
-                                 width="64" height="64" alt="包裹收件"/>
-                        </div>
-                        <div>
-                            <div class="fs-5 fw-normal lh-1 mb-1">包裹收件</div>
-                            <div class="opacity-75">查看待取包裹</div>
-                        </div>
-                    </a>
-                </div>
-                <!-- 6. 物品寄放 -->
-                <div class="col-lg-4 col-md-6 col-12">
-                    <a href="/my/storage"
-                       class="d-flex gap-3 py-3 px-3 h-100 rounded text-decoration-none bg-100">
-                        <div class="o_portal_icon d-block align-self-start">
-                            <img src="/community_base/static/src/img/community-storage.svg"
-                                 width="64" height="64" alt="物品寄放"/>
-                        </div>
-                        <div>
-                            <div class="fs-5 fw-normal lh-1 mb-1">物品寄放</div>
-                            <div class="opacity-75">查看寄放物品狀態</div>
-                        </div>
-                    </a>
-                </div>
-            </div>
-
-            <div class="mt-4">
-                <a href="/my/home" class="btn btn-secondary">
-                    <i class="fa fa-arrow-left"/> 返回首頁
-                </a>
             </div>
         </t>
     </template>
 
-    <!-- Portal: Announcement List -->
+    <!-- ============================================================ -->
+    <!-- Announcement List: portal_table + searchbar + pager           -->
+    <!-- ============================================================ -->
     <template id="portal_announcements" name="Announcements">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -150,108 +133,120 @@
                 <t t-set="title">社區公告</t>
             </t>
 
-            <!-- Category filter tabs -->
-            <div class="mb-3 d-flex flex-wrap gap-2">
-                <a t-attf-href="/my/announcements"
-                   t-attf-class="btn btn-sm #{not current_category and 'btn-primary' or 'btn-outline-primary'}">
-                    全部
-                </a>
-                <t t-foreach="categories" t-as="cat">
-                    <a t-attf-href="/my/announcements?category=#{cat.id}"
-                       t-attf-class="btn btn-sm #{current_category == cat.id and 'btn-primary' or 'btn-outline-primary'}">
-                        <t t-esc="cat.name"/>
-                    </a>
-                </t>
+            <div t-if="not announcements" class="alert alert-warning" role="alert">
+                目前尚無公告
             </div>
-
-            <div t-if="announcements">
+            <t t-if="announcements" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>公告標題</th>
+                        <th>分類</th>
+                        <th>發布者</th>
+                        <th class="text-end">發布時間</th>
+                    </tr>
+                </thead>
                 <t t-foreach="announcements" t-as="ann">
-                    <div class="card mb-3">
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <h5 class="card-title mb-1">
-                                    <a t-attf-href="/my/announcements/#{ann.id}"
-                                       class="text-decoration-none"
-                                       t-esc="ann.name"/>
-                                </h5>
-                                <span class="badge bg-secondary"
-                                      t-esc="ann.category_id.name"/>
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/announcements/#{ann.id}">
+                                <t t-esc="ann.name"/>
+                            </a>
+                        </td>
+                        <td><span class="badge text-bg-light" t-esc="ann.category_id.name"/></td>
+                        <td><t t-esc="ann.author_id.name"/></td>
+                        <td class="text-end">
+                            <span t-field="ann.publish_date" t-options="{'widget': 'date'}"/>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+            <div t-if="pager" class="d-flex justify-content-center mt-3">
+                <t t-call="portal.pager"/>
+            </div>
+        </t>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Announcement Detail: portal_sidebar layout                    -->
+    <!-- ============================================================ -->
+    <template id="portal_announcement_detail" name="Announcement Detail"
+              inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <div class="row o_portal_announcement_sidebar">
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-4 col-xxl-3 d-print-none'"/>
+                    <t t-set="entries">
+                        <div class="d-flex flex-wrap flex-column gap-4">
+                            <div class="d-flex align-items-center flex-grow-1 p-0"
+                                 t-ignore="true" role="complementary">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#card_header">公告內容</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#discussion">留言討論</a>
+                                    </li>
+                                </ul>
                             </div>
-                            <small class="text-muted">
-                                <span t-field="ann.publish_date"/>
-                                <span class="mx-1">|</span>
-                                <span t-esc="ann.author_id.name"/>
-                            </small>
+                            <div class="d-flex flex-column gap-2">
+                                <h6><small class="text-muted">公告資訊</small></h6>
+                                <div t-if="announcement.category_id">
+                                    <strong>分類：</strong>
+                                    <span t-esc="announcement.category_id.name"/>
+                                </div>
+                                <div t-if="announcement.office_id">
+                                    <strong>管理室：</strong>
+                                    <span t-esc="announcement.office_id.name"/>
+                                </div>
+                                <div t-if="announcement.author_id">
+                                    <strong>發布者：</strong>
+                                    <span t-esc="announcement.author_id.name"/>
+                                </div>
+                                <div>
+                                    <strong>發布時間：</strong>
+                                    <span t-field="announcement.publish_date"/>
+                                </div>
+                            </div>
                         </div>
-                    </div>
+                    </t>
                 </t>
-            </div>
-            <div t-else="" class="text-center py-4 text-muted">
-                <p>目前尚無公告</p>
-            </div>
-        </t>
-    </template>
 
-    <!-- Portal: Announcement Detail -->
-    <template id="portal_announcement_detail" name="Announcement Detail">
-        <t t-call="portal.portal_layout">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0" t-esc="announcement.name"/>
-                    <span class="badge bg-secondary"
-                          t-esc="announcement.category_id.name"/>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <th class="w-50">公告分類</th>
-                                    <td t-esc="announcement.category_id.name"/>
-                                </tr>
-                                <tr>
-                                    <th>發布管理室</th>
-                                    <td t-esc="announcement.office_id.name"/>
-                                </tr>
-                            </table>
+                <div id="announcement_content" class="o_portal_content col-12 col-lg-8 col-xxl-9">
+                    <div id="card">
+                        <div id="card_header" data-anchor="true">
+                            <div class="row justify-content-between mb-3">
+                                <div class="col-12 col-md-9">
+                                    <h3 class="my-0">
+                                        <span t-field="announcement.name"/>
+                                    </h3>
+                                </div>
+                                <div class="col-auto">
+                                    <span class="badge text-bg-secondary"
+                                          t-esc="announcement.category_id.name"/>
+                                </div>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <th class="w-50">發布時間</th>
-                                    <td><span t-field="announcement.publish_date"/></td>
-                                </tr>
-                                <tr>
-                                    <th>發布者</th>
-                                    <td t-esc="announcement.author_id.name"/>
-                                </tr>
-                            </table>
+                        <div id="card_body">
+                            <div t-field="announcement.content"/>
                         </div>
                     </div>
+
                     <hr/>
-                    <div>
-                        <strong class="text-muted">公告內容：</strong>
-                        <div class="mt-2" t-field="announcement.content"/>
+                    <div id="discussion" data-anchor="true">
+                        <h3>留言討論</h3>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="announcement"/>
+                        </t>
                     </div>
                 </div>
             </div>
-
-            <!-- Chatter for portal communication -->
-            <div class="mt-3" id="announcement_communication">
-                <t t-call="portal.message_thread">
-                    <t t-set="object" t-value="announcement"/>
-                </t>
-            </div>
-
-            <div class="mt-3">
-                <a href="/my/announcements" class="btn btn-secondary">
-                    <i class="fa fa-arrow-left"/> 返回公告列表
-                </a>
-            </div>
-        </t>
+            <t t-call="portal.record_pager"/>
+        </xpath>
     </template>
 
-    <!-- Portal: Feedback List -->
+    <!-- ============================================================ -->
+    <!-- Feedback List: portal_table + searchbar + pager                -->
+    <!-- ============================================================ -->
     <template id="portal_feedbacks" name="My Feedbacks">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -259,111 +254,152 @@
                 <t t-set="title">意見反映</t>
             </t>
 
-            <div class="mb-3">
+            <div class="d-flex justify-content-end mb-3">
                 <a href="/my/feedbacks/new" class="btn btn-primary">
                     <i class="fa fa-plus"/> 新增意見
                 </a>
             </div>
 
-            <div class="card" t-if="feedbacks">
-                <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>編號</th>
-                                <th>標題</th>
-                                <th>類別</th>
-                                <th>戶號</th>
-                                <th>提交時間</th>
-                                <th>狀態</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="feedbacks" t-as="fb">
-                                <td>
-                                    <a t-attf-href="/my/feedbacks/#{fb.id}"
-                                       t-esc="fb.name"/>
-                                </td>
-                                <td t-esc="fb.title"/>
-                                <td t-esc="fb.category_id.name"/>
-                                <td t-esc="fb.unit_id.name"/>
-                                <td><span t-field="fb.create_date"/></td>
-                                <td>
-                                    <span t-if="fb.state == 'pending'"
-                                          class="badge bg-warning">待處理</span>
-                                    <span t-if="fb.state == 'in_progress'"
-                                          class="badge bg-info">處理中</span>
-                                    <span t-if="fb.state == 'done'"
-                                          class="badge bg-success">已結案</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
+            <div t-if="not feedbacks" class="alert alert-warning" role="alert">
+                暫無意見反映記錄
             </div>
-            <div t-else="" class="text-center py-4 text-muted">
-                <p>暫無意見反映記錄</p>
+            <t t-if="feedbacks" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>編號</th>
+                        <th>標題</th>
+                        <th>類別</th>
+                        <th>戶號</th>
+                        <th class="text-end">提交時間</th>
+                        <th class="text-center">狀態</th>
+                    </tr>
+                </thead>
+                <t t-foreach="feedbacks" t-as="fb">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/feedbacks/#{fb.id}">
+                                <t t-esc="fb.name"/>
+                            </a>
+                        </td>
+                        <td><t t-esc="fb.title"/></td>
+                        <td><t t-esc="fb.category_id.name"/></td>
+                        <td><t t-esc="fb.unit_id.name"/></td>
+                        <td class="text-end">
+                            <span t-field="fb.create_date" t-options="{'widget': 'date'}"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-if="fb.state == 'pending'"
+                                  class="badge rounded-pill text-bg-warning">待處理</span>
+                            <span t-if="fb.state == 'in_progress'"
+                                  class="badge rounded-pill text-bg-info">處理中</span>
+                            <span t-if="fb.state == 'done'"
+                                  class="badge rounded-pill text-bg-success">已結案</span>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+            <div t-if="pager" class="d-flex justify-content-center mt-3">
+                <t t-call="portal.pager"/>
             </div>
         </t>
     </template>
 
-    <!-- Portal: Feedback Detail -->
-    <template id="portal_feedback_detail" name="Feedback Detail">
-        <t t-call="portal.portal_layout">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <span t-esc="feedback.name"/>
-                        <span class="mx-1">-</span>
-                        <span t-esc="feedback.title"/>
-                    </h5>
-                    <span t-if="feedback.state == 'pending'"
-                          class="badge bg-warning">待處理</span>
-                    <span t-if="feedback.state == 'in_progress'"
-                          class="badge bg-info">處理中</span>
-                    <span t-if="feedback.state == 'done'"
-                          class="badge bg-success">已結案</span>
-                </div>
-                <div class="card-body">
-                    <table class="table table-borderless">
-                        <tr>
-                            <td class="text-muted" style="width: 120px;">類別</td>
-                            <td t-esc="feedback.category_id.name"/>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">戶號</td>
-                            <td t-esc="feedback.unit_id.name"/>
-                        </tr>
-                        <tr>
-                            <td class="text-muted">提交時間</td>
-                            <td><span t-field="feedback.create_date"/></td>
-                        </tr>
-                    </table>
+    <!-- ============================================================ -->
+    <!-- Feedback Detail: portal_sidebar layout                        -->
+    <!-- ============================================================ -->
+    <template id="portal_feedback_detail" name="Feedback Detail"
+              inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <div class="row o_portal_feedback_sidebar">
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-4 col-xxl-3 d-print-none'"/>
+                    <t t-set="entries">
+                        <div class="d-flex flex-wrap flex-column gap-4">
+                            <div class="d-flex align-items-center flex-grow-1 p-0"
+                                 t-ignore="true" role="complementary">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#card_header">意見內容</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#discussion">留言討論</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="d-flex flex-column gap-2">
+                                <h6><small class="text-muted">狀態</small></h6>
+                                <span t-if="feedback.state == 'pending'"
+                                      class="badge rounded-pill text-bg-warning">待處理</span>
+                                <span t-if="feedback.state == 'in_progress'"
+                                      class="badge rounded-pill text-bg-info">處理中</span>
+                                <span t-if="feedback.state == 'done'"
+                                      class="badge rounded-pill text-bg-success">已結案</span>
+                            </div>
+                            <div class="d-flex flex-column gap-2">
+                                <h6><small class="text-muted">反映資訊</small></h6>
+                                <div t-if="feedback.category_id">
+                                    <strong>類別：</strong>
+                                    <span t-esc="feedback.category_id.name"/>
+                                </div>
+                                <div t-if="feedback.unit_id">
+                                    <strong>戶號：</strong>
+                                    <span t-esc="feedback.unit_id.name"/>
+                                </div>
+                                <div>
+                                    <strong>提交時間：</strong>
+                                    <span t-field="feedback.create_date"/>
+                                </div>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
+                <div id="feedback_content" class="o_portal_content col-12 col-lg-8 col-xxl-9">
+                    <div id="card">
+                        <div id="card_header" data-anchor="true">
+                            <div class="row justify-content-between mb-3">
+                                <div class="col-12 col-md-9">
+                                    <h3 class="my-0">
+                                        <span t-esc="feedback.name"/>
+                                        <span class="mx-1">-</span>
+                                        <span t-esc="feedback.title"/>
+                                    </h3>
+                                </div>
+                                <div class="col-auto">
+                                    <span t-if="feedback.state == 'pending'"
+                                          class="badge rounded-pill text-bg-warning">待處理</span>
+                                    <span t-if="feedback.state == 'in_progress'"
+                                          class="badge rounded-pill text-bg-info">處理中</span>
+                                    <span t-if="feedback.state == 'done'"
+                                          class="badge rounded-pill text-bg-success">已結案</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="card_body">
+                            <div class="mb-3">
+                                <strong>意見內容：</strong>
+                                <p class="mt-2" style="white-space: pre-wrap;"
+                                   t-esc="feedback.content"/>
+                            </div>
+                        </div>
+                    </div>
+
                     <hr/>
-                    <div class="mb-3">
-                        <strong>意見內容：</strong>
-                        <p class="mt-2" style="white-space: pre-wrap;"
-                           t-esc="feedback.content"/>
+                    <div id="discussion" data-anchor="true">
+                        <h3>留言討論</h3>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="feedback"/>
+                        </t>
                     </div>
                 </div>
             </div>
-
-            <!-- Chatter for portal communication -->
-            <div class="mt-3" id="feedback_communication">
-                <t t-call="portal.message_thread">
-                    <t t-set="object" t-value="feedback"/>
-                </t>
-            </div>
-
-            <div class="mt-3">
-                <a href="/my/feedbacks" class="btn btn-secondary">
-                    <i class="fa fa-arrow-left"/> 返回列表
-                </a>
-            </div>
-        </t>
+            <t t-call="portal.record_pager"/>
+        </xpath>
     </template>
 
-    <!-- Portal: New Feedback Form -->
+    <!-- ============================================================ -->
+    <!-- New Feedback Form (kept as card layout)                       -->
+    <!-- ============================================================ -->
     <template id="portal_feedback_new" name="New Feedback">
         <t t-call="portal.portal_layout">
             <div class="card">

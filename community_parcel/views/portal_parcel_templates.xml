@@ -1,39 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
-    <!-- Portal My Home: add Parcel & Storage cards -->
-    <template id="portal_my_home_parcel" name="Portal My Home - Parcel"
-              inherit_id="portal.portal_my_home" priority="40">
-        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
-            <div class="o_portal_category row g-2 mt-3" id="portal_parcel_category">
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon" t-value="'/community_base/static/src/img/community-parcel.svg'"/>
-                    <t t-set="title">包裹收件</t>
-                    <t t-set="url" t-value="'/my/parcels'"/>
-                    <t t-set="text">查看待取包裹</t>
-                    <t t-set="placeholder_count" t-value="'parcel_count'"/>
-                </t>
-                <t t-call="portal.portal_docs_entry">
-                    <t t-set="icon" t-value="'/community_base/static/src/img/community-storage.svg'"/>
-                    <t t-set="title">物品寄放</t>
-                    <t t-set="url" t-value="'/my/storage'"/>
-                    <t t-set="text">查看寄放物品狀態</t>
-                    <t t-set="placeholder_count" t-value="'storage_count'"/>
-                </t>
-            </div>
-        </xpath>
-    </template>
+    <!-- ============================================================ -->
+    <!-- Portal Home: REMOVED parcel/storage sub-cards                 -->
+    <!-- Cards now only appear on /my/community hub                    -->
+    <!-- ============================================================ -->
 
-    <!-- Portal Breadcrumb -->
+    <!-- ============================================================ -->
+    <!-- Breadcrumbs: hierarchical (Home > 社區管理 > Section > Detail) -->
+    <!-- ============================================================ -->
     <template id="portal_breadcrumbs_parcel"
               inherit_id="portal.portal_breadcrumbs" priority="40">
-        <xpath expr="//ol" position="inside">
+        <xpath expr="//ol[hasclass('o_portal_submenu')]" position="inside">
+            <!-- Parcels -->
+            <li t-if="page_name in ('parcels', 'parcel_detail')"
+                class="breadcrumb-item">
+                <a href="/my/community">社區管理</a>
+            </li>
             <li t-if="page_name == 'parcels'" class="breadcrumb-item active">包裹收件</li>
+            <li t-if="page_name == 'parcel_detail'" class="breadcrumb-item">
+                <a href="/my/parcels">包裹收件</a>
+            </li>
+            <li t-if="page_name == 'parcel_detail'" class="breadcrumb-item active">
+                <t t-esc="parcel.name"/>
+            </li>
+
+            <!-- Storage -->
+            <li t-if="page_name in ('storage', 'storage_detail', 'storage_new')"
+                class="breadcrumb-item">
+                <a href="/my/community">社區管理</a>
+            </li>
             <li t-if="page_name == 'storage'" class="breadcrumb-item active">物品寄放</li>
+            <li t-if="page_name in ('storage_detail', 'storage_new')" class="breadcrumb-item">
+                <a href="/my/storage">物品寄放</a>
+            </li>
+            <li t-if="page_name == 'storage_detail'" class="breadcrumb-item active">
+                <t t-esc="item.name"/>
+            </li>
+            <li t-if="page_name == 'storage_new'" class="breadcrumb-item active">新增寄放</li>
         </xpath>
     </template>
 
-    <!-- Portal: Parcel List -->
+    <!-- ============================================================ -->
+    <!-- Parcel List: portal_table + searchbar + pager                 -->
+    <!-- ============================================================ -->
     <template id="portal_parcels" name="My Parcels">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -41,170 +51,171 @@
                 <t t-set="title">包裹收件</t>
             </t>
 
-            <!-- State filter tabs -->
-            <div class="mb-3 d-flex flex-wrap gap-2">
-                <a href="/my/parcels"
-                   t-attf-class="btn btn-sm #{not current_state and 'btn-primary' or 'btn-outline-primary'}">
-                    全部
-                </a>
-                <a href="/my/parcels?state=draft"
-                   t-attf-class="btn btn-sm #{current_state == 'draft' and 'btn-primary' or 'btn-outline-primary'}">
-                    待通知
-                </a>
-                <a href="/my/parcels?state=notified"
-                   t-attf-class="btn btn-sm #{current_state == 'notified' and 'btn-primary' or 'btn-outline-primary'}">
-                    已通知
-                </a>
-                <a href="/my/parcels?state=picked_up"
-                   t-attf-class="btn btn-sm #{current_state == 'picked_up' and 'btn-primary' or 'btn-outline-primary'}">
-                    已取件
-                </a>
-                <a href="/my/parcels?state=overdue"
-                   t-attf-class="btn btn-sm #{current_state == 'overdue' and 'btn-danger' or 'btn-outline-danger'}">
-                    逾期
-                </a>
+            <div t-if="not parcels" class="alert alert-warning" role="alert">
+                目前沒有包裹記錄
             </div>
-
-            <div class="card" t-if="parcels">
-                <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>編號</th>
-                                <th>條碼</th>
-                                <th>戶號</th>
-                                <th>類型</th>
-                                <th>快遞業者</th>
-                                <th>收件時間</th>
-                                <th>狀態</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="parcels" t-as="p">
-                                <td>
-                                    <a t-attf-href="/my/parcels/#{p.id}"
-                                       t-esc="p.name"/>
-                                </td>
-                                <td t-esc="p.barcode or '-'"/>
-                                <td t-esc="p.unit_id.name"/>
-                                <td t-esc="p.type_id.name or '-'"/>
-                                <td t-esc="p.courier or '-'"/>
-                                <td><span t-field="p.received_date"/></td>
-                                <td>
-                                    <span t-if="p.state == 'draft'"
-                                          class="badge bg-secondary">待通知</span>
-                                    <span t-if="p.state == 'notified'"
-                                          class="badge bg-info">已通知</span>
-                                    <span t-if="p.state == 'picked_up'"
-                                          class="badge bg-success">已取件</span>
-                                    <span t-if="p.state == 'returned'"
-                                          class="badge bg-warning">已退回</span>
-                                    <span t-if="p.state == 'overdue'"
-                                          class="badge bg-danger">逾期</span>
-                                    <span t-if="p.state == 'scrapped'"
-                                          class="badge bg-dark">已報廢</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div t-else="" class="text-center py-4 text-muted">
-                <p>目前沒有包裹記錄</p>
-            </div>
-        </t>
-    </template>
-
-    <!-- Portal: Parcel Detail -->
-    <template id="portal_parcel_detail" name="Parcel Detail">
-        <t t-call="portal.portal_layout">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <span t-esc="parcel.name"/>
-                    </h5>
-                    <span t-if="parcel.state == 'draft'"
-                          class="badge bg-secondary">待通知</span>
-                    <span t-if="parcel.state == 'notified'"
-                          class="badge bg-info">已通知</span>
-                    <span t-if="parcel.state == 'picked_up'"
-                          class="badge bg-success">已取件</span>
-                    <span t-if="parcel.state == 'returned'"
-                          class="badge bg-warning">已退回</span>
-                    <span t-if="parcel.state == 'overdue'"
-                          class="badge bg-danger">逾期</span>
-                    <span t-if="parcel.state == 'scrapped'"
-                          class="badge bg-dark">已報廢</span>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <th class="w-50">快遞條碼</th>
-                                    <td t-esc="parcel.barcode or '-'"/>
-                                </tr>
-                                <tr>
-                                    <th>戶號</th>
-                                    <td t-esc="parcel.unit_id.name"/>
-                                </tr>
-                                <tr>
-                                    <th>類型</th>
-                                    <td t-esc="parcel.type_id.name or '-'"/>
-                                </tr>
-                                <tr>
-                                    <th>快遞業者</th>
-                                    <td t-esc="parcel.courier or '-'"/>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <th class="w-50">收件時間</th>
-                                    <td><span t-field="parcel.received_date"/></td>
-                                </tr>
-                                <tr>
-                                    <th>通知時間</th>
-                                    <td>
-                                        <span t-if="parcel.notified_date" t-field="parcel.notified_date"/>
-                                        <span t-else="">-</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>取件時間</th>
-                                    <td>
-                                        <span t-if="parcel.pickup_date" t-field="parcel.pickup_date"/>
-                                        <span t-else="">-</span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div t-if="parcel.description">
-                        <hr/>
-                        <strong class="text-muted">物品敘述：</strong>
-                        <p class="mt-2" style="white-space: pre-wrap;"
-                           t-esc="parcel.description"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-3" id="parcel_communication">
-                <t t-call="portal.message_thread">
-                    <t t-set="object" t-value="parcel"/>
+            <t t-if="parcels" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>編號</th>
+                        <th>條碼</th>
+                        <th>戶號</th>
+                        <th>類型</th>
+                        <th>快遞業者</th>
+                        <th class="text-end">收件時間</th>
+                        <th class="text-center">狀態</th>
+                    </tr>
+                </thead>
+                <t t-foreach="parcels" t-as="p">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/parcels/#{p.id}">
+                                <t t-esc="p.name"/>
+                            </a>
+                        </td>
+                        <td><t t-esc="p.barcode or '-'"/></td>
+                        <td><t t-esc="p.unit_id.name"/></td>
+                        <td><t t-esc="p.type_id.name or '-'"/></td>
+                        <td><t t-esc="p.courier or '-'"/></td>
+                        <td class="text-end">
+                            <span t-field="p.received_date" t-options="{'widget': 'date'}"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-if="p.state == 'draft'"
+                                  class="badge rounded-pill text-bg-light">待通知</span>
+                            <span t-if="p.state == 'notified'"
+                                  class="badge rounded-pill text-bg-info">已通知</span>
+                            <span t-if="p.state == 'picked_up'"
+                                  class="badge rounded-pill text-bg-success">已取件</span>
+                            <span t-if="p.state == 'returned'"
+                                  class="badge rounded-pill text-bg-secondary">已退回</span>
+                            <span t-if="p.state == 'overdue'"
+                                  class="badge rounded-pill text-bg-danger">逾期</span>
+                            <span t-if="p.state == 'scrapped'"
+                                  class="badge rounded-pill text-bg-dark">已報廢</span>
+                        </td>
+                    </tr>
                 </t>
-            </div>
-
-            <div class="mt-3">
-                <a href="/my/parcels" class="btn btn-secondary">
-                    <i class="fa fa-arrow-left"/> 返回包裹列表
-                </a>
+            </t>
+            <div t-if="pager" class="d-flex justify-content-center mt-3">
+                <t t-call="portal.pager"/>
             </div>
         </t>
     </template>
 
-    <!-- Portal: Storage List -->
+    <!-- ============================================================ -->
+    <!-- Parcel Detail: portal_sidebar layout                          -->
+    <!-- ============================================================ -->
+    <template id="portal_parcel_detail" name="Parcel Detail"
+              inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <div class="row o_portal_parcel_sidebar">
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-4 col-xxl-3 d-print-none'"/>
+                    <t t-set="entries">
+                        <div class="d-flex flex-wrap flex-column gap-4">
+                            <div class="d-flex align-items-center flex-grow-1 p-0"
+                                 t-ignore="true" role="complementary">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#card_header">包裹資訊</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#discussion">歷史紀錄</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="d-flex flex-column gap-2">
+                                <h6><small class="text-muted">狀態</small></h6>
+                                <span t-if="parcel.state == 'draft'"
+                                      class="badge rounded-pill text-bg-light">待通知</span>
+                                <span t-if="parcel.state == 'notified'"
+                                      class="badge rounded-pill text-bg-info">已通知</span>
+                                <span t-if="parcel.state == 'picked_up'"
+                                      class="badge rounded-pill text-bg-success">已取件</span>
+                                <span t-if="parcel.state == 'returned'"
+                                      class="badge rounded-pill text-bg-secondary">已退回</span>
+                                <span t-if="parcel.state == 'overdue'"
+                                      class="badge rounded-pill text-bg-danger">逾期</span>
+                                <span t-if="parcel.state == 'scrapped'"
+                                      class="badge rounded-pill text-bg-dark">已報廢</span>
+                            </div>
+                        </div>
+                    </t>
+                </t>
+
+                <div id="parcel_content" class="o_portal_content col-12 col-lg-8 col-xxl-9">
+                    <div id="card">
+                        <div id="card_header" data-anchor="true">
+                            <div class="row justify-content-between mb-3">
+                                <div class="col-12 col-md-9">
+                                    <h3 class="my-0">
+                                        <span t-field="parcel.name"/>
+                                    </h3>
+                                </div>
+                                <div class="col-auto">
+                                    <span t-if="parcel.state == 'draft'"
+                                          class="badge rounded-pill text-bg-light">待通知</span>
+                                    <span t-if="parcel.state == 'notified'"
+                                          class="badge rounded-pill text-bg-info">已通知</span>
+                                    <span t-if="parcel.state == 'picked_up'"
+                                          class="badge rounded-pill text-bg-success">已取件</span>
+                                    <span t-if="parcel.state == 'returned'"
+                                          class="badge rounded-pill text-bg-secondary">已退回</span>
+                                    <span t-if="parcel.state == 'overdue'"
+                                          class="badge rounded-pill text-bg-danger">逾期</span>
+                                    <span t-if="parcel.state == 'scrapped'"
+                                          class="badge rounded-pill text-bg-dark">已報廢</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="card_body">
+                            <div class="row mb-4">
+                                <div class="col-12 col-md-6">
+                                    <div t-if="parcel.barcode"><strong>快遞條碼：</strong>
+                                        <span t-esc="parcel.barcode"/></div>
+                                    <div><strong>戶號：</strong>
+                                        <span t-esc="parcel.unit_id.name"/></div>
+                                    <div t-if="parcel.type_id"><strong>類型：</strong>
+                                        <span t-esc="parcel.type_id.name"/></div>
+                                    <div t-if="parcel.courier"><strong>快遞業者：</strong>
+                                        <span t-esc="parcel.courier"/></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div><strong>收件時間：</strong>
+                                        <span t-field="parcel.received_date"/></div>
+                                    <div t-if="parcel.notified_date"><strong>通知時間：</strong>
+                                        <span t-field="parcel.notified_date"/></div>
+                                    <div t-if="parcel.pickup_date"><strong>取件時間：</strong>
+                                        <span t-field="parcel.pickup_date"/></div>
+                                </div>
+                            </div>
+                            <div t-if="parcel.description">
+                                <h5 class="mb-1">物品敘述</h5>
+                                <hr class="mt-1 mb-2"/>
+                                <div class="py-1 px-2 bg-100 small"
+                                     style="white-space: pre-wrap;"
+                                     t-esc="parcel.description"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr/>
+                    <div id="discussion" data-anchor="true">
+                        <h3>歷史紀錄</h3>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="parcel"/>
+                        </t>
+                    </div>
+                </div>
+            </div>
+            <t t-call="portal.record_pager"/>
+        </xpath>
+    </template>
+
+    <!-- ============================================================ -->
+    <!-- Storage List: portal_table + searchbar + pager                -->
+    <!-- ============================================================ -->
     <template id="portal_storage" name="My Storage Items">
         <t t-call="portal.portal_layout">
             <t t-set="breadcrumbs_searchbar" t-value="True"/>
@@ -212,161 +223,158 @@
                 <t t-set="title">物品寄放</t>
             </t>
 
-            <!-- State filter tabs -->
-            <div class="mb-3 d-flex flex-wrap gap-2">
-                <a href="/my/storage"
-                   t-attf-class="btn btn-sm #{not current_state and 'btn-primary' or 'btn-outline-primary'}">
-                    全部
-                </a>
-                <a href="/my/storage?state=pending"
-                   t-attf-class="btn btn-sm #{current_state == 'pending' and 'btn-primary' or 'btn-outline-primary'}">
-                    待接收
-                </a>
-                <a href="/my/storage?state=storing"
-                   t-attf-class="btn btn-sm #{current_state == 'storing' and 'btn-primary' or 'btn-outline-primary'}">
-                    保管中
-                </a>
-                <a href="/my/storage?state=ready"
-                   t-attf-class="btn btn-sm #{current_state == 'ready' and 'btn-primary' or 'btn-outline-primary'}">
-                    待取件
-                </a>
-                <a href="/my/storage?state=done"
-                   t-attf-class="btn btn-sm #{current_state == 'done' and 'btn-primary' or 'btn-outline-primary'}">
-                    已完成
-                </a>
+            <div t-if="not items" class="alert alert-warning" role="alert">
+                目前沒有寄放物品記錄
             </div>
-
-            <div class="card" t-if="items">
-                <div class="card-body p-0">
-                    <table class="table table-hover mb-0">
-                        <thead>
-                            <tr>
-                                <th>編號</th>
-                                <th>戶號</th>
-                                <th>類型</th>
-                                <th>寄放位置</th>
-                                <th>寄放時間</th>
-                                <th>狀態</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr t-foreach="items" t-as="s">
-                                <td>
-                                    <a t-attf-href="/my/storage/#{s.id}"
-                                       t-esc="s.name"/>
-                                </td>
-                                <td t-esc="s.unit_id.name"/>
-                                <td t-esc="s.type_id.name or '-'"/>
-                                <td t-esc="s.storage_location or '-'"/>
-                                <td><span t-field="s.deposit_date"/></td>
-                                <td>
-                                    <span t-if="s.state == 'pending'"
-                                          class="badge bg-secondary">待接收</span>
-                                    <span t-if="s.state == 'storing'"
-                                          class="badge bg-info">保管中</span>
-                                    <span t-if="s.state == 'ready'"
-                                          class="badge bg-warning">待取件</span>
-                                    <span t-if="s.state == 'done'"
-                                          class="badge bg-success">已完成</span>
-                                    <span t-if="s.state == 'scrapped'"
-                                          class="badge bg-dark">已報廢</span>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-            <div t-else="" class="text-center py-4 text-muted">
-                <p>目前沒有寄放物品記錄</p>
+            <t t-if="items" t-call="portal.portal_table">
+                <thead>
+                    <tr class="active">
+                        <th>編號</th>
+                        <th>戶號</th>
+                        <th>類型</th>
+                        <th>寄放位置</th>
+                        <th class="text-end">寄放時間</th>
+                        <th class="text-center">狀態</th>
+                    </tr>
+                </thead>
+                <t t-foreach="items" t-as="s">
+                    <tr>
+                        <td>
+                            <a t-attf-href="/my/storage/#{s.id}">
+                                <t t-esc="s.name"/>
+                            </a>
+                        </td>
+                        <td><t t-esc="s.unit_id.name"/></td>
+                        <td><t t-esc="s.type_id.name or '-'"/></td>
+                        <td><t t-esc="s.storage_location or '-'"/></td>
+                        <td class="text-end">
+                            <span t-field="s.deposit_date" t-options="{'widget': 'date'}"/>
+                        </td>
+                        <td class="text-center">
+                            <span t-if="s.state == 'pending'"
+                                  class="badge rounded-pill text-bg-warning">待接收</span>
+                            <span t-if="s.state == 'storing'"
+                                  class="badge rounded-pill text-bg-info">保管中</span>
+                            <span t-if="s.state == 'ready'"
+                                  class="badge rounded-pill text-bg-primary">待取件</span>
+                            <span t-if="s.state == 'done'"
+                                  class="badge rounded-pill text-bg-success">已完成</span>
+                            <span t-if="s.state == 'scrapped'"
+                                  class="badge rounded-pill text-bg-dark">已報廢</span>
+                        </td>
+                    </tr>
+                </t>
+            </t>
+            <div t-if="pager" class="d-flex justify-content-center mt-3">
+                <t t-call="portal.pager"/>
             </div>
         </t>
     </template>
 
-    <!-- Portal: Storage Detail -->
-    <template id="portal_storage_detail" name="Storage Item Detail">
-        <t t-call="portal.portal_layout">
-            <div class="card">
-                <div class="card-header d-flex justify-content-between align-items-center">
-                    <h5 class="mb-0">
-                        <span t-esc="item.name"/>
-                    </h5>
-                    <span t-if="item.state == 'pending'"
-                          class="badge bg-secondary">待接收</span>
-                    <span t-if="item.state == 'storing'"
-                          class="badge bg-info">保管中</span>
-                    <span t-if="item.state == 'ready'"
-                          class="badge bg-warning">待取件</span>
-                    <span t-if="item.state == 'done'"
-                          class="badge bg-success">已完成</span>
-                    <span t-if="item.state == 'scrapped'"
-                          class="badge bg-dark">已報廢</span>
-                </div>
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <th class="w-50">戶號</th>
-                                    <td t-esc="item.unit_id.name"/>
-                                </tr>
-                                <tr>
-                                    <th>類型</th>
-                                    <td t-esc="item.type_id.name or '-'"/>
-                                </tr>
-                                <tr>
-                                    <th>取件人</th>
-                                    <td t-esc="item.recipient_name or '-'"/>
-                                </tr>
-                                <tr>
-                                    <th>寄放位置</th>
-                                    <td t-esc="item.storage_location or '-'"/>
-                                </tr>
-                            </table>
+    <!-- ============================================================ -->
+    <!-- Storage Detail: portal_sidebar layout                         -->
+    <!-- ============================================================ -->
+    <template id="portal_storage_detail" name="Storage Item Detail"
+              inherit_id="portal.portal_sidebar" primary="True">
+        <xpath expr="//div[hasclass('o_portal_sidebar')]" position="inside">
+            <div class="row o_portal_storage_sidebar">
+                <t t-call="portal.portal_record_sidebar">
+                    <t t-set="classes" t-value="'col-lg-4 col-xxl-3 d-print-none'"/>
+                    <t t-set="entries">
+                        <div class="d-flex flex-wrap flex-column gap-4">
+                            <div class="d-flex align-items-center flex-grow-1 p-0"
+                                 t-ignore="true" role="complementary">
+                                <ul class="nav flex-column">
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#card_header">寄放資訊</a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link p-0" href="#discussion">歷史紀錄</a>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="d-flex flex-column gap-2">
+                                <h6><small class="text-muted">狀態</small></h6>
+                                <span t-if="item.state == 'pending'"
+                                      class="badge rounded-pill text-bg-warning">待接收</span>
+                                <span t-if="item.state == 'storing'"
+                                      class="badge rounded-pill text-bg-info">保管中</span>
+                                <span t-if="item.state == 'ready'"
+                                      class="badge rounded-pill text-bg-primary">待取件</span>
+                                <span t-if="item.state == 'done'"
+                                      class="badge rounded-pill text-bg-success">已完成</span>
+                                <span t-if="item.state == 'scrapped'"
+                                      class="badge rounded-pill text-bg-dark">已報廢</span>
+                            </div>
                         </div>
-                        <div class="col-md-6">
-                            <table class="table table-sm">
-                                <tr>
-                                    <th class="w-50">寄放時間</th>
-                                    <td><span t-field="item.deposit_date"/></td>
-                                </tr>
-                                <tr>
-                                    <th>預計取件日</th>
-                                    <td>
-                                        <span t-if="item.expected_pickup" t-field="item.expected_pickup"/>
-                                        <span t-else="">-</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>實際取件時間</th>
-                                    <td>
-                                        <span t-if="item.actual_pickup" t-field="item.actual_pickup"/>
-                                        <span t-else="">-</span>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                    </div>
-                    <div t-if="item.item_description">
-                        <hr/>
-                        <strong class="text-muted">物品敘述：</strong>
-                        <p class="mt-2" style="white-space: pre-wrap;"
-                           t-esc="item.item_description"/>
-                    </div>
-                </div>
-            </div>
-
-            <div class="mt-3" id="storage_communication">
-                <t t-call="portal.message_thread">
-                    <t t-set="object" t-value="item"/>
+                    </t>
                 </t>
-            </div>
 
-            <div class="mt-3">
-                <a href="/my/storage" class="btn btn-secondary">
-                    <i class="fa fa-arrow-left"/> 返回寄放列表
-                </a>
+                <div id="storage_content" class="o_portal_content col-12 col-lg-8 col-xxl-9">
+                    <div id="card">
+                        <div id="card_header" data-anchor="true">
+                            <div class="row justify-content-between mb-3">
+                                <div class="col-12 col-md-9">
+                                    <h3 class="my-0">
+                                        <span t-field="item.name"/>
+                                    </h3>
+                                </div>
+                                <div class="col-auto">
+                                    <span t-if="item.state == 'pending'"
+                                          class="badge rounded-pill text-bg-warning">待接收</span>
+                                    <span t-if="item.state == 'storing'"
+                                          class="badge rounded-pill text-bg-info">保管中</span>
+                                    <span t-if="item.state == 'ready'"
+                                          class="badge rounded-pill text-bg-primary">待取件</span>
+                                    <span t-if="item.state == 'done'"
+                                          class="badge rounded-pill text-bg-success">已完成</span>
+                                    <span t-if="item.state == 'scrapped'"
+                                          class="badge rounded-pill text-bg-dark">已報廢</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div id="card_body">
+                            <div class="row mb-4">
+                                <div class="col-12 col-md-6">
+                                    <div><strong>戶號：</strong>
+                                        <span t-esc="item.unit_id.name"/></div>
+                                    <div t-if="item.type_id"><strong>類型：</strong>
+                                        <span t-esc="item.type_id.name"/></div>
+                                    <div t-if="item.recipient_name"><strong>取件人：</strong>
+                                        <span t-esc="item.recipient_name"/></div>
+                                    <div t-if="item.storage_location"><strong>寄放位置：</strong>
+                                        <span t-esc="item.storage_location"/></div>
+                                </div>
+                                <div class="col-12 col-md-6">
+                                    <div><strong>寄放時間：</strong>
+                                        <span t-field="item.deposit_date"/></div>
+                                    <div t-if="item.expected_pickup"><strong>預計取件日：</strong>
+                                        <span t-field="item.expected_pickup"/></div>
+                                    <div t-if="item.actual_pickup"><strong>實際取件時間：</strong>
+                                        <span t-field="item.actual_pickup"/></div>
+                                </div>
+                            </div>
+                            <div t-if="item.item_description">
+                                <h5 class="mb-1">物品敘述</h5>
+                                <hr class="mt-1 mb-2"/>
+                                <div class="py-1 px-2 bg-100 small"
+                                     style="white-space: pre-wrap;"
+                                     t-esc="item.item_description"/>
+                            </div>
+                        </div>
+                    </div>
+
+                    <hr/>
+                    <div id="discussion" data-anchor="true">
+                        <h3>歷史紀錄</h3>
+                        <t t-call="portal.message_thread">
+                            <t t-set="object" t-value="item"/>
+                        </t>
+                    </div>
+                </div>
             </div>
-        </t>
+            <t t-call="portal.record_pager"/>
+        </xpath>
     </template>
 
 </odoo>
