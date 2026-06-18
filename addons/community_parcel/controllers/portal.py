@@ -44,15 +44,15 @@ class ParcelPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'received_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'received_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'received_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'received_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'draft': {'label': _('待通知'), 'domain': [('state', '=', 'draft')]},
-            'notified': {'label': _('已通知'), 'domain': [('state', '=', 'notified')]},
-            'picked_up': {'label': _('已取件'), 'domain': [('state', '=', 'picked_up')]},
-            'overdue': {'label': _('逾期'), 'domain': [('state', '=', 'overdue')]},
+            'all': {'label': _('All'), 'domain': []},
+            'draft': {'label': _('Pending Notify'), 'domain': [('state', '=', 'draft')]},
+            'notified': {'label': _('Notified'), 'domain': [('state', '=', 'notified')]},
+            'picked_up': {'label': _('Picked Up'), 'domain': [('state', '=', 'picked_up')]},
+            'overdue': {'label': _('Overdue'), 'domain': [('state', '=', 'overdue')]},
         }
 
         if not sortby or sortby not in searchbar_sortings:
@@ -143,15 +143,15 @@ class ParcelPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'deposit_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'deposit_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'deposit_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'deposit_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'pending': {'label': _('待接收'), 'domain': [('state', '=', 'pending')]},
-            'storing': {'label': _('保管中'), 'domain': [('state', '=', 'storing')]},
-            'ready': {'label': _('待取件'), 'domain': [('state', '=', 'ready')]},
-            'done': {'label': _('已完成'), 'domain': [('state', '=', 'done')]},
+            'all': {'label': _('All'), 'domain': []},
+            'pending': {'label': _('Pending Receipt'), 'domain': [('state', '=', 'pending')]},
+            'storing': {'label': _('In Storage'), 'domain': [('state', '=', 'storing')]},
+            'ready': {'label': _('Ready for Pickup'), 'domain': [('state', '=', 'ready')]},
+            'done': {'label': _('Completed'), 'domain': [('state', '=', 'done')]},
         }
 
         if not sortby or sortby not in searchbar_sortings:

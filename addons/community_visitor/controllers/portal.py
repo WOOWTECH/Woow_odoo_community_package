@@ -70,19 +70,19 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': _('無效的確認連結。')},
+                {'error': _('Invalid confirmation link.')},
             )
 
         if visit.state != 'pending_confirm':
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': _('此訪問記錄已被處理。')},
+                {'error': _('This visit record has already been processed.')},
             )
 
         if visit.token_expiry and fields.Datetime.now() > visit.token_expiry:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': _('確認連結已過期。')},
+                {'error': _('Confirmation link has expired.')},
             )
 
         return request.render(
@@ -106,7 +106,7 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': _('無效的確認連結。')},
+                {'error': _('Invalid confirmation link.')},
             )
 
         try:
@@ -143,7 +143,7 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': _('無效的確認連結。')},
+                {'error': _('Invalid confirmation link.')},
             )
 
         try:
@@ -178,15 +178,15 @@ class VisitorPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'create_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'pending': {'label': _('待確認'), 'domain': [('state', '=', 'pending_confirm')]},
-            'confirmed': {'label': _('已確認'), 'domain': [('state', '=', 'confirmed')]},
-            'checked_in': {'label': _('已入場'), 'domain': [('state', '=', 'checked_in')]},
-            'checked_out': {'label': _('已離場'), 'domain': [('state', '=', 'checked_out')]},
+            'all': {'label': _('All'), 'domain': []},
+            'pending': {'label': _('Pending Confirm'), 'domain': [('state', '=', 'pending_confirm')]},
+            'confirmed': {'label': _('Confirmed'), 'domain': [('state', '=', 'confirmed')]},
+            'checked_in': {'label': _('Checked In'), 'domain': [('state', '=', 'checked_in')]},
+            'checked_out': {'label': _('Checked Out'), 'domain': [('state', '=', 'checked_out')]},
         }
 
         if not sortby or sortby not in searchbar_sortings:
@@ -275,14 +275,14 @@ class VisitorPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'create_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'active': {'label': _('有效'), 'domain': [('state', '=', 'active')]},
-            'expired': {'label': _('已過期'), 'domain': [('state', '=', 'expired')]},
-            'cancelled': {'label': _('已撤銷'), 'domain': [('state', '=', 'cancelled')]},
+            'all': {'label': _('All'), 'domain': []},
+            'active': {'label': _('Active'), 'domain': [('state', '=', 'active')]},
+            'expired': {'label': _('Expired'), 'domain': [('state', '=', 'expired')]},
+            'cancelled': {'label': _('Cancelled'), 'domain': [('state', '=', 'cancelled')]},
         }
 
         if not sortby or sortby not in searchbar_sortings:

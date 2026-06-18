@@ -35,3 +35,6 @@ test-results/
 # Misc
 *.log
 .env
+
+# Temporary backup dirs from permission fix
+*.old/

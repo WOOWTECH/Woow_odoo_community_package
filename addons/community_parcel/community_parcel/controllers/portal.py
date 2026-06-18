@@ -1,4 +1,5 @@
 from odoo import http, _
+from odoo.exceptions import UserError, ValidationError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
@@ -32,7 +33,7 @@ class ParcelPortal(CustomerPortal):
     # --- Parcels ---
 
     @http.route(
-        '/my/parcels',
+        ['/my/parcels', '/my/parcels/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -43,20 +44,20 @@ class ParcelPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'received_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'received_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'received_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'received_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'draft': {'label': _('待通知'), 'domain': [('state', '=', 'draft')]},
-            'notified': {'label': _('已通知'), 'domain': [('state', '=', 'notified')]},
-            'picked_up': {'label': _('已取件'), 'domain': [('state', '=', 'picked_up')]},
-            'overdue': {'label': _('逾期'), 'domain': [('state', '=', 'overdue')]},
+            'all': {'label': _('All'), 'domain': []},
+            'draft': {'label': _('Pending Notify'), 'domain': [('state', '=', 'draft')]},
+            'notified': {'label': _('Notified'), 'domain': [('state', '=', 'notified')]},
+            'picked_up': {'label': _('Picked Up'), 'domain': [('state', '=', 'picked_up')]},
+            'overdue': {'label': _('Overdue'), 'domain': [('state', '=', 'overdue')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -83,6 +84,7 @@ class ParcelPortal(CustomerPortal):
             {
                 'parcels': parcels,
                 'page_name': 'parcels',
+                'default_url': '/my/parcels',
                 'pager': pager,
                 'searchbar_sortings': searchbar_sortings,
                 'searchbar_filters': searchbar_filters,
@@ -130,7 +132,7 @@ class ParcelPortal(CustomerPortal):
     # --- Storage ---
 
     @http.route(
-        '/my/storage',
+        ['/my/storage', '/my/storage/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -141,20 +143,20 @@ class ParcelPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'deposit_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'deposit_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'deposit_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'deposit_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'pending': {'label': _('待接收'), 'domain': [('state', '=', 'pending')]},
-            'storing': {'label': _('保管中'), 'domain': [('state', '=', 'storing')]},
-            'ready': {'label': _('待取件'), 'domain': [('state', '=', 'ready')]},
-            'done': {'label': _('已完成'), 'domain': [('state', '=', 'done')]},
+            'all': {'label': _('All'), 'domain': []},
+            'pending': {'label': _('Pending Receipt'), 'domain': [('state', '=', 'pending')]},
+            'storing': {'label': _('In Storage'), 'domain': [('state', '=', 'storing')]},
+            'ready': {'label': _('Ready for Pickup'), 'domain': [('state', '=', 'ready')]},
+            'done': {'label': _('Completed'), 'domain': [('state', '=', 'done')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -181,6 +183,7 @@ class ParcelPortal(CustomerPortal):
             {
                 'items': items,
                 'page_name': 'storage',
+                'default_url': '/my/storage',
                 'pager': pager,
                 'searchbar_sortings': searchbar_sortings,
                 'searchbar_filters': searchbar_filters,
@@ -224,3 +227,73 @@ class ParcelPortal(CustomerPortal):
                 'next_record': next_record,
             },
         )
+
+    # --- Storage New / Create ---
+
+    @http.route(
+        '/my/storage/new',
+        type='http',
+        auth='user',
+        website=True,
+    )
+    def portal_storage_new(self, **kwargs):
+        partner = request.env.user.partner_id
+        units = partner.unit_ids
+        storage_types = request.env['community.storage.type'].search([])
+
+        return request.render(
+            'community_parcel.portal_storage_new',
+            {
+                'units': units,
+                'storage_types': storage_types,
+                'page_name': 'storage_new',
+            },
+        )
+
+    @http.route(
+        '/my/storage/create',
+        type='http',
+        auth='user',
+        website=True,
+        methods=['POST'],
+        csrf=True,
+    )
+    def portal_storage_create(self, **kwargs):
+        partner = request.env.user.partner_id
+
+        # Security: validate unit ownership
+        unit_id = int(kwargs.get('unit_id', 0))
+        unit = request.env['community.unit'].browse(unit_id)
+        if not unit.exists() or partner.id not in unit.resident_ids.ids:
+            return request.redirect('/my/storage')
+
+        vals = {
+            'unit_id': unit_id,
+            'item_description': kwargs.get('item_description', ''),
+        }
+
+        # Optional: type_id
+        type_id = int(kwargs.get('type_id', 0) or 0)
+        if type_id and request.env['community.storage.type'].browse(type_id).exists():
+            vals['type_id'] = type_id
+
+        # Optional: expected_pickup
+        expected_pickup = kwargs.get('expected_pickup', '').strip()
+        if expected_pickup:
+            vals['expected_pickup'] = expected_pickup
+
+        try:
+            item = request.env['community.storage'].sudo().create(vals)
+        except (UserError, ValidationError) as e:
+            storage_types = request.env['community.storage.type'].search([])
+            return request.render(
+                'community_parcel.portal_storage_new',
+                {
+                    'error': str(e),
+                    'units': partner.unit_ids,
+                    'storage_types': storage_types,
+                    'page_name': 'storage_new',
+                },
+            )
+
+        return request.redirect(f'/my/storage/{item.id}')

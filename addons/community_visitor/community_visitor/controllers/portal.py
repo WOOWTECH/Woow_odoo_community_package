@@ -24,6 +24,14 @@ class VisitorPortal(CustomerPortal):
             return int(parts[0]) + int(parts[1]) / 60.0
         return float(value)
 
+    @staticmethod
+    def _safe_int(value, default=0):
+        """Safely convert *value* to int; return *default* on failure."""
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return default
+
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
@@ -62,19 +70,19 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '無效的確認連結。'},
+                {'error': _('Invalid confirmation link.')},
             )
 
         if visit.state != 'pending_confirm':
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '此訪問記錄已被處理。'},
+                {'error': _('This visit record has already been processed.')},
             )
 
         if visit.token_expiry and fields.Datetime.now() > visit.token_expiry:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '確認連結已過期。'},
+                {'error': _('Confirmation link has expired.')},
             )
 
         return request.render(
@@ -98,7 +106,7 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '無效的確認連結。'},
+                {'error': _('Invalid confirmation link.')},
             )
 
         try:
@@ -135,7 +143,7 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '無效的確認連結。'},
+                {'error': _('Invalid confirmation link.')},
             )
 
         try:
@@ -159,7 +167,7 @@ class VisitorPortal(CustomerPortal):
     # --- Portal pages (login required) ---
 
     @http.route(
-        '/my/visitors',
+        ['/my/visitors', '/my/visitors/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -170,20 +178,20 @@ class VisitorPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'create_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'pending': {'label': _('待確認'), 'domain': [('state', '=', 'pending_confirm')]},
-            'confirmed': {'label': _('已確認'), 'domain': [('state', '=', 'confirmed')]},
-            'checked_in': {'label': _('已入場'), 'domain': [('state', '=', 'checked_in')]},
-            'checked_out': {'label': _('已離場'), 'domain': [('state', '=', 'checked_out')]},
+            'all': {'label': _('All'), 'domain': []},
+            'pending': {'label': _('Pending Confirm'), 'domain': [('state', '=', 'pending_confirm')]},
+            'confirmed': {'label': _('Confirmed'), 'domain': [('state', '=', 'confirmed')]},
+            'checked_in': {'label': _('Checked In'), 'domain': [('state', '=', 'checked_in')]},
+            'checked_out': {'label': _('Checked Out'), 'domain': [('state', '=', 'checked_out')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -210,6 +218,7 @@ class VisitorPortal(CustomerPortal):
             {
                 'visits': visits,
                 'page_name': 'visitors',
+                'default_url': '/my/visitors',
                 'pager': pager,
                 'searchbar_sortings': searchbar_sortings,
                 'searchbar_filters': searchbar_filters,
@@ -255,7 +264,7 @@ class VisitorPortal(CustomerPortal):
         )
 
     @http.route(
-        '/my/appointments',
+        ['/my/appointments', '/my/appointments/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -266,19 +275,19 @@ class VisitorPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'create_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'active': {'label': _('有效'), 'domain': [('state', '=', 'active')]},
-            'expired': {'label': _('已過期'), 'domain': [('state', '=', 'expired')]},
-            'cancelled': {'label': _('已撤銷'), 'domain': [('state', '=', 'cancelled')]},
+            'all': {'label': _('All'), 'domain': []},
+            'active': {'label': _('Active'), 'domain': [('state', '=', 'active')]},
+            'expired': {'label': _('Expired'), 'domain': [('state', '=', 'expired')]},
+            'cancelled': {'label': _('Cancelled'), 'domain': [('state', '=', 'cancelled')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -305,6 +314,7 @@ class VisitorPortal(CustomerPortal):
             {
                 'appointments': appointments,
                 'page_name': 'appointments',
+                'default_url': '/my/appointments',
                 'pager': pager,
                 'searchbar_sortings': searchbar_sortings,
                 'searchbar_filters': searchbar_filters,
@@ -380,7 +390,10 @@ class VisitorPortal(CustomerPortal):
     def portal_appointment_create(self, **kwargs):
         partner = request.env.user.partner_id
 
-        unit_id = int(kwargs.get('unit_id', 0))
+        try:
+            unit_id = int(kwargs.get('unit_id', 0))
+        except (ValueError, TypeError):
+            unit_id = 0
         unit = request.env['community.unit'].browse(unit_id)
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/appointments')
@@ -392,7 +405,7 @@ class VisitorPortal(CustomerPortal):
             'visitor_name': kwargs.get('visitor_name', ''),
             'visitor_phone': kwargs.get('visitor_phone', ''),
             'valid_from': (kwargs.get('valid_from') or '').replace('T', ' '),
-            'max_entries': int(kwargs.get('max_entries', 1)),
+            'max_entries': self._safe_int(kwargs.get('max_entries'), 1),
             'appointment_type': kwargs.get('appointment_type', 'one_time'),
             'purpose': kwargs.get('purpose', ''),
         }

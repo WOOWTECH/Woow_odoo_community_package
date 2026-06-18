@@ -76,13 +76,13 @@ class CommunityPortal(CustomerPortal):
         ]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'publish_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'publish_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'publish_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'publish_date asc'},
         }
 
         categories = request.env['community.announcement.category'].search([])
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
+            'all': {'label': _('All'), 'domain': []},
         }
         for cat in categories:
             searchbar_filters[str(cat.id)] = {
@@ -180,14 +180,14 @@ class CommunityPortal(CustomerPortal):
         domain = [('partner_id', '=', partner.id)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'create_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'pending': {'label': _('待處理'), 'domain': [('state', '=', 'pending')]},
-            'in_progress': {'label': _('處理中'), 'domain': [('state', '=', 'in_progress')]},
-            'done': {'label': _('已結案'), 'domain': [('state', '=', 'done')]},
+            'all': {'label': _('All'), 'domain': []},
+            'pending': {'label': _('Pending'), 'domain': [('state', '=', 'pending')]},
+            'in_progress': {'label': _('In Progress'), 'domain': [('state', '=', 'in_progress')]},
+            'done': {'label': _('Closed'), 'domain': [('state', '=', 'done')]},
         }
 
         if not sortby or sortby not in searchbar_sortings:

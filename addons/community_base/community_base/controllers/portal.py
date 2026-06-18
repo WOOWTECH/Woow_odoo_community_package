@@ -61,7 +61,7 @@ class CommunityPortal(CustomerPortal):
     # --- Announcements ---
 
     @http.route(
-        '/my/announcements',
+        ['/my/announcements', '/my/announcements/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -76,13 +76,13 @@ class CommunityPortal(CustomerPortal):
         ]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'publish_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'publish_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'publish_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'publish_date asc'},
         }
 
         categories = request.env['community.announcement.category'].search([])
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
+            'all': {'label': _('All'), 'domain': []},
         }
         for cat in categories:
             searchbar_filters[str(cat.id)] = {
@@ -90,9 +90,9 @@ class CommunityPortal(CustomerPortal):
                 'domain': [('category_id', '=', cat.id)],
             }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -119,6 +119,7 @@ class CommunityPortal(CustomerPortal):
             {
                 'announcements': announcements,
                 'page_name': 'announcements',
+                'default_url': '/my/announcements',
                 'pager': pager,
                 'searchbar_sortings': searchbar_sortings,
                 'searchbar_filters': searchbar_filters,
@@ -169,7 +170,7 @@ class CommunityPortal(CustomerPortal):
     # --- Feedbacks ---
 
     @http.route(
-        '/my/feedbacks',
+        ['/my/feedbacks', '/my/feedbacks/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -179,19 +180,19 @@ class CommunityPortal(CustomerPortal):
         domain = [('partner_id', '=', partner.id)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('最新優先'), 'order': 'create_date desc'},
-            'date_asc': {'label': _('最舊優先'), 'order': 'create_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'create_date desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'create_date asc'},
         }
         searchbar_filters = {
-            'all': {'label': _('全部'), 'domain': []},
-            'pending': {'label': _('待處理'), 'domain': [('state', '=', 'pending')]},
-            'in_progress': {'label': _('處理中'), 'domain': [('state', '=', 'in_progress')]},
-            'done': {'label': _('已結案'), 'domain': [('state', '=', 'done')]},
+            'all': {'label': _('All'), 'domain': []},
+            'pending': {'label': _('Pending'), 'domain': [('state', '=', 'pending')]},
+            'in_progress': {'label': _('In Progress'), 'domain': [('state', '=', 'in_progress')]},
+            'done': {'label': _('Closed'), 'domain': [('state', '=', 'done')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -218,6 +219,7 @@ class CommunityPortal(CustomerPortal):
             {
                 'feedbacks': feedbacks,
                 'page_name': 'feedbacks',
+                'default_url': '/my/feedbacks',
                 'pager': pager,
                 'searchbar_sortings': searchbar_sortings,
                 'searchbar_filters': searchbar_filters,
@@ -257,12 +259,18 @@ class CommunityPortal(CustomerPortal):
     def portal_feedback_create(self, **kwargs):
         partner = request.env.user.partner_id
 
-        unit_id = int(kwargs.get('unit_id', 0))
+        try:
+            unit_id = int(kwargs.get('unit_id') or 0)
+        except (ValueError, TypeError):
+            return request.redirect('/my/feedbacks')
         unit = request.env['community.unit'].browse(unit_id)
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/feedbacks')
 
-        category_id = int(kwargs.get('category_id', 0))
+        try:
+            category_id = int(kwargs.get('category_id') or 0)
+        except (ValueError, TypeError):
+            return request.redirect('/my/feedbacks')
         if not category_id or not request.env[
             'community.feedback.category'
         ].browse(category_id).exists():
