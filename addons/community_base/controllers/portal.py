@@ -61,7 +61,7 @@ class CommunityPortal(CustomerPortal):
     # --- Announcements ---
 
     @http.route(
-        '/my/announcements',
+        ['/my/announcements', '/my/announcements/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -170,7 +170,7 @@ class CommunityPortal(CustomerPortal):
     # --- Feedbacks ---
 
     @http.route(
-        '/my/feedbacks',
+        ['/my/feedbacks', '/my/feedbacks/page/<int:page>'],
         type='http',
         auth='user',
         website=True,

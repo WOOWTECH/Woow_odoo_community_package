@@ -167,7 +167,7 @@ class VisitorPortal(CustomerPortal):
     # --- Portal pages (login required) ---
 
     @http.route(
-        '/my/visitors',
+        ['/my/visitors', '/my/visitors/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
@@ -264,7 +264,7 @@ class VisitorPortal(CustomerPortal):
         )
 
     @http.route(
-        '/my/appointments',
+        ['/my/appointments', '/my/appointments/page/<int:page>'],
         type='http',
         auth='user',
         website=True,
