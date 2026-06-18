@@ -70,19 +70,19 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '無效的確認連結。'},
+                {'error': _('無效的確認連結。')},
             )
 
         if visit.state != 'pending_confirm':
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '此訪問記錄已被處理。'},
+                {'error': _('此訪問記錄已被處理。')},
             )
 
         if visit.token_expiry and fields.Datetime.now() > visit.token_expiry:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '確認連結已過期。'},
+                {'error': _('確認連結已過期。')},
             )
 
         return request.render(
@@ -106,7 +106,7 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '無效的確認連結。'},
+                {'error': _('無效的確認連結。')},
             )
 
         try:
@@ -143,7 +143,7 @@ class VisitorPortal(CustomerPortal):
         if not visit:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
-                {'error': '無效的確認連結。'},
+                {'error': _('無效的確認連結。')},
             )
 
         try:

@@ -1,21 +1,19 @@
 # Translation of Odoo Server.
 # This file contains the translation of the following modules:
-#	* community_parcel
+# 	* community_parcel
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: Odoo Server 18.0\n"
+"Project-Id-Version: Odoo Server 18.0-20260119\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-05-30 00:00+0000\n"
-"PO-Revision-Date: 2026-05-30 00:00+0000\n"
+"POT-Creation-Date: 2026-06-18 07:43+0000\n"
+"PO-Revision-Date: 2026-06-18 07:43+0000\n"
 "Last-Translator: \n"
-"Language-Team: Chinese (Traditional) <>\n"
-"Language: zh_TW\n"
+"Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: \n"
-"Plural-Forms: nplurals=1; plural=0;\n"
-
+"Plural-Forms: \n"
 
 #. module: community_parcel
 #: model:mail.template,body_html:community_parcel.mail_template_parcel_arrival
@@ -120,179 +118,196 @@ msgstr ""
 "            "
 
 #. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<i class=\"fa fa-check\"/> Confirm Pickup"
-msgstr "<i class=\"fa fa-check\"/> 確認取件"
+#: model:mail.template,body_html:community_parcel.mail_template_storage_ready
+msgid ""
+"<div style=\"margin:0;padding:0;font-family:Arial,sans-serif;\">\n"
+"    <p>親愛的 {{ object.unit_id.display_name }} 住戶您好，</p>\n"
+"    <p>您有一件寄放物品已可領取，詳細資訊如下：</p>\n"
+"    <table style=\"border-collapse:collapse;margin:10px 0;\">\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">編號</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.name }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">類型</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.type_id.name or '未分類' }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">寄放位置</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.storage_location or '未指定' }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">寄放時間</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.deposit_date }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">管理室</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.office_id.name or '未指定' }}</td>\n"
+"        </tr>\n"
+"    </table>\n"
+"    <p>請至管理室領取，謝謝！</p>\n"
+"</div>\n"
+"            "
+msgstr ""
+"<div style=\"margin:0;padding:0;font-family:Arial,sans-serif;\">\n"
+"    <p>親愛的 {{ object.unit_id.display_name }} 住戶您好，</p>\n"
+"    <p>您有一件寄放物品已可領取，詳細資訊如下：</p>\n"
+"    <table style=\"border-collapse:collapse;margin:10px 0;\">\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">編號</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.name }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">類型</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.type_id.name or '未分類' }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">寄放位置</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.storage_location or '未指定' }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">寄放時間</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.deposit_date }}</td>\n"
+"        </tr>\n"
+"        <tr>\n"
+"            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">管理室</td>\n"
+"            <td style=\"padding:4px 0;\">{{ object.office_id.name or '未指定' }}</td>\n"
+"        </tr>\n"
+"    </table>\n"
+"    <p>請至管理室領取，謝謝！</p>\n"
+"</div>\n"
+"            "
 
 #. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "<i class=\"fa fa-plus\"/> New Storage Request"
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "<i class=\"fa fa-paper-plane\"/> 提交申請"
+msgstr "<i class=\"fa fa-paper-plane\"/> 提交申請"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+msgid "<i class=\"fa fa-plus\"/> 新增寄放申請"
 msgstr "<i class=\"fa fa-plus\"/> 新增寄放申請"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "<i class=\"fa fa-plus\"/> Submit Request"
-msgstr "<i class=\"fa fa-plus\"/> 送出申請"
+msgid "<option value=\"\">請選擇戶號</option>"
+msgstr "<option value=\"\">請選擇戶號</option>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "<option value=\"\">Select unit</option>"
-msgstr "<option value=\"\">選擇戶號</option>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "<option value=\"0\">Select...</option>"
-msgstr "<option value=\"0\">選擇...</option>"
+msgid "<option value=\"\">請選擇類型（可不選）</option>"
+msgstr "<option value=\"\">請選擇類型（可不選）</option>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<small class=\"text-muted\">Actions</small>"
-msgstr "<small class=\"text-muted\">操作</small>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<small class=\"text-muted\">Status</small>"
+msgid "<small class=\"text-muted\">狀態</small>"
 msgstr "<small class=\"text-muted\">狀態</small>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Actual Pickup:</strong>"
-msgstr "<strong>實際取件：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Deposited:</strong>"
-msgstr "<strong>寄放日期：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Expected Pickup:</strong>"
-msgstr "<strong>預計取件：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "<strong>Notified:</strong>"
-msgstr "<strong>通知日期：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Office:</strong>"
-msgstr "<strong>管理室：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "<strong>Parcel Type:</strong>"
-msgstr "<strong>包裹類型：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "<strong>Picked Up By:</strong>"
+msgid "<strong>取件人：</strong>"
 msgstr "<strong>取件人：</strong>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "<strong>Picked Up:</strong>"
-msgstr "<strong>取件日期：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "<strong>Received:</strong>"
-msgstr "<strong>收件日期：</strong>"
+msgid "<strong>取件時間：</strong>"
+msgstr "<strong>取件時間：</strong>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Recipient:</strong>"
-msgstr "<strong>收件人：</strong>"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Storage Location:</strong>"
+msgid "<strong>寄放位置：</strong>"
 msgstr "<strong>寄放位置：</strong>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Storage Type:</strong>"
-msgstr "<strong>寄放類型：</strong>"
+msgid "<strong>寄放時間：</strong>"
+msgstr "<strong>寄放時間：</strong>"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "<strong>實際取件時間：</strong>"
+msgstr "<strong>實際取件時間：</strong>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "<strong>Tracking No.:</strong>"
-msgstr "<strong>追蹤編號：</strong>"
+msgid "<strong>快遞條碼：</strong>"
+msgstr "<strong>快遞條碼：</strong>"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "<strong>快遞業者：</strong>"
+msgstr "<strong>快遞業者：</strong>"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
 #: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "<strong>Unit:</strong>"
+msgid "<strong>戶號：</strong>"
 msgstr "<strong>戶號：</strong>"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "<strong>收件時間：</strong>"
+msgstr "<strong>收件時間：</strong>"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+msgid "<strong>通知時間：</strong>"
+msgstr "<strong>通知時間：</strong>"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "<strong>預計取件日：</strong>"
+msgstr "<strong>預計取件日：</strong>"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "<strong>類型：</strong>"
+msgstr "<strong>類型：</strong>"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_needaction
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_needaction
 msgid "Action Needed"
-msgstr "需要操作"
+msgstr "Action Needed"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_ids
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_ids
 msgid "Activities"
-msgstr "活動"
+msgstr "Activities"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_exception_decoration
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_exception_decoration
 msgid "Activity Exception Decoration"
-msgstr "活動異常標記"
+msgstr "Activity Exception Decoration"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_state
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_state
 msgid "Activity State"
-msgstr "活動狀態"
+msgstr "Activity State"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_type_icon
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_type_icon
 msgid "Activity Type Icon"
-msgstr "活動類型圖示"
-
-#. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/controllers/portal.py:0
-msgid "All"
-msgstr "全部"
+msgstr "Activity Type Icon"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_attachment_count
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_attachment_count
 msgid "Attachment Count"
-msgstr "附件數量"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Cancel"
-msgstr "取消"
+msgstr "Attachment Count"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__color
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel_dashboard__color
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__color
 msgid "Color Index"
-msgstr "顏色索引"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
-msgid "Community Management"
-msgstr "社區管理"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "Completed"
-msgstr "已完成"
+msgstr "Color Index"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__create_uid
@@ -300,7 +315,7 @@ msgstr "已完成"
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__create_uid
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage_type__create_uid
 msgid "Created by"
-msgstr "建立者"
+msgstr "Created by"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__create_date
@@ -308,28 +323,7 @@ msgstr "建立者"
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__create_date
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage_type__create_date
 msgid "Created on"
-msgstr "建立日期"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "Deposited"
-msgstr "寄放日期"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Describe the items to store..."
-msgstr "請描述要寄放的物品..."
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "Description"
-msgstr "描述"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "Details"
-msgstr "詳情"
+msgstr "Created on"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__display_name
@@ -338,47 +332,31 @@ msgstr "詳情"
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__display_name
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage_type__display_name
 msgid "Display Name"
-msgstr "顯示名稱"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Enter recipient name"
-msgstr "請輸入收件人姓名"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Expected Pickup Date"
-msgstr "預計領取日期"
+msgstr "Display Name"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_follower_ids
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_follower_ids
 msgid "Followers"
-msgstr "關注者"
+msgstr "Followers"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_partner_ids
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_partner_ids
 msgid "Followers (Partners)"
-msgstr "關注者（合作夥伴）"
+msgstr "Followers (Partners)"
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__activity_type_icon
 #: model:ir.model.fields,help:community_parcel.field_community_storage__activity_type_icon
 msgid "Font awesome icon e.g. fa-tasks"
-msgstr "Font awesome 圖示，例如 fa-tasks"
+msgstr "Font awesome icon e.g. fa-tasks"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__has_message
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__has_message
 msgid "Has Message"
-msgstr "有訊息"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "History"
-msgstr "歷史訊息"
+msgstr "Has Message"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__id
@@ -393,19 +371,19 @@ msgstr "ID"
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_exception_icon
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_exception_icon
 msgid "Icon"
-msgstr "圖示"
+msgstr "Icon"
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__activity_exception_icon
 #: model:ir.model.fields,help:community_parcel.field_community_storage__activity_exception_icon
 msgid "Icon to indicate an exception activity."
-msgstr "表示異常活動的圖示。"
+msgstr "Icon to indicate an exception activity."
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__message_needaction
 #: model:ir.model.fields,help:community_parcel.field_community_storage__message_needaction
 msgid "If checked, new messages require your attention."
-msgstr "如勾選，表示有新訊息需要您注意。"
+msgstr "If checked, new messages require your attention."
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__message_has_error
@@ -413,19 +391,13 @@ msgstr "如勾選，表示有新訊息需要您注意。"
 #: model:ir.model.fields,help:community_parcel.field_community_storage__message_has_error
 #: model:ir.model.fields,help:community_parcel.field_community_storage__message_has_sms_error
 msgid "If checked, some messages have a delivery error."
-msgstr "如勾選，表示部分訊息發送失敗。"
+msgstr "If checked, some messages have a delivery error."
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_is_follower
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_is_follower
 msgid "Is Follower"
-msgstr "是否為關注者"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Item Description"
-msgstr "物品說明"
+msgstr "Is Follower"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__write_uid
@@ -433,7 +405,7 @@ msgstr "物品說明"
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__write_uid
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage_type__write_uid
 msgid "Last Updated by"
-msgstr "最後更新者"
+msgstr "Last Updated by"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__write_date
@@ -441,196 +413,79 @@ msgstr "最後更新者"
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__write_date
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage_type__write_date
 msgid "Last Updated on"
-msgstr "最後更新日期"
+msgstr "Last Updated on"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_has_error
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_has_error
 msgid "Message Delivery error"
-msgstr "訊息傳遞錯誤"
+msgstr "Message Delivery error"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_ids
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_ids
 msgid "Messages"
-msgstr "訊息"
+msgstr "Messages"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__my_activity_date_deadline
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__my_activity_date_deadline
 msgid "My Activity Deadline"
-msgstr "我的活動截止日"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "New Storage Request"
-msgstr "新增寄放申請"
-
-#. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/controllers/portal.py:0
-msgid "Newest"
-msgstr "最新"
-
-#. module: community_parcel
-#: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_calendar_event_id
-#: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_calendar_event_id
-msgid "Next Activity Calendar Event"
-msgstr "下一個活動行事曆事件"
+msgstr "My Activity Deadline"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_date_deadline
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_date_deadline
 msgid "Next Activity Deadline"
-msgstr "下一個活動截止日"
+msgstr "Next Activity Deadline"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_summary
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_summary
 msgid "Next Activity Summary"
-msgstr "下一個活動摘要"
+msgstr "Next Activity Summary"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_type_id
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_type_id
 msgid "Next Activity Type"
-msgstr "下一個活動類型"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-msgid "No parcel records"
-msgstr "暫無包裹記錄"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "No storage records"
-msgstr "暫無寄放記錄"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "Notified"
-msgstr "已通知"
+msgstr "Next Activity Type"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_needaction_counter
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_needaction_counter
 msgid "Number of Actions"
-msgstr "操作數量"
+msgstr "Number of Actions"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_has_error_counter
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_has_error_counter
 msgid "Number of errors"
-msgstr "錯誤數量"
+msgstr "Number of errors"
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__message_needaction_counter
 #: model:ir.model.fields,help:community_parcel.field_community_storage__message_needaction_counter
 msgid "Number of messages requiring action"
-msgstr "需要操作的訊息數量"
+msgstr "Number of messages requiring action"
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__message_has_error_counter
 #: model:ir.model.fields,help:community_parcel.field_community_storage__message_has_error_counter
 msgid "Number of messages with delivery error"
-msgstr "傳遞錯誤的訊息數量"
-
-#. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/controllers/portal.py:0
-msgid "Oldest"
-msgstr "最舊"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "Overdue"
-msgstr "逾期"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-msgid "Parcels"
-msgstr "包裹收件"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "Pending"
-msgstr "待處理"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "Pending Notification"
-msgstr "待通知"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "Picked Up"
-msgstr "已領取"
-
-#. module: community_parcel
-#: model:ir.model.fields,field_description:community_parcel.field_community_parcel__rating_ids
-#: model:ir.model.fields,field_description:community_parcel.field_community_storage__rating_ids
-msgid "Ratings"
-msgstr "評分"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "Ready for Pickup"
-msgstr "可領取"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-msgid "Received"
-msgstr "收件日期"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "Recipient"
-msgstr "收件人"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Recipient <span class=\"text-danger\">*</span>"
-msgstr "收件人 <span class=\"text-danger\">*</span>"
+msgstr "Number of messages with delivery error"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__activity_user_id
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__activity_user_id
 msgid "Responsible User"
-msgstr "負責人"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-msgid "Returned"
-msgstr "已退回"
+msgstr "Responsible User"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__message_has_sms_error
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__message_has_sms_error
 msgid "SMS Delivery error"
-msgstr "簡訊傳遞錯誤"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "Scrapped"
-msgstr "已銷毀"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "Status"
-msgstr "狀態"
+msgstr "SMS Delivery error"
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__activity_state
@@ -641,68 +496,38 @@ msgid ""
 "Today: Activity date is today\n"
 "Planned: Future activities."
 msgstr ""
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "Storage"
-msgstr "物品寄放"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Storage Type"
-msgstr "寄放類型"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
-msgid "Storing"
-msgstr "寄放中"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-msgid "Tracking No."
-msgstr "追蹤編號"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "Type"
-msgstr "類型"
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__activity_exception_decoration
 #: model:ir.model.fields,help:community_parcel.field_community_storage__activity_exception_decoration
 msgid "Type of the exception activity on record."
-msgstr "此紀錄上異常活動的類型。"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_parcels
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_my_storage
-msgid "Unit"
-msgstr "戶號"
-
-#. module: community_parcel
-#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
-msgid "Unit <span class=\"text-danger\">*</span>"
-msgstr "戶號 <span class=\"text-danger\">*</span>"
+msgstr "Type of the exception activity on record."
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__website_message_ids
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__website_message_ids
 msgid "Website Messages"
-msgstr "網站訊息"
+msgstr "Website Messages"
 
 #. module: community_parcel
 #: model:ir.model.fields,help:community_parcel.field_community_parcel__website_message_ids
 #: model:ir.model.fields,help:community_parcel.field_community_storage__website_message_ids
 msgid "Website communication history"
-msgstr "網站通訊記錄"
+msgstr "Website communication history"
 
 #. module: community_parcel
 #: model:mail.template,subject:community_parcel.mail_template_parcel_overdue
 msgid "【社區提醒】您的包裹已逾期未取 - {{ object.name }}"
 msgstr "【社區提醒】您的包裹已逾期未取 - {{ object.name }}"
+
+#. module: community_parcel
+#: model:mail.template,subject:community_parcel.mail_template_storage_ready
+msgid "【社區通知】寄放物品可取件 - {{ object.name }}"
+msgstr "【社區通知】寄放物品可取件 - {{ object.name }}"
 
 #. module: community_parcel
 #: model:mail.template,subject:community_parcel.mail_template_parcel_arrival
@@ -721,9 +546,12 @@ msgstr "位置:"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
 #: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_storage__state__storing
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
 msgid "保管中"
 msgstr "保管中"
 
@@ -740,6 +568,13 @@ msgstr "內部備註"
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_form
 msgid "內部備註..."
 msgstr "內部備註..."
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
+#: code:addons/community_parcel/controllers/portal.py:0
+msgid "全部"
+msgstr "全部"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
@@ -763,6 +598,12 @@ msgid "包裹到件通知"
 msgstr "包裹到件通知"
 
 #. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+msgid "包裹收件"
+msgstr "包裹收件"
+
+#. module: community_parcel
 #: model:ir.ui.menu,name:community_parcel.menu_community_parcel_root
 msgid "包裹管理"
 msgstr "包裹管理"
@@ -775,6 +616,7 @@ msgstr "包裹管理工作台"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_form
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
 msgid "包裹資訊"
 msgstr "包裹資訊"
 
@@ -791,8 +633,6 @@ msgid "包裹類型"
 msgstr "包裹類型"
 
 #. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__recipient_name
 msgid "取件人"
 msgstr "取件人"
@@ -813,51 +653,77 @@ msgid "取件確認人員"
 msgstr "取件確認人員"
 
 #. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "取消"
+msgstr "取消"
+
+#. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_form
 msgid "受理"
 msgstr "受理"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_storage.py:0
+#: code:addons/community_parcel/models/community_storage.py:0
+msgid "只有「保管中」或「待取件」的寄放物品才能報廢（目前狀態：%s）。"
+msgstr "只有「保管中」或「待取件」的寄放物品才能報廢（目前狀態：%s）。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_storage.py:0
 #: code:addons/community_parcel/models/community_storage.py:0
 msgid "只有「保管中」的物品才能標記為待取件。"
 msgstr "只有「保管中」的物品才能標記為待取件。"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_parcel.py:0
 #: code:addons/community_parcel/models/community_parcel.py:0
 msgid "只有「已通知」或「逾期」的包裹才能確認取件。"
 msgstr "只有「已通知」或「逾期」的包裹才能確認取件。"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_parcel.py:0
 #: code:addons/community_parcel/models/community_parcel.py:0
 msgid "只有「已通知」或「逾期」的包裹才能退回。"
 msgstr "只有「已通知」或「逾期」的包裹才能退回。"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_parcel.py:0
 #: code:addons/community_parcel/models/community_parcel.py:0
 msgid "只有「已通知」的包裹才能標記逾期。"
 msgstr "只有「已通知」的包裹才能標記逾期。"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_storage.py:0
 #: code:addons/community_parcel/models/community_storage.py:0
 msgid "只有「待取件」的物品才能完成交付。"
 msgstr "只有「待取件」的物品才能完成交付。"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_storage.py:0
 #: code:addons/community_parcel/models/community_storage.py:0
 msgid "只有「待接收」的物品才能受理。"
 msgstr "只有「待接收」的物品才能受理。"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_parcel.py:0
 #: code:addons/community_parcel/models/community_parcel.py:0
 msgid "只有「待通知」的包裹才能發送通知。"
 msgstr "只有「待通知」的包裹才能發送通知。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/community_parcel/models/community_parcel.py:0
+#: code:addons/community_parcel/models/community_parcel.py:0
+msgid "只有未取件的包裹才能報廢（目前狀態：%s）。"
+msgstr "只有未取件的包裹才能報廢（目前狀態：%s）。"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel_dashboard__name
@@ -876,6 +742,11 @@ msgid "完成交付"
 msgstr "完成交付"
 
 #. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+msgid "寄放位置"
+msgstr "寄放位置"
+
+#. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__storage_location
 msgid "寄放位置/格號"
 msgstr "寄放位置/格號"
@@ -887,6 +758,7 @@ msgstr "寄放日"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__deposit_date
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
 msgid "寄放時間"
 msgstr "寄放時間"
 
@@ -894,6 +766,11 @@ msgstr "寄放時間"
 #: model:ir.model,name:community_parcel.model_community_storage
 msgid "寄放物品"
 msgstr "寄放物品"
+
+#. module: community_parcel
+#: model:mail.template,name:community_parcel.mail_template_storage_ready
+msgid "寄放物品待取件通知"
+msgstr "寄放物品待取件通知"
 
 #. module: community_parcel
 #: model:ir.ui.menu,name:community_parcel.menu_storage_main
@@ -907,6 +784,7 @@ msgstr "寄放編號"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_form
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
 msgid "寄放資訊"
 msgstr "寄放資訊"
 
@@ -914,6 +792,7 @@ msgstr "寄放資訊"
 #: model:ir.actions.act_window,name:community_parcel.action_storage_type
 #: model:ir.model,name:community_parcel.model_community_storage_type
 #: model:ir.ui.menu,name:community_parcel.menu_storage_type
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
 msgid "寄放類型"
 msgstr "寄放類型"
 
@@ -930,53 +809,72 @@ msgstr "工作台"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
 #: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_parcel__state__picked_up
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
 msgid "已取件"
 msgstr "已取件"
 
 #. module: community_parcel
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_parcel__state__scrapped
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_storage__state__scrapped
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
 msgid "已報廢"
 msgstr "已報廢"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
 #: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_storage__state__done
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
 msgid "已完成"
 msgstr "已完成"
 
 #. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_parcel__state__returned
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
 msgid "已退回"
 msgstr "已退回"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
 #: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_parcel__state__notified
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
 msgid "已通知"
 msgstr "已通知"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
 #: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_storage__state__ready
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
 msgid "待取件"
 msgstr "待取件"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
 #: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_storage__state__pending
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
 msgid "待接收"
 msgstr "待接收"
 
@@ -986,21 +884,33 @@ msgid "待處理"
 msgstr "待處理"
 
 #. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
+#: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_parcel__state__draft
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
 msgid "待通知"
 msgstr "待通知"
 
 #. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__barcode
 msgid "快遞條碼"
 msgstr "快遞條碼"
 
 #. module: community_parcel
+#: model:ir.model.fields,field_description:community_parcel.field_community_parcel__courier
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+msgid "快遞業者"
+msgstr "快遞業者"
+
+#. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__unit_id
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__unit_id
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
 msgid "戶號"
 msgstr "戶號"
 
@@ -1028,6 +938,7 @@ msgstr "收件日"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__received_date
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
 msgid "收件時間"
 msgstr "收件時間"
 
@@ -1037,15 +948,44 @@ msgid "數量"
 msgstr "數量"
 
 #. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+msgid "新增寄放"
+msgstr "新增寄放"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "新增寄放申請"
+msgstr "新增寄放申請"
+
+#. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_form
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_form
 msgid "時間記錄"
 msgstr "時間記錄"
 
 #. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
+#: code:addons/community_parcel/controllers/portal.py:0
+msgid "最新優先"
+msgstr "最新優先"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
+#: code:addons/community_parcel/controllers/portal.py:0
+msgid "最舊優先"
+msgstr "最舊優先"
+
+#. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
 msgid "未取件"
 msgstr "未取件"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+msgid "條碼"
+msgstr "條碼"
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_kanban
@@ -1063,21 +1003,15 @@ msgid "檢查逾期包裹"
 msgstr "檢查逾期包裹"
 
 #. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/models/community_parcel.py:0
-msgid "此包裹已經報廢。"
-msgstr "此包裹已經報廢。"
-
-#. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/models/community_storage.py:0
-msgid "此寄放物品已經報廢。"
-msgstr "此寄放物品已經報廢。"
-
-#. module: community_parcel
 #: model:ir.model.constraint,message:community_parcel.constraint_community_parcel_unique_barcode
 msgid "此快遞條碼已存在！"
 msgstr "此快遞條碼已存在！"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+msgid "歷史紀錄"
+msgstr "歷史紀錄"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__name
@@ -1085,10 +1019,19 @@ msgid "流水編號"
 msgstr "流水編號"
 
 #. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+msgid "物品寄放"
+msgstr "物品寄放"
+
+#. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__description
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__item_description
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_form
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_form
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
 msgid "物品敘述"
 msgstr "物品敘述"
 
@@ -1103,8 +1046,20 @@ msgstr "物品敘述..."
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__state
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
 msgid "狀態"
 msgstr "狀態"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+msgid "目前沒有包裹記錄"
+msgstr "目前沒有包裹記錄"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
+msgid "目前沒有寄放物品記錄"
+msgstr "目前沒有寄放物品記錄"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel_dashboard__target_model
@@ -1140,6 +1095,11 @@ msgstr "社區包裹收發與寄放物品管理"
 #: model:ir.module.category,name:community_parcel.module_category_community_parcel
 msgid "社區包裹管理"
 msgstr "社區包裹管理"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_breadcrumbs_parcel
+msgid "社區管理"
+msgstr "社區管理"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__office_id
@@ -1190,8 +1150,8 @@ msgid "統計2篩選"
 msgstr "統計2篩選"
 
 #. module: community_parcel
-#. odoo-python
-#: code:addons/community_parcel/controllers/portal.py:0
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
 msgid "編號"
 msgstr "編號"
 
@@ -1199,6 +1159,16 @@ msgstr "編號"
 #: model:ir.ui.menu,name:community_parcel.menu_parcel_config
 msgid "設定"
 msgstr "設定"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "請填寫以下資訊申請物品寄放，提交後將由管理員確認接收。"
+msgstr "請填寫以下資訊申請物品寄放，提交後將由管理員確認接收。"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "請描述寄放的物品內容..."
+msgstr "請描述寄放的物品內容..."
 
 #. module: community_parcel
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_form
@@ -1227,10 +1197,13 @@ msgstr "進行中"
 
 #. module: community_parcel
 #. odoo-python
+#: code:addons/community_parcel/community_parcel/controllers/portal.py:0
 #: code:addons/community_parcel/controllers/portal.py:0
 #: model:ir.model.fields,field_description:community_parcel.field_community_parcel__is_overdue
 #: model:ir.model.fields.selection,name:community_parcel.selection__community_parcel__state__overdue
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcel_detail
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
 msgid "逾期"
 msgstr "逾期"
 
@@ -1246,6 +1219,7 @@ msgstr "開啟"
 
 #. module: community_parcel
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__expected_pickup
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
 msgid "預計取件日"
 msgstr "預計取件日"
 
@@ -1260,6 +1234,8 @@ msgstr "顏色"
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage__type_id
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_parcel_view_search
 #: model_terms:ir.ui.view,arch_db:community_parcel.community_storage_view_search
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_parcels
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage
 msgid "類型"
 msgstr "類型"
 

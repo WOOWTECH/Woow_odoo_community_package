@@ -434,13 +434,14 @@
                                         var btn = form.querySelector('button[type="submit"]');
                                         if (btn) {
                                             btn.disabled = true;
-                                            btn.textContent = '處理中...';
+                                            btn.textContent = btn.dataset.loadingText || '...';
                                         }
                                     });
                                 });
                             });
                         </script>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary"
+                                data-loading-text="處理中...">
                             <i class="fa fa-paper-plane"/> 提交申請
                         </button>
                         <a href="/my/storage"

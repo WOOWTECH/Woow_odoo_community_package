@@ -330,7 +330,8 @@
                                 <h6><small class="text-muted">操作</small></h6>
                                 <form t-attf-action="/my/appointments/#{appointment.id}/cancel"
                                       method="post"
-                                      onsubmit="return confirm('確定要撤銷此預約嗎？');">
+                                      data-confirm="確定要撤銷此預約嗎？"
+                                      onsubmit="return confirm(this.dataset.confirm);">
                                     <input type="hidden" name="csrf_token"
                                            t-att-value="request.csrf_token()"/>
                                     <button type="submit" class="btn btn-danger w-100">
@@ -656,13 +657,14 @@
                                         var btn = form.querySelector('button[type="submit"]');
                                         if (btn) {
                                             btn.disabled = true;
-                                            btn.textContent = '處理中...';
+                                            btn.textContent = btn.dataset.loadingText || '...';
                                         }
                                     });
                                 });
                             });
                         </script>
-                        <button type="submit" class="btn btn-primary">
+                        <button type="submit" class="btn btn-primary"
+                                data-loading-text="處理中...">
                             <i class="fa fa-plus"/> 建立預約
                         </button>
                         <a href="/my/appointments"
