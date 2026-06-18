@@ -24,6 +24,14 @@ class VisitorPortal(CustomerPortal):
             return int(parts[0]) + int(parts[1]) / 60.0
         return float(value)
 
+    @staticmethod
+    def _safe_int(value, default=0):
+        """Safely convert *value* to int; return *default* on failure."""
+        try:
+            return int(value)
+        except (ValueError, TypeError):
+            return default
+
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
         partner = request.env.user.partner_id
@@ -181,9 +189,9 @@ class VisitorPortal(CustomerPortal):
             'checked_out': {'label': _('已離場'), 'domain': [('state', '=', 'checked_out')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -277,9 +285,9 @@ class VisitorPortal(CustomerPortal):
             'cancelled': {'label': _('已撤銷'), 'domain': [('state', '=', 'cancelled')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -382,7 +390,10 @@ class VisitorPortal(CustomerPortal):
     def portal_appointment_create(self, **kwargs):
         partner = request.env.user.partner_id
 
-        unit_id = int(kwargs.get('unit_id', 0))
+        try:
+            unit_id = int(kwargs.get('unit_id', 0))
+        except (ValueError, TypeError):
+            unit_id = 0
         unit = request.env['community.unit'].browse(unit_id)
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/appointments')
@@ -394,7 +405,7 @@ class VisitorPortal(CustomerPortal):
             'visitor_name': kwargs.get('visitor_name', ''),
             'visitor_phone': kwargs.get('visitor_phone', ''),
             'valid_from': (kwargs.get('valid_from') or '').replace('T', ' '),
-            'max_entries': int(kwargs.get('max_entries', 1)),
+            'max_entries': self._safe_int(kwargs.get('max_entries'), 1),
             'appointment_type': kwargs.get('appointment_type', 'one_time'),
             'purpose': kwargs.get('purpose', ''),
         }

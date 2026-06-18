@@ -54,9 +54,9 @@ class ParcelPortal(CustomerPortal):
             'overdue': {'label': _('逾期'), 'domain': [('state', '=', 'overdue')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -153,9 +153,9 @@ class ParcelPortal(CustomerPortal):
             'done': {'label': _('已完成'), 'domain': [('state', '=', 'done')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']

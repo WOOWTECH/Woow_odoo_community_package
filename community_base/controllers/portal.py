@@ -90,9 +90,9 @@ class CommunityPortal(CustomerPortal):
                 'domain': [('category_id', '=', cat.id)],
             }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -190,9 +190,9 @@ class CommunityPortal(CustomerPortal):
             'done': {'label': _('已結案'), 'domain': [('state', '=', 'done')]},
         }
 
-        if not sortby:
+        if not sortby or sortby not in searchbar_sortings:
             sortby = 'date_desc'
-        if not filterby:
+        if not filterby or filterby not in searchbar_filters:
             filterby = 'all'
 
         sort_order = searchbar_sortings[sortby]['order']
@@ -259,12 +259,18 @@ class CommunityPortal(CustomerPortal):
     def portal_feedback_create(self, **kwargs):
         partner = request.env.user.partner_id
 
-        unit_id = int(kwargs.get('unit_id', 0))
+        try:
+            unit_id = int(kwargs.get('unit_id') or 0)
+        except (ValueError, TypeError):
+            return request.redirect('/my/feedbacks')
         unit = request.env['community.unit'].browse(unit_id)
         if not unit.exists() or partner.id not in unit.resident_ids.ids:
             return request.redirect('/my/feedbacks')
 
-        category_id = int(kwargs.get('category_id', 0))
+        try:
+            category_id = int(kwargs.get('category_id') or 0)
+        except (ValueError, TypeError):
+            return request.redirect('/my/feedbacks')
         if not category_id or not request.env[
             'community.feedback.category'
         ].browse(category_id).exists():
