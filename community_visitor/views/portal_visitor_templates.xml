@@ -503,7 +503,7 @@
                                         <span t-field="visit.checkout_time"/></div>
                                     <div t-if="visit.badge_id">
                                         <strong>Badge:</strong>
-                                        <span t-esc="visit.badge_id.name"/></div>
+                                        <span t-esc="visit.badge_id.sudo().name"/></div>
                                     <div t-if="visit.guard_in_id">
                                         <strong>Guard:</strong>
                                         <span t-esc="visit.guard_in_id.name"/></div>

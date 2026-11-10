@@ -2,7 +2,7 @@ from datetime import timedelta
 
 from odoo import fields
 from odoo.exceptions import AccessError
-from odoo.tests.common import TransactionCase
+from odoo.tests.common import HttpCase, TransactionCase, tagged
 
 
 class TestCommunityVisitorPortalSecurity(TransactionCase):
@@ -93,3 +93,38 @@ class TestCommunityVisitorPortalSecurity(TransactionCase):
             })
             getattr(visit, action)(visit.confirm_token, partner=outsider)
             self.assertFalse(visit.resident_id)
+
+
+@tagged('post_install', '-at_install')
+class TestReleasedBadgePortalPage(HttpCase):
+
+    def test_completed_visit_shows_its_released_badge(self):
+        login = 'released-badge-portal@example.test'
+        user = self.env['res.users'].with_context(no_reset_password=True).create({
+            'name': 'Released badge portal user',
+            'login': login,
+            'password': 'badge-test-password',
+            'groups_id': [(6, 0, [self.env.ref('base.group_portal').id])],
+        })
+        unit = self.env['community.unit'].create({
+            'building': 'Badge test', 'floor': '1', 'number': '2',
+            'resident_ids': [(4, user.partner_id.id)],
+        })
+        visitor = self.env['community.visitor'].create({
+            'name': 'Badge guest', 'phone': '0912333333',
+        })
+        purpose = self.env['community.visit.purpose'].create({'name': 'Badge test'})
+        badge = self.env['community.visitor.badge'].create({'name': 'RELEASED-101'})
+        visit = self.env['community.visit'].create({
+            'visitor_id': visitor.id,
+            'unit_id': unit.id,
+            'purpose_id': purpose.id,
+            'badge_id': badge.id,
+            'state': 'checked_out',
+        })
+        badge.action_release()
+        self.assertFalse(badge.current_visit_id)
+        self.authenticate(login, 'badge-test-password')
+        response = self.url_open(f'/my/visitors/{visit.id}')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('RELEASED-101', response.text)
