@@ -460,7 +460,7 @@ class VisitorPortal(CustomerPortal):
             return request.redirect('/my/appointments')
 
         try:
-            appointment.action_cancel()
+            appointment.sudo().action_cancel()
         except (UserError, ValidationError) as e:
             _logger.warning(
                 'Portal appointment cancel failed (id=%s): %s',

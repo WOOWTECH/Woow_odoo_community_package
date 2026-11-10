@@ -1,6 +1,6 @@
 {
     'name': '社區訪客管理',
-    'version': '18.0.1.2.0',
+    'version': '18.0.1.2.1',
     'category': 'Community',
     'summary': '訪客登記、住戶確認、預約通行管理',
     'description': """

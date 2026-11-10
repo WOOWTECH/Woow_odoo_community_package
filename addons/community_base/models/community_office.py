@@ -17,7 +17,7 @@ class CommunityOffice(models.Model):
         'office_id',
         string='轄下戶號',
     )
-    internal_note = fields.Text(string='內部備註')
+    internal_note = fields.Text(string='內部備註', groups='base.group_user')
     announcement_properties_definition = fields.PropertiesDefinition(
         string='公告屬性定義',
     )

@@ -12,15 +12,15 @@ class CommunityVisitor(models.Model):
 
     name = fields.Char(string='姓名', required=True, tracking=True)
     phone = fields.Char(string='電話', required=True, tracking=True)
-    id_last4 = fields.Char(string='證件末4碼', size=4)
+    id_last4 = fields.Char(string='證件末4碼', size=4, groups='base.group_user')
     company = fields.Char(string='公司/單位')
     vehicle_plate = fields.Char(string='車牌號碼', tracking=True)
     photo = fields.Binary(string='照片', attachment=True)
 
     # Blacklist
-    blacklisted = fields.Boolean(string='黑名單', default=False, tracking=True)
-    blacklist_reason = fields.Text(string='黑名單原因')
-    blacklist_date = fields.Date(string='加入黑名單日期')
+    blacklisted = fields.Boolean(string='黑名單', default=False, tracking=True, groups='base.group_user')
+    blacklist_reason = fields.Text(string='黑名單原因', groups='base.group_user')
+    blacklist_date = fields.Date(string='加入黑名單日期', groups='base.group_user')
 
     # Computed
     visit_count = fields.Integer(

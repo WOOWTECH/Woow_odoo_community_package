@@ -94,7 +94,7 @@ class CommunityVisit(models.Model):
     )
     vehicle_plate = fields.Char(string='車牌號碼')
     description = fields.Text(string='訪問敘述')
-    note = fields.Text(string='內部備註')
+    note = fields.Text(string='內部備註', groups='base.group_user')
     properties = fields.Properties(
         string='屬性',
         definition='office_id.visit_properties_definition',
@@ -200,6 +200,11 @@ class CommunityVisit(models.Model):
     def action_confirm(self, token, partner=None):
         """住戶確認訪客入場"""
         self.ensure_one()
+        self.env.cr.execute(
+            'SELECT id FROM community_visit WHERE id = %s FOR UPDATE',
+            [self.id],
+        )
+        self.invalidate_recordset(['state', 'confirm_token', 'token_expiry'])
         if self.state != 'pending_confirm':
             raise UserError(_('此訪問記錄不在待確認狀態。'))
         if self.confirm_token != token:
@@ -211,7 +216,7 @@ class CommunityVisit(models.Model):
             'state': 'confirmed',
             'resident_confirm_time': fields.Datetime.now(),
         }
-        if partner:
+        if partner and partner.id in self.unit_id.resident_ids.ids:
             vals['resident_id'] = partner.id
         self.write(vals)
         self._notify_guard('confirmed')
@@ -219,6 +224,11 @@ class CommunityVisit(models.Model):
     def action_reject(self, token, partner=None):
         """住戶拒絕訪客入場"""
         self.ensure_one()
+        self.env.cr.execute(
+            'SELECT id FROM community_visit WHERE id = %s FOR UPDATE',
+            [self.id],
+        )
+        self.invalidate_recordset(['state', 'confirm_token', 'token_expiry'])
         if self.state != 'pending_confirm':
             raise UserError(_('此訪問記錄不在待確認狀態。'))
         if self.confirm_token != token:
@@ -227,7 +237,7 @@ class CommunityVisit(models.Model):
             raise UserError(_('確認連結已過期。'))
 
         vals = {'state': 'rejected'}
-        if partner:
+        if partner and partner.id in self.unit_id.resident_ids.ids:
             vals['resident_id'] = partner.id
         self.write(vals)
         self._notify_guard('rejected')
