@@ -25,6 +25,14 @@
         <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
     </record>
 
+    <!-- Residents may see only the badge currently assigned to a visit at their unit. -->
+    <record id="rule_badge_portal" model="ir.rule">
+        <field name="name">Badge: Portal 住戶只看自己戶號使用中的訪客證</field>
+        <field name="model_id" ref="model_community_visitor_badge"/>
+        <field name="domain_force">[('current_visit_id.unit_id.resident_ids', 'in', [user.partner_id.id])]</field>
+        <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+    </record>
+
     <!-- Guard / Manager: see all visits -->
     <record id="rule_visit_guard" model="ir.rule">
         <field name="name">Visit: 警衛/主任看全部</field>

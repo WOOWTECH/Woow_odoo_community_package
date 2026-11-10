@@ -216,6 +216,14 @@ class CommunityAppointment(models.Model):
         if not appointment:
             return {'success': False, 'error': '無效的驗證碼或預約已失效。'}
 
+        # Serialize redemptions of the same access code. A second transaction
+        # must see the first visit before it checks the entry limit.
+        self.env.cr.execute(
+            'SELECT id FROM community_appointment WHERE id = %s FOR UPDATE',
+            [appointment.id],
+        )
+        appointment.invalidate_recordset(['state', 'valid_from', 'valid_until'])
+
         # B6: Check cancelled state
         if appointment.state == 'cancelled':
             return {'success': False, 'error': '此預約已被撤銷，無法核銷。'}
@@ -247,10 +255,11 @@ class CommunityAppointment(models.Model):
                 }
 
         # Check remaining entries
-        if (
-            appointment.max_entries > 0
-            and appointment.used_entries >= appointment.max_entries
-        ):
+        used_entries = self.env['community.visit'].search_count([
+            ('appointment_id', '=', appointment.id),
+            ('state', 'in', ('checked_in', 'checked_out')),
+        ])
+        if appointment.max_entries > 0 and used_entries >= appointment.max_entries:
             return {'success': False, 'error': '入場次數已用完。'}
 
         # Find or create visitor
@@ -305,7 +314,7 @@ class CommunityAppointment(models.Model):
         remaining = (
             '無限'
             if appointment.max_entries == 0
-            else str(appointment.max_entries - appointment.used_entries)
+            else str(appointment.max_entries - used_entries - 1)
         )
 
         return {

@@ -38,3 +38,7 @@ test-results/
 
 # Temporary backup dirs from permission fix
 *.old/
+*.bak/
+addons/community_base/community_base/
+addons/community_visitor/community_visitor/
+addons/community_parcel/community_parcel/

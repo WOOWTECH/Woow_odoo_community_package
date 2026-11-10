@@ -64,7 +64,7 @@ class CommunityParcel(models.Model):
     )
     courier = fields.Char(string='快遞業者', tracking=True)
     description = fields.Text(string='物品敘述')
-    internal_note = fields.Text(string='內部備註')
+    internal_note = fields.Text(string='內部備註', groups='base.group_user')
     color = fields.Integer(string='Color Index')
     is_overdue = fields.Boolean(
         string='逾期',

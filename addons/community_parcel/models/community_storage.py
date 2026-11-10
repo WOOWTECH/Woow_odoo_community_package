@@ -60,7 +60,7 @@ class CommunityStorage(models.Model):
         group_expand='_expand_states',
     )
     item_description = fields.Text(string='物品敘述')
-    internal_note = fields.Text(string='內部備註')
+    internal_note = fields.Text(string='內部備註', groups='base.group_user')
     color = fields.Integer(string='Color Index')
 
     # ── Sequence ─────────────────────────────────────────────

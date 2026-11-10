@@ -1,6 +1,6 @@
 {
     'name': '社區包裹管理',
-    'version': '18.0.1.0.0',
+    'version': '18.0.1.0.1',
     'category': 'Community',
     'summary': '包裹收發登記與寄放物品管理',
     'description': """

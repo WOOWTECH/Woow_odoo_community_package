@@ -10,4 +10,4 @@ access_community_feedback_category_portal,community.feedback.category.portal,mod
 access_community_feedback_user,community.feedback.user,model_community_feedback,base.group_user,1,1,1,1
 access_community_office_portal,community.office.portal,model_community_office,base.group_portal,1,0,0,0
 access_community_unit_portal,community.unit.portal,model_community_unit,base.group_portal,1,0,0,0
-access_community_feedback_portal,community.feedback.portal,model_community_feedback,base.group_portal,1,0,1,0
+access_community_feedback_portal,community.feedback.portal,model_community_feedback,base.group_portal,1,0,0,0
