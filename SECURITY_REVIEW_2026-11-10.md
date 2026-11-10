@@ -20,8 +20,8 @@
 - 兩交易排演：相反的確認／拒絕會在同一筆 visit 鎖等待；一筆限 1 次入場的預約在競爭核銷後只留下 1 筆已入場紀錄。第二交易收到 PostgreSQL serialization retry，HTTP 層的重試行為仍需另行驗收。
 - 測試環境在 `dev-sandbox-resvfix-1107`；沒有更動正式租戶。
 
-## 尚需處理
+## 發版狀態與後續驗收
 
-1. 私有修補 PR #1 的獨立複核與發版安排；公開 GitHub `main` 尚未收到修補。
-2. 平台掃描目標在 `woow_paas_platform` PR #2345；合併、runner 同步與排程完成前，不得宣稱已進入每日正式掃描。
-3. 各租戶上線前需比對實際載入路徑、既有模組版本、Portal 權限與 Odoo HTTP serialization retry 行為。
+1. 私有修補 PR #1 已合併；本公開分支仍須經公開 GitHub PR 合併，`main` 才會收到修補。
+2. 平台掃描目標 PR #2345 已合併並建立每日排程；正式掃描的執行結果須另外核對。
+3. 截至本次盤點，正式 Odoo 租戶沒有安裝這三個社區模組。未來安裝前仍須核對實際載入路徑、Portal 權限與 Odoo HTTP serialization retry 行為。
