@@ -38,13 +38,13 @@ msgid ""
 "    <p>以下黑名單訪客嘗試進入社區：</p>\n"
 "    <table style=\"margin: 10px 0;\">\n"
 "        <tr><td style=\"padding: 4px 8px; color: #666;\">姓名：</td>\n"
-"            <td style=\"padding: 4px 8px;\"><strong>{{ object.name }}</strong></td></tr>\n"
+"            <td style=\"padding: 4px 8px;\"><strong><t t-out=\"object.name\"/></strong></td></tr>\n"
 "        <tr><td style=\"padding: 4px 8px; color: #666;\">電話：</td>\n"
-"            <td style=\"padding: 4px 8px;\">{{ object.phone }}</td></tr>\n"
+"            <td style=\"padding: 4px 8px;\"><t t-out=\"object.phone\"/></td></tr>\n"
 "        <tr><td style=\"padding: 4px 8px; color: #666;\">黑名單原因：</td>\n"
-"            <td style=\"padding: 4px 8px;\">{{ object.blacklist_reason or '未說明' }}</td></tr>\n"
+"            <td style=\"padding: 4px 8px;\"><t t-out=\"object.blacklist_reason or &#x27;未說明&#x27;\"/></td></tr>\n"
 "        <tr><td style=\"padding: 4px 8px; color: #666;\">列入日期：</td>\n"
-"            <td style=\"padding: 4px 8px;\">{{ object.blacklist_date }}</td></tr>\n"
+"            <td style=\"padding: 4px 8px;\"><t t-out=\"object.blacklist_date\"/></td></tr>\n"
 "    </table>\n"
 "    <p>請即時處理。</p>\n"
 "</div>\n"
@@ -56,13 +56,13 @@ msgstr ""
 msgid ""
 "<div style=\"margin: 0px; padding: 0px;\">\n"
 "    <p>您好，</p>\n"
-"    <p>您的預約訪客 <strong>{{ object.visitor_id.name }}</strong> 已於\n"
-"       <strong>{{ object.checkin_time }}</strong> 入場。</p>\n"
+"    <p>您的預約訪客 <strong><t t-out=\"object.visitor_id.name\"/></strong> 已於\n"
+"       <strong><t t-out=\"format_datetime(object.checkin_time, tz=ctx.get(&#x27;tz&#x27;) or user.tz or &#x27;UTC&#x27;)\"/></strong> 入場。</p>\n"
 "    <table style=\"margin: 10px 0;\">\n"
 "        <tr><td style=\"padding: 4px 8px; color: #666;\">戶號：</td>\n"
-"            <td style=\"padding: 4px 8px;\">{{ object.unit_id.name }}</td></tr>\n"
+"            <td style=\"padding: 4px 8px;\"><t t-out=\"object.unit_id.name\"/></td></tr>\n"
 "        <tr><td style=\"padding: 4px 8px; color: #666;\">目的：</td>\n"
-"            <td style=\"padding: 4px 8px;\">{{ object.purpose_id.name }}</td></tr>\n"
+"            <td style=\"padding: 4px 8px;\"><t t-out=\"object.purpose_id.name\"/></td></tr>\n"
 "    </table>\n"
 "</div>\n"
 "        "
@@ -82,26 +82,26 @@ msgid ""
 "                            <table style=\"width: 100%; margin: 20px 0;\">\n"
 "                                <tr>\n"
 "                                    <td style=\"padding: 8px 0; color: #666;\">訪客姓名：</td>\n"
-"                                    <td style=\"padding: 8px 0;\"><strong>{{ object.visitor_id.name }}</strong></td>\n"
+"                                    <td style=\"padding: 8px 0;\"><strong><t t-out=\"object.visitor_id.name\"/></strong></td>\n"
 "                                </tr>\n"
 "                                <tr>\n"
 "                                    <td style=\"padding: 8px 0; color: #666;\">來訪目的：</td>\n"
-"                                    <td style=\"padding: 8px 0;\">{{ object.purpose_id.name }}</td>\n"
+"                                    <td style=\"padding: 8px 0;\"><t t-out=\"object.purpose_id.name\"/></td>\n"
 "                                </tr>\n"
 "                                <tr>\n"
 "                                    <td style=\"padding: 8px 0; color: #666;\">訪問戶號：</td>\n"
-"                                    <td style=\"padding: 8px 0;\">{{ object.unit_id.name }}</td>\n"
+"                                    <td style=\"padding: 8px 0;\"><t t-out=\"object.unit_id.name\"/></td>\n"
 "                                </tr>\n"
 "                                <tr>\n"
 "                                    <td style=\"padding: 8px 0; color: #666;\">登記時間：</td>\n"
-"                                    <td style=\"padding: 8px 0;\">{{ object.create_date }}</td>\n"
+"                                    <td style=\"padding: 8px 0;\"><t t-out=\"format_datetime(object.create_date, tz=ctx.get(&#x27;tz&#x27;) or user.tz or &#x27;UTC&#x27;)\"/></td>\n"
 "                                </tr>\n"
 "                            </table>\n"
 "                            <div style=\"text-align: center; margin: 30px 0;\">\n"
-"                                <a href=\"%7B%7B%20ctx.get('confirm_url',%20'#')%20%7D%7D\" style=\"background-color: #28a745; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
+"                                <a t-att-href=\"ctx.get(&#x27;confirm_url&#x27;, &#x27;#&#x27;)\" style=\"background-color: #28a745; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
 "                                    確認放行\n"
 "                                </a>\n"
-"                                <a href=\"%7B%7B%20ctx.get('reject_url',%20'#')%20%7D%7D\" style=\"background-color: #dc3545; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
+"                                <a t-att-href=\"ctx.get(&#x27;reject_url&#x27;, &#x27;#&#x27;)\" style=\"background-color: #dc3545; color: white; padding: 12px 40px;                                           text-decoration: none; border-radius: 5px; margin: 0 10px;                                           display: inline-block; font-size: 16px;\">\n"
 "                                    拒絕\n"
 "                                </a>\n"
 "                            </div>\n"
@@ -1826,3 +1826,129 @@ msgstr ""
 #: model:mail.template,name:community_visitor.mail_template_blacklist_alert
 msgid "黑名單觸發警示"
 msgstr ""
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_appointment.py:0
+#, python-format
+msgid "只有警衛或管理員可以核驗通行碼。"
+msgstr "只有警衛或管理員可以核驗通行碼。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_appointment.py:0
+#, python-format
+msgid "請輸入驗證碼。"
+msgstr "請輸入驗證碼。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_appointment.py:0
+#, python-format
+msgid "此預約訪客尚未離場，請勿重複入場。"
+msgstr "此預約訪客尚未離場，請勿重複入場。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_appointment.py:0
+#, python-format
+msgid "請先由管理員設定至少一個來訪目的。"
+msgstr "請先由管理員設定至少一個來訪目的。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_appointment.py:0
+#, python-format
+msgid "每日時間須介於 00:00 與 24:00，截止須晚於起始。"
+msgstr "每日時間須介於 00:00 與 24:00，截止須晚於起始。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_visit.py:0
+#, python-format
+msgid "戶號 %s 沒有已啟用且具有效電子郵件的住戶，請先補齊住戶資料後再發送確認。"
+msgstr "戶號 %s 沒有已啟用且具有效電子郵件的住戶，請先補齊住戶資料後再發送確認。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_visit.py:0
+#, python-format
+msgid "找不到訪客確認郵件範本，請聯絡管理員。"
+msgstr "找不到訪客確認郵件範本，請聯絡管理員。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/controllers/portal.py:0
+#, python-format
+msgid "請選擇您所屬的戶號。"
+msgstr "請選擇您所屬的戶號。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/controllers/portal.py:0
+#, python-format
+msgid "請填寫訪客姓名、電話與有效起始時間。"
+msgstr "請填寫訪客姓名、電話與有效起始時間。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/controllers/portal.py:0
+#, python-format
+msgid "請選擇有效的預約類型。"
+msgstr "請選擇有效的預約類型。"
+
+#. module: community_visitor
+#: code:addons/community_visitor/controllers/portal.py:0
+#, python-format
+msgid "日期、時間或次數格式不正確；日光節約時間切換時請選擇其他時間。"
+msgstr "日期、時間或次數格式不正確；日光節約時間切換時請選擇其他時間。"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+msgid "登記中"
+msgstr "登記中"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_my_visitors
+msgid "等待管理室送出確認"
+msgstr "等待管理室送出確認"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "日期與每日授權時間使用時區："
+msgstr "日期與每日授權時間使用時區："
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "入場次數依此欄位設定，所有類型均以 0 表示不限次；一次性預設為 1 次。"
+msgstr "入場次數依此欄位設定，所有類型均以 0 表示不限次；一次性預設為 1 次。"
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.portal_appointment_new
+msgid "此設定允許重複入場；若只允許一次，請填 1。"
+msgstr "此設定允許重複入場；若只允許一次，請填 1。"
+
+#. module: community_visitor
+#: model:ir.model.fields,field_description:community_visitor.field_community_appointment__schedule_tz
+msgid "授權時區"
+msgstr "授權時區"
+
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "只有警衛或管理員可以送出住戶入口確認。"
+msgstr "只有警衛或管理員可以送出住戶入口確認。"
+
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "戶號內沒有已啟用且具住戶入口帳號的住戶，無法送出入口確認。"
+msgstr "戶號內沒有已啟用且具住戶入口帳號的住戶，無法送出入口確認。"
+
+
+#. module: community_visitor
+#: code:addons/community_visitor/models/community_visit.py:0
+msgid "已送出住戶入口確認，未寄送電子郵件。請住戶登入入口確認或拒絕；尚未授權入場。"
+msgstr "已送出住戶入口確認，未寄送電子郵件。請住戶登入入口確認或拒絕；尚未授權入場。"
+
+
+#. module: community_visitor
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_visit_form
+msgid "住戶入口確認"
+msgstr "住戶入口確認"
+
+#. module: community_visitor
+#: model:ir.model.fields,help:community_visitor.field_community_appointment__schedule_tz
+#: model_terms:ir.ui.view,arch_db:community_visitor.view_community_appointment_form
+msgid "舊授權尚未固定時區，暫依核驗人員時區，請管理者確認後設定"
+msgstr "舊授權尚未固定時區，暫依核驗人員時區，請管理者確認後設定"

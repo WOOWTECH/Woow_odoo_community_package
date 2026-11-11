@@ -54,6 +54,7 @@
             <div t-if="not parcels" class="alert alert-warning" role="alert">
                 No parcel records
             </div>
+            <div class="table-responsive">
             <t t-if="parcels" t-call="portal.portal_table">
                 <thead>
                     <tr class="active">
@@ -69,7 +70,7 @@
                 <t t-foreach="parcels" t-as="p">
                     <tr>
                         <td>
-                            <a t-attf-href="/my/parcels/#{p.id}">
+                            <a class="d-inline-block py-2 text-break" t-attf-href="/my/parcels/#{p.id}">
                                 <t t-esc="p.name"/>
                             </a>
                         </td>
@@ -97,6 +98,7 @@
                     </tr>
                 </t>
             </t>
+            </div>
         </t>
     </template>
 
@@ -167,6 +169,7 @@
                             </div>
                         </div>
                         <div id="card_body">
+                            <p class="alert alert-info">領取時請至管理室出示身分證明，由管理員核對戶號及物品後交付。</p>
                             <div class="row mb-4">
                                 <div class="col-12 col-md-6">
                                     <div t-if="parcel.barcode"><strong>Barcode:</strong>
@@ -228,6 +231,7 @@
             <div t-if="not items" class="alert alert-warning" role="alert">
                 No storage records
             </div>
+            <div class="table-responsive">
             <t t-if="items" t-call="portal.portal_table">
                 <thead>
                     <tr class="active">
@@ -242,7 +246,7 @@
                 <t t-foreach="items" t-as="s">
                     <tr>
                         <td>
-                            <a t-attf-href="/my/storage/#{s.id}">
+                            <a class="d-inline-block py-2 text-break" t-attf-href="/my/storage/#{s.id}">
                                 <t t-esc="s.name"/>
                             </a>
                         </td>
@@ -267,6 +271,7 @@
                     </tr>
                 </t>
             </t>
+            </div>
         </t>
     </template>
 
@@ -333,6 +338,7 @@
                             </div>
                         </div>
                         <div id="card_body">
+                            <p class="alert alert-info">領取時請至管理室出示身分證明，由管理員核對戶號及物品後交付。</p>
                             <div class="row mb-4">
                                 <div class="col-12 col-md-6">
                                     <div><strong>Unit:</strong>
@@ -391,45 +397,51 @@
                     <p class="text-muted">
                         Please fill in the following information to request storage. After submission, an administrator will confirm receipt.
                     </p>
-                    <form action="/my/storage/create" method="post">
+                    <div t-if="not units" class="alert alert-info" role="alert">No linked unit. Please contact the management office before requesting storage.</div>
+                    <form t-if="units" id="storage_request_form" action="/my/storage/create" method="post">
                         <input type="hidden" name="csrf_token"
                                t-att-value="request.csrf_token()"/>
                         <div class="mb-3">
-                            <label class="form-label">Unit</label>
-                            <select name="unit_id" class="form-select"
+                            <label for="unit_id" class="form-label">Unit</label>
+                            <select name="unit_id" id="unit_id" class="form-select"
                                     required="required">
                                 <option value="">Select unit</option>
                                 <t t-foreach="units" t-as="unit">
-                                    <option t-att-value="unit.id"
+                                    <option t-att-value="unit.id" t-att-selected="str(unit.id) == form_values.get('unit_id', '')"
                                             t-esc="unit.name"/>
                                 </t>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Storage Type</label>
-                            <select name="type_id" class="form-select">
+                            <label for="type_id" class="form-label">Storage Type</label>
+                            <select name="type_id" id="type_id" class="form-select">
                                 <option value="">Select type (optional)</option>
                                 <t t-foreach="storage_types" t-as="stype">
-                                    <option t-att-value="stype.id"
+                                    <option t-att-value="stype.id" t-att-selected="str(stype.id) == form_values.get('type_id', '')"
                                             t-esc="stype.name"/>
                                 </t>
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Item Description</label>
-                            <textarea name="item_description" class="form-control"
-                                      rows="4"
-                                      placeholder="Please describe the stored items..."
-                                      required="required"></textarea>
+                            <label for="recipient_name" class="form-label">取件人（選填）</label>
+                            <input id="recipient_name" name="recipient_name" class="form-control"
+                                   t-att-value="form_values.get('recipient_name', '')"/>
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Expected Pickup Date</label>
-                            <input type="date" name="expected_pickup"
+                            <label for="item_description" class="form-label">Item Description</label>
+                            <textarea name="item_description" id="item_description" class="form-control"
+                                      rows="4"
+                                      placeholder="Please describe the stored items..."
+                                      required="required"><t t-esc="form_values.get('item_description', '')"/></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="expected_pickup" class="form-label">Expected Pickup Date</label>
+                            <input type="date" name="expected_pickup" id="expected_pickup" t-att-value="form_values.get('expected_pickup', '')"
                                    class="form-control"/>
                         </div>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
-                                document.querySelectorAll('form').forEach(function(form) {
+                                document.querySelectorAll('#storage_request_form').forEach(function(form) {
                                     form.addEventListener('submit', function() {
                                         var btn = form.querySelector('button[type="submit"]');
                                         if (btn) {

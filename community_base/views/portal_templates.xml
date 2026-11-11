@@ -406,7 +406,10 @@
                         Dear resident, community maintenance is everyone's responsibility.
                         Any suggestions can be provided to the management committee for reference.
                     </p>
-                    <form action="/my/feedbacks/create" method="post">
+                    <div t-if="not units or not categories" class="alert alert-info" role="status">
+                        Please contact the management office to set up your unit or feedback categories.
+                    </div>
+                    <form t-if="units and categories" action="/my/feedbacks/create" method="post">
                         <input type="hidden" name="csrf_token"
                                t-att-value="request.csrf_token()"/>
                         <div class="mb-3">
@@ -416,6 +419,7 @@
                                 <option value="">Select category</option>
                                 <t t-foreach="categories" t-as="cat">
                                     <option t-att-value="cat.id"
+                                            t-att-selected="str(cat.id) == form_values.get('category_id', '')"
                                             t-esc="cat.name"/>
                                 </t>
                             </select>
@@ -427,13 +431,14 @@
                                 <option value="">Select unit</option>
                                 <t t-foreach="units" t-as="unit">
                                     <option t-att-value="unit.id"
+                                            t-att-selected="str(unit.id) == form_values.get('unit_id', '') or (not form_values.get('unit_id') and len(units) == 1)"
                                             t-esc="unit.name"/>
                                 </t>
                             </select>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Title</label>
-                            <input type="text" name="title"
+                            <input type="text" name="title" t-att-value="form_values.get('title', '')"
                                    class="form-control"
                                    placeholder="Brief summary of your feedback"
                                    required="required"/>
@@ -443,7 +448,7 @@
                             <textarea name="content" class="form-control"
                                       rows="5"
                                       placeholder="Please describe your feedback or issue in detail..."
-                                      required="required"></textarea>
+                                      required="required"><t t-esc="form_values.get('content', '')"/></textarea>
                         </div>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {

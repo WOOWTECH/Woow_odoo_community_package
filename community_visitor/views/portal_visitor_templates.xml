@@ -175,6 +175,8 @@
                             <span t-field="visit.create_date" t-options="{'widget': 'date'}"/>
                         </td>
                         <td class="text-center">
+                            <span t-if="visit.state == 'draft'"
+                                  class="badge rounded-pill text-bg-light">登記中</span>
                             <span t-if="visit.state == 'pending_confirm'"
                                   class="badge rounded-pill text-bg-warning">Pending</span>
                             <span t-if="visit.state == 'confirmed'"
@@ -189,6 +191,7 @@
                                   class="badge rounded-pill text-bg-dark">Timeout</span>
                         </td>
                         <td class="text-center">
+                            <span t-if="visit.state == 'draft'" class="text-muted">等待管理室送出確認</span>
                             <t t-if="visit.state == 'pending_confirm' and visit.confirm_token">
                                 <form t-attf-action="/visitor/confirm/#{visit.confirm_token}/accept"
                                       method="post" class="d-inline">
@@ -544,6 +547,7 @@
                     <div t-if="error" class="alert alert-danger" role="alert">
                         <t t-esc="error"/>
                     </div>
+                    <p class="text-muted">日期與每日授權時間使用時區：<strong t-out="timezone"/></p>
                     <form action="/my/appointments/create" method="post">
                         <input type="hidden" name="csrf_token"
                                t-att-value="request.csrf_token()"/>
@@ -554,7 +558,7 @@
                                         required="required">
                                     <option value="">Please select...</option>
                                     <t t-foreach="units" t-as="unit">
-                                        <option t-att-value="unit.id"
+                                        <option t-att-value="unit.id" t-att-selected="str(unit.id) == form_values.get('unit_id')"
                                                 t-esc="unit.name"/>
                                     </t>
                                 </select>
@@ -563,22 +567,22 @@
                                 <label class="form-label">Appointment Type</label>
                                 <select name="appointment_type"
                                         class="form-select">
-                                    <option value="one_time">One-time</option>
-                                    <option value="recurring">Recurring</option>
-                                    <option value="permanent">Permanent</option>
+                                    <option value="one_time" t-att-selected="form_values.get('appointment_type', 'one_time') == 'one_time'">One-time</option>
+                                    <option value="recurring" t-att-selected="form_values.get('appointment_type', 'one_time') == 'recurring'">Recurring</option>
+                                    <option value="permanent" t-att-selected="form_values.get('appointment_type', 'one_time') == 'permanent'">Permanent</option>
                                 </select>
                             </div>
                         </div>
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Visitor Name</label>
-                                <input type="text" name="visitor_name"
+                                <input type="text" name="visitor_name" t-att-value="form_values.get('visitor_name', '')"
                                        class="form-control"
                                        required="required"/>
                             </div>
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Visitor Phone</label>
-                                <input type="tel" name="visitor_phone"
+                                <input type="tel" name="visitor_phone" t-att-value="form_values.get('visitor_phone', '')"
                                        class="form-control"
                                        required="required"/>
                             </div>
@@ -586,13 +590,13 @@
                         <div class="row">
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Valid From</label>
-                                <input type="datetime-local" name="valid_from"
+                                <input type="datetime-local" name="valid_from" t-att-value="form_values.get('valid_from', '')"
                                        class="form-control"
                                        required="required"/>
                             </div>
                             <div class="col-md-6 mb-3" id="valid_until_group">
                                 <label class="form-label">Valid Until</label>
-                                <input type="datetime-local" name="valid_until"
+                                <input type="datetime-local" name="valid_until" t-att-value="form_values.get('valid_until', '')"
                                        class="form-control"
                                        id="valid_until_input"/>
                                 <small class="text-muted">Leave empty for permanent pass</small>
@@ -601,19 +605,19 @@
                         <div class="row d-none" id="recurring_fields">
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Authorized Days</label>
-                                <input type="text" name="recurring_days"
+                                <input type="text" name="recurring_days" t-att-value="form_values.get('recurring_days', '')"
                                        class="form-control"
                                        placeholder="0,1,2,3,4"/>
                                 <small class="text-muted">0=Mon, 6=Sun, comma separated</small>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Daily Start Time</label>
-                                <input type="time" name="recurring_from"
+                                <input type="time" name="recurring_from" t-att-value="form_values.get('recurring_from', '')"
                                        class="form-control"/>
                             </div>
                             <div class="col-md-4 mb-3">
                                 <label class="form-label">Daily End Time</label>
-                                <input type="time" name="recurring_until"
+                                <input type="time" name="recurring_until" t-att-value="form_values.get('recurring_until', '')"
                                        class="form-control"/>
                             </div>
                         </div>
@@ -621,23 +625,31 @@
                             <div class="col-md-6 mb-3">
                                 <label class="form-label">Max Entries</label>
                                 <input type="number" name="max_entries"
-                                       class="form-control" value="1"
+                                       class="form-control" t-att-value="form_values.get('max_entries', '1')"
                                        min="0"/>
-                                <small class="text-muted">0 means unlimited</small>
+                                <small class="text-muted">入場次數依此欄位設定，所有類型均以 0 表示不限次；一次性預設為 1 次。</small>
+                                <div id="entry_count_notice" class="text-warning d-none" role="status">此設定允許重複入場；若只允許一次，請填 1。</div>
                             </div>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Purpose</label>
                             <textarea name="purpose" class="form-control"
-                                      rows="2"></textarea>
+                                      rows="2" t-out="form_values.get('purpose', '')"></textarea>
                         </div>
                         <script>
                             document.addEventListener('DOMContentLoaded', function() {
                                 var typeSelect = document.querySelector('select[name="appointment_type"]');
                                 var validUntilInput = document.getElementById('valid_until_input');
                                 var recurringFields = document.getElementById('recurring_fields');
+                                var maxEntries = document.querySelector('input[name="max_entries"]');
+                                var entryNotice = document.getElementById('entry_count_notice');
+                                function updateEntryNotice() {
+                                    entryNotice.classList.toggle('d-none', typeSelect.value !== 'one_time' || Number(maxEntries.value) === 1);
+                                }
+                                maxEntries.addEventListener('input', updateEntryNotice);
                                 if (typeSelect) {
                                     typeSelect.addEventListener('change', function() {
+                                        updateEntryNotice();
                                         if (this.value === 'permanent') {
                                             validUntilInput.removeAttribute('required');
                                         } else {

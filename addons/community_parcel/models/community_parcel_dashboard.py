@@ -1,3 +1,7 @@
+from datetime import datetime, time, timedelta
+
+import pytz
+
 from odoo import api, fields, models, tools
 
 
@@ -8,13 +12,13 @@ class CommunityParcelDashboard(models.Model):
     _order = 'id'
 
     name = fields.Char(string='名稱', readonly=True)
-    count = fields.Integer(string='數量', readonly=True)
+    count = fields.Integer(string='數量', compute='_compute_counts')
     target_model = fields.Char(string='目標模型', readonly=True)
     domain_filter = fields.Char(string='篩選條件', readonly=True)
-    count_stat1 = fields.Integer(string='統計1數量', readonly=True)
+    count_stat1 = fields.Integer(string='統計1數量', compute='_compute_counts')
     stat1_label = fields.Char(string='統計1標籤', readonly=True)
     stat1_filter = fields.Char(string='統計1篩選', readonly=True)
-    count_stat2 = fields.Integer(string='統計2數量', readonly=True)
+    count_stat2 = fields.Integer(string='統計2數量', compute='_compute_counts')
     stat2_label = fields.Char(string='統計2標籤', readonly=True)
     stat2_filter = fields.Char(string='統計2篩選', readonly=True)
     color = fields.Integer(string='Color Index')
@@ -26,24 +30,13 @@ class CommunityParcelDashboard(models.Model):
                 -- 1. 今日到件: stat1=已通知, stat2=逾期
                 SELECT 1 AS id,
                        '今日到件' AS name,
-                       (SELECT COUNT(*) FROM community_parcel
-                        WHERE received_date >= (NOW() AT TIME ZONE 'Asia/Taipei')::date
-                          AND received_date < ((NOW() AT TIME ZONE 'Asia/Taipei')::date + INTERVAL '1 day')
-                       )::integer AS count,
+                       0 AS count,
                        'community.parcel' AS target_model,
                        'today_received' AS domain_filter,
-                       (SELECT COUNT(*) FROM community_parcel
-                        WHERE received_date >= (NOW() AT TIME ZONE 'Asia/Taipei')::date
-                          AND received_date < ((NOW() AT TIME ZONE 'Asia/Taipei')::date + INTERVAL '1 day')
-                          AND state = 'notified'
-                       )::integer AS count_stat1,
+                       0 AS count_stat1,
                        '已通知' AS stat1_label,
                        'today_notified' AS stat1_filter,
-                       (SELECT COUNT(*) FROM community_parcel
-                        WHERE received_date >= (NOW() AT TIME ZONE 'Asia/Taipei')::date
-                          AND received_date < ((NOW() AT TIME ZONE 'Asia/Taipei')::date + INTERVAL '1 day')
-                          AND state = 'overdue'
-                       )::integer AS count_stat2,
+                       0 AS count_stat2,
                        '逾期' AS stat2_label,
                        'today_overdue' AS stat2_filter,
                        0 AS color
@@ -53,14 +46,10 @@ class CommunityParcelDashboard(models.Model):
                 -- 2. 包裹未取件: stat1=逾期
                 SELECT 2 AS id,
                        '包裹未取件' AS name,
-                       (SELECT COUNT(*) FROM community_parcel
-                        WHERE state IN ('draft', 'notified', 'overdue')
-                       )::integer AS count,
+                       0 AS count,
                        'community.parcel' AS target_model,
                        'uncollected' AS domain_filter,
-                       (SELECT COUNT(*) FROM community_parcel
-                        WHERE state = 'overdue'
-                       )::integer AS count_stat1,
+                       0 AS count_stat1,
                        '逾期' AS stat1_label,
                        'overdue' AS stat1_filter,
                        0 AS count_stat2,
@@ -73,9 +62,7 @@ class CommunityParcelDashboard(models.Model):
                 -- 3. 包裹逾期: 無右側統計
                 SELECT 3 AS id,
                        '包裹逾期' AS name,
-                       (SELECT COUNT(*) FROM community_parcel
-                        WHERE state = 'overdue'
-                       )::integer AS count,
+                       0 AS count,
                        'community.parcel' AS target_model,
                        'overdue' AS domain_filter,
                        0 AS count_stat1,
@@ -91,9 +78,7 @@ class CommunityParcelDashboard(models.Model):
                 -- 4. 寄放待接收: 無右側統計
                 SELECT 4 AS id,
                        '寄放待接收' AS name,
-                       (SELECT COUNT(*) FROM community_storage
-                        WHERE state = 'pending'
-                       )::integer AS count,
+                       0 AS count,
                        'community.storage' AS target_model,
                        'pending' AS domain_filter,
                        0 AS count_stat1,
@@ -109,14 +94,10 @@ class CommunityParcelDashboard(models.Model):
                 -- 5. 寄放保管中: stat1=待取件
                 SELECT 5 AS id,
                        '寄放保管中' AS name,
-                       (SELECT COUNT(*) FROM community_storage
-                        WHERE state = 'storing'
-                       )::integer AS count,
+                       0 AS count,
                        'community.storage' AS target_model,
                        'storing' AS domain_filter,
-                       (SELECT COUNT(*) FROM community_storage
-                        WHERE state = 'ready'
-                       )::integer AS count_stat1,
+                       0 AS count_stat1,
                        '待取件' AS stat1_label,
                        'ready' AS stat1_filter,
                        0 AS count_stat2,
@@ -129,9 +110,7 @@ class CommunityParcelDashboard(models.Model):
                 -- 6. 寄放待取件: 無右側統計
                 SELECT 6 AS id,
                        '寄放待取件' AS name,
-                       (SELECT COUNT(*) FROM community_storage
-                        WHERE state = 'ready'
-                       )::integer AS count,
+                       0 AS count,
                        'community.storage' AS target_model,
                        'ready' AS domain_filter,
                        0 AS count_stat1,
@@ -144,29 +123,51 @@ class CommunityParcelDashboard(models.Model):
             )
         """)
 
+    @api.depends('domain_filter', 'stat1_filter', 'stat2_filter')
+    @api.depends_context('tz', 'uid')
+    def _compute_counts(self):
+        # Use the same domains and access rules as each drill-down action.
+        for card in self:
+            for count_field, filter_field in (
+                ('count', 'domain_filter'),
+                ('count_stat1', 'stat1_filter'),
+                ('count_stat2', 'stat2_filter'),
+            ):
+                config = card._get_domain_config(card[filter_field])
+                card[count_field] = (
+                    self.env[config[1]].search_count(config[2]) if config else 0
+                )
+
+    def _today_received_domain(self):
+        local_now = fields.Datetime.context_timestamp(self, fields.Datetime.now())
+        zone = pytz.timezone(local_now.tzinfo.zone)
+        today = local_now.date()
+        # Localize both midnights separately: a DST day may be 23 or 25 hours.
+        start, end = (
+            zone.localize(datetime.combine(day, time.min)).astimezone(pytz.utc).replace(tzinfo=None)
+            for day in (today, today + timedelta(days=1))
+        )
+        return [('received_date', '>=', fields.Datetime.to_string(start)),
+                ('received_date', '<', fields.Datetime.to_string(end))]
+
     # ── Domain 定義 ────────────────────────────────────────
     def _get_domain_config(self, filter_key):
         """Return (name, model, domain, search_view_ref) for a given filter key."""
-        today = fields.Date.context_today(self).strftime('%Y-%m-%d')
+        today_domain = self._today_received_domain()
         config_map = {
             'today_received': (
                 '今日到件', 'community.parcel',
-                [('received_date', '>=', f'{today} 00:00:00'),
-                 ('received_date', '<=', f'{today} 23:59:59')],
+                today_domain,
                 'community_parcel.community_parcel_view_search',
             ),
             'today_notified': (
                 '今日到件（已通知）', 'community.parcel',
-                [('received_date', '>=', f'{today} 00:00:00'),
-                 ('received_date', '<=', f'{today} 23:59:59'),
-                 ('state', '=', 'notified')],
+                today_domain + [('state', '=', 'notified')],
                 'community_parcel.community_parcel_view_search',
             ),
             'today_overdue': (
                 '今日到件（逾期）', 'community.parcel',
-                [('received_date', '>=', f'{today} 00:00:00'),
-                 ('received_date', '<=', f'{today} 23:59:59'),
-                 ('state', '=', 'overdue')],
+                today_domain + [('state', '=', 'overdue')],
                 'community_parcel.community_parcel_view_search',
             ),
             'uncollected': (

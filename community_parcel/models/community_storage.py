@@ -1,5 +1,7 @@
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
+
+from .notification import send_resident_notification
 
 
 class CommunityStorage(models.Model):
@@ -45,6 +47,7 @@ class CommunityStorage(models.Model):
     )
     expected_pickup = fields.Date(string='預計取件日')
     actual_pickup = fields.Datetime(string='實際取件時間')
+    picked_by = fields.Many2one('res.users', string='交付確認人員', readonly=True, copy=False)
     state = fields.Selection(
         [
             ('pending', '待接收'),
@@ -90,14 +93,33 @@ class CommunityStorage(models.Model):
         for rec in self:
             if rec.state != 'storing':
                 raise UserError(_('只有「保管中」的物品才能標記為待取件。'))
-            rec.write({'state': 'ready'})
-            # Notify residents that item is ready for pickup
-            template = self.env.ref(
-                'community_parcel.mail_template_storage_ready',
-                raise_if_not_found=False,
+            with self.env.cr.savepoint():
+                rec.write({'state': 'ready'})
+                send_resident_notification(
+                    rec, 'community_parcel.mail_template_storage_ready', required=True,
+                )
+
+    def action_pickup_onsite(self):
+        """Staff handover without claiming that an email notification was sent."""
+        self.ensure_one()
+        if not self.env.su and not self.env.user.has_group(
+            'community_parcel.community_parcel_group_office_staff'
+        ):
+            raise AccessError(_('只有管理室人員可以確認現場取件。'))
+        self.check_access_rights('write')
+        self.check_access_rule('write')
+        if self.state != 'storing':
+            raise UserError(_('目前狀態不允許現場取件。'))
+        with self.env.cr.savepoint():
+            self.write({
+                'state': 'done',
+                'actual_pickup': fields.Datetime.now(),
+                'picked_by': self.env.uid,
+            })
+            self.message_post(
+                body=_('現場取件：管理室已核對身分並交付物品，未發送取件通知郵件。'),
+                subtype_xmlid='mail.mt_note',
             )
-            if template:
-                template.send_mail(rec.id, force_send=False)
 
     def action_done(self):
         for rec in self:
@@ -106,6 +128,7 @@ class CommunityStorage(models.Model):
             rec.write({
                 'state': 'done',
                 'actual_pickup': fields.Datetime.now(),
+                'picked_by': self.env.uid,
             })
 
     def action_scrap(self):

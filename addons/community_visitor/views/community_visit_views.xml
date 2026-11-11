@@ -10,6 +10,9 @@
                     <button name="action_send_confirmation" type="object"
                             string="發送確認" class="btn-primary"
                             invisible="state != 'draft'"/>
+                    <button name="action_request_portal_confirmation" type="object"
+                            string="住戶入口確認" invisible="state != 'draft'"
+                            groups="community_visitor.group_guard"/>
                     <button name="action_checkin" type="object"
                             string="確認入場" class="btn-success"
                             invisible="state != 'confirmed'"/>
@@ -97,7 +100,7 @@
         <field name="name">community.visit.kanban</field>
         <field name="model">community.visit</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state"
+            <kanban default_group_by="state" records_draggable="false"
                     class="o_kanban_small_column">
                 <field name="state"/>
                 <field name="visitor_id"/>

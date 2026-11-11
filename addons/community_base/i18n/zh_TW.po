@@ -973,3 +973,20 @@ msgstr ""
 #: model:ir.model.fields,field_description:community_base.field_community_feedback_category__color
 msgid "顏色"
 msgstr ""
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+msgid "Please select a valid unit and category."
+msgstr "請選擇有效的戶號與意見分類。"
+
+#. module: community_base
+#. odoo-python
+#: code:addons/community_base/controllers/portal.py:0
+msgid "Please enter a title and description."
+msgstr "請填寫標題與詳細說明，不可只輸入空白。"
+
+#. module: community_base
+#: model_terms:ir.ui.view,arch_db:community_base.portal_feedback_new
+msgid "Please contact the management office to set up your unit or feedback categories."
+msgstr "請聯絡管理室設定您的戶號或意見分類後再送出。"

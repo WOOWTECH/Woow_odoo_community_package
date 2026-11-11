@@ -19,28 +19,28 @@ msgstr ""
 #: model:mail.template,body_html:community_parcel.mail_template_parcel_arrival
 msgid ""
 "<div style=\"margin:0;padding:0;font-family:Arial,sans-serif;\">\n"
-"    <p>親愛的 {{ object.unit_id.display_name }} 住戶您好，</p>\n"
+"    <p>親愛的 <t t-out=\"object.unit_id.display_name\"/> 住戶您好，</p>\n"
 "    <p>您有一件包裹已送達社區管理室，詳細資訊如下：</p>\n"
 "    <table style=\"border-collapse:collapse;margin:10px 0;\">\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">編號</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.name }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.name\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">類型</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.type_id.name or '未分類' }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.type_id.name or &#x27;未分類&#x27;\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">條碼</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.barcode or '無' }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.barcode or &#x27;無&#x27;\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">收件時間</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.received_date }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"format_datetime(object.received_date, tz=ctx.get('tz') or user.tz or 'UTC')\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">管理室</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.office_id.name or '未指定' }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.office_id.name or &#x27;未指定&#x27;\"/></td>\n"
 "        </tr>\n"
 "    </table>\n"
 "    <p>請盡快至管理室領取，謝謝！</p>\n"
@@ -52,16 +52,16 @@ msgstr ""
 #: model:mail.template,body_html:community_parcel.mail_template_parcel_overdue
 msgid ""
 "<div style=\"margin:0;padding:0;font-family:Arial,sans-serif;\">\n"
-"    <p>親愛的 {{ object.unit_id.display_name }} 住戶您好，</p>\n"
+"    <p>親愛的 <t t-out=\"object.unit_id.display_name\"/> 住戶您好，</p>\n"
 "    <p>您有一件包裹已逾期未領取，請儘速至管理室取件：</p>\n"
 "    <table style=\"border-collapse:collapse;margin:10px 0;\">\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">編號</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.name }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.name\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">通知日期</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.notified_date }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"format_datetime(object.notified_date, tz=ctx.get('tz') or user.tz or 'UTC')\"/></td>\n"
 "        </tr>\n"
 "    </table>\n"
 "    <p style=\"color:#d9534f;font-weight:bold;\">\n"
@@ -75,28 +75,28 @@ msgstr ""
 #: model:mail.template,body_html:community_parcel.mail_template_storage_ready
 msgid ""
 "<div style=\"margin:0;padding:0;font-family:Arial,sans-serif;\">\n"
-"    <p>親愛的 {{ object.unit_id.display_name }} 住戶您好，</p>\n"
+"    <p>親愛的 <t t-out=\"object.unit_id.display_name\"/> 住戶您好，</p>\n"
 "    <p>您有一件寄放物品已可領取，詳細資訊如下：</p>\n"
 "    <table style=\"border-collapse:collapse;margin:10px 0;\">\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">編號</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.name }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.name\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">類型</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.type_id.name or '未分類' }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.type_id.name or &#x27;未分類&#x27;\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">寄放位置</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.storage_location or '未指定' }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.storage_location or &#x27;未指定&#x27;\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">寄放時間</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.deposit_date }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"format_datetime(object.deposit_date, tz=ctx.get('tz') or user.tz or 'UTC')\"/></td>\n"
 "        </tr>\n"
 "        <tr>\n"
 "            <td style=\"padding:4px 12px 4px 0;font-weight:bold;\">管理室</td>\n"
-"            <td style=\"padding:4px 0;\">{{ object.office_id.name or '未指定' }}</td>\n"
+"            <td style=\"padding:4px 0;\"><t t-out=\"object.office_id.name or &#x27;未指定&#x27;\"/></td>\n"
 "        </tr>\n"
 "    </table>\n"
 "    <p>請至管理室領取，謝謝！</p>\n"
@@ -1310,3 +1310,59 @@ msgstr ""
 #: model:ir.model.fields,field_description:community_parcel.field_community_storage_type__name
 msgid "類型名稱"
 msgstr ""
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/controllers/portal.py:0
+msgid "Please select one of your units."
+msgstr "請選擇您所屬的戶號。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/controllers/portal.py:0
+msgid "Please select a valid storage type."
+msgstr "請選擇有效的寄放類型。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/controllers/portal.py:0
+msgid "Please describe the stored items."
+msgstr "請填寫寄放物品敘述。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/controllers/portal.py:0
+msgid "Please check the selected unit, storage type and pickup date."
+msgstr "請檢查戶號、寄放類型及預計取件日期。"
+
+#. module: community_parcel
+#: model_terms:ir.ui.view,arch_db:community_parcel.portal_storage_new
+msgid "No linked unit. Please contact the management office before requesting storage."
+msgstr "尚未連結戶號，請先聯絡管理室後再申請寄物。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/models/community_parcel.py:0
+#: code:addons/community_parcel/models/community_storage.py:0
+msgid "只有管理室人員可以確認現場取件。"
+msgstr "只有管理室人員可以確認現場取件。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/models/community_parcel.py:0
+#: code:addons/community_parcel/models/community_storage.py:0
+msgid "目前狀態不允許現場取件。"
+msgstr "目前狀態不允許現場取件。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/models/community_parcel.py:0
+#: code:addons/community_parcel/models/community_storage.py:0
+msgid "現場取件：管理室已核對身分並交付物品，未發送取件通知郵件。"
+msgstr "現場取件：管理室已核對身分並交付物品，未發送取件通知郵件。"
+
+#. module: community_parcel
+#. odoo-python
+#: code:addons/community_parcel/models/notification.py:0
+msgid "無法通知：請確認戶號有啟用且電子郵件有效的住戶，並已設定通知範本。"
+msgstr "無法通知：請確認戶號有啟用且電子郵件有效的住戶，並已設定通知範本。"
