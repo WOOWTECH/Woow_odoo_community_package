@@ -55,6 +55,9 @@
                     </group>
                     <group string="週期設定"
                            invisible="appointment_type != 'recurring'">
+                        <field name="schedule_tz"/>
+                        <div class="alert alert-warning" role="alert" colspan="2"
+                             invisible="schedule_tz">舊授權尚未固定時區，暫依核驗人員時區，請管理者確認後設定</div>
                         <field name="recurring_days"
                                placeholder="0,1,2,3,4 (0=週一, 6=週日)"/>
                         <field name="recurring_from" widget="float_time"/>

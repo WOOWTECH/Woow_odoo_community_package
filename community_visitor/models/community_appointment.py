@@ -1,10 +1,10 @@
 import base64
 import re
 import secrets
-from datetime import timedelta
+import pytz
 
 from odoo import models, fields, api, _
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 
 class CommunityAppointment(models.Model):
@@ -66,6 +66,12 @@ class CommunityAppointment(models.Model):
         string='類型',
         required=True,
         default='one_time',
+    )
+    schedule_tz = fields.Selection(
+        [(tz, tz) for tz in pytz.all_timezones],
+        string='授權時區',
+        help='舊授權尚未固定時區，暫依核驗人員時區，請管理者確認後設定',
+        default=lambda self: self.env.user.tz or 'UTC',
     )
     recurring_days = fields.Char(
         string='授權星期',
@@ -167,15 +173,15 @@ class CommunityAppointment(models.Model):
                         _('有效截止時間不得早於目前時間。')
                     )
 
-    @api.constrains('recurring_from', 'recurring_until')
+    @api.constrains('appointment_type', 'recurring_from', 'recurring_until')
     def _check_recurring_times(self):
         for rec in self:
             if rec.appointment_type == 'recurring':
-                if rec.recurring_from and rec.recurring_until:
-                    if rec.recurring_from >= rec.recurring_until:
-                        raise ValidationError(
-                            _('每日截止時間必須晚於每日起始時間。')
-                        )
+                # 0/0 remains the legacy all-day convention.
+                if rec.recurring_from == rec.recurring_until == 0:
+                    continue
+                if not 0 <= rec.recurring_from < rec.recurring_until <= 24:
+                    raise ValidationError(_('每日時間須介於 00:00 與 24:00，截止須晚於起始。'))
 
     @api.constrains('max_entries')
     def _check_max_entries(self):
@@ -208,21 +214,26 @@ class CommunityAppointment(models.Model):
 
     def action_validate_appointment(self, code):
         """Validate an appointment access code and create a visit if valid."""
+        if not self.env.su and not self.env.user.has_group('community_visitor.group_guard'):
+            raise AccessError(_('只有警衛或管理員可以核驗通行碼。'))
+        code = code.strip().upper() if isinstance(code, str) else ''
+        if not code:
+            return {'success': False, 'error': _('請輸入驗證碼。')}
         # Search across all states first to give specific error messages
         appointment = self.search([
-            ('access_token', '=', code.upper()),
+            ('access_token', '=', code),
         ], limit=1)
 
         if not appointment:
             return {'success': False, 'error': '無效的驗證碼或預約已失效。'}
 
-        # Serialize redemptions of the same access code. A second transaction
-        # must see the first visit before it checks the entry limit.
+        # Updating the row also forces a retry under PostgreSQL repeatable read;
+        # a row lock alone would leave the second request's visit snapshot stale.
         self.env.cr.execute(
-            'SELECT id FROM community_appointment WHERE id = %s FOR UPDATE',
+            'UPDATE community_appointment SET write_date = write_date WHERE id = %s',
             [appointment.id],
         )
-        appointment.invalidate_recordset(['state', 'valid_from', 'valid_until'])
+        appointment.invalidate_recordset()
 
         # B6: Check cancelled state
         if appointment.state == 'cancelled':
@@ -239,7 +250,6 @@ class CommunityAppointment(models.Model):
 
         # B5: Also check actual date range (state may not have been updated)
         if appointment.valid_until and now > appointment.valid_until:
-            appointment.write({'state': 'expired'})
             return {'success': False, 'error': '此預約已過期，無法核銷。'}
 
         # Check date range
@@ -254,6 +264,12 @@ class CommunityAppointment(models.Model):
                     'error': '目前不在授權的時間範圍內。',
                 }
 
+        if self.env['community.visit'].search_count([
+            ('appointment_id', '=', appointment.id),
+            ('state', '=', 'checked_in'),
+        ]):
+            return {'success': False, 'error': _('此預約訪客尚未離場，請勿重複入場。')}
+
         # Check remaining entries
         used_entries = self.env['community.visit'].search_count([
             ('appointment_id', '=', appointment.id),
@@ -261,6 +277,10 @@ class CommunityAppointment(models.Model):
         ])
         if appointment.max_entries > 0 and used_entries >= appointment.max_entries:
             return {'success': False, 'error': '入場次數已用完。'}
+
+        default_purpose = self.env['community.visit.purpose'].search([], limit=1)
+        if not default_purpose:
+            return {'success': False, 'error': _('請先由管理員設定至少一個來訪目的。')}
 
         # Find or create visitor
         visitor = self.env['community.visitor'].search([
@@ -278,11 +298,6 @@ class CommunityAppointment(models.Model):
                 'success': False,
                 'error': f'訪客 {visitor.name} 已被列入黑名單。',
             }
-
-        # Find default purpose
-        default_purpose = self.env['community.visit.purpose'].search(
-            [], limit=1,
-        )
 
         # Create visit record
         visit = self.env['community.visit'].create({
@@ -309,7 +324,11 @@ class CommunityAppointment(models.Model):
             raise_if_not_found=False,
         )
         if template:
-            template.send_mail(visit.id, force_send=False)
+            resident = appointment.resident_id
+            template.with_context(
+                tz=resident.tz or self.env.user.tz or 'UTC',
+                lang=resident.lang or self.env.lang or 'en_US',
+            ).send_mail(visit.id, force_send=False)
 
         remaining = (
             '無限'
@@ -329,13 +348,10 @@ class CommunityAppointment(models.Model):
     def _check_recurring_schedule(self, now):
         """Check if current time falls within recurring schedule."""
         self.ensure_one()
-        if not self.recurring_days:
-            return True
-
         # Convert to local timezone for day-of-week and time checks
-        import pytz
         local_tz = pytz.timezone(
-            self.env.user.tz or self.env.context.get('tz') or 'UTC'
+            self.schedule_tz or self.env.user.tz
+            or self.env.context.get('tz') or 'UTC'
         )
         if now.tzinfo is None:
             now = pytz.utc.localize(now)
@@ -343,16 +359,16 @@ class CommunityAppointment(models.Model):
 
         # Python weekday: 0=Monday, 6=Sunday
         allowed_days = [
-            int(d.strip()) for d in self.recurring_days.split(',') if d.strip()
+            int(d.strip()) for d in (self.recurring_days or '').split(',') if d.strip()
         ]
-        if local_now.weekday() not in allowed_days:
+        if allowed_days and local_now.weekday() not in allowed_days:
             return False
 
-        if self.recurring_from and self.recurring_until:
+        if self.recurring_from or self.recurring_until:
             current_hour = local_now.hour + local_now.minute / 60.0
             if (
                 current_hour < self.recurring_from
-                or current_hour > self.recurring_until
+                or current_hour >= self.recurring_until
             ):
                 return False
 

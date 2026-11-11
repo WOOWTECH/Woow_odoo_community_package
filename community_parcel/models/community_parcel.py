@@ -1,7 +1,15 @@
+import logging
 from datetime import timedelta
 
+from psycopg2.errors import DeadlockDetected, SerializationFailure
+
 from odoo import api, fields, models, _
-from odoo.exceptions import UserError
+from odoo.exceptions import AccessError, UserError
+
+from .notification import send_resident_notification
+
+
+_logger = logging.getLogger(__name__)
 
 
 class CommunityParcel(models.Model):
@@ -18,7 +26,7 @@ class CommunityParcel(models.Model):
         default='New',
         copy=False,
     )
-    barcode = fields.Char(string='快遞條碼', index=True)
+    barcode = fields.Char(string='快遞條碼', index=True, copy=False)
     unit_id = fields.Many2one(
         'community.unit',
         string='戶號',
@@ -83,12 +91,19 @@ class CommunityParcel(models.Model):
     @api.model_create_multi
     def create(self, vals_list):
         for vals in vals_list:
+            if 'barcode' in vals:
+                vals['barcode'] = (vals['barcode'] or '').strip() or False
             if vals.get('name', 'New') == 'New':
                 vals['name'] = (
                     self.env['ir.sequence'].next_by_code('community.parcel')
                     or 'New'
                 )
         return super().create(vals_list)
+
+    def write(self, vals):
+        if 'barcode' in vals:
+            vals = dict(vals, barcode=(vals['barcode'] or '').strip() or False)
+        return super().write(vals)
 
     # ── Kanban group_expand ──────────────────────────────────
     @api.model
@@ -113,16 +128,36 @@ class CommunityParcel(models.Model):
         for rec in self:
             if rec.state != 'draft':
                 raise UserError(_('只有「待通知」的包裹才能發送通知。'))
-            rec.write({
-                'state': 'notified',
-                'notified_date': fields.Datetime.now(),
+            with self.env.cr.savepoint():
+                rec.write({
+                    'state': 'notified',
+                    'notified_date': fields.Datetime.now(),
+                })
+                send_resident_notification(
+                    rec, 'community_parcel.mail_template_parcel_arrival', required=True,
+                )
+
+    def action_pickup_onsite(self):
+        """Staff handover without claiming that an email notification was sent."""
+        self.ensure_one()
+        if not self.env.su and not self.env.user.has_group(
+            'community_parcel.community_parcel_group_office_staff'
+        ):
+            raise AccessError(_('只有管理室人員可以確認現場取件。'))
+        self.check_access_rights('write')
+        self.check_access_rule('write')
+        if self.state != 'draft':
+            raise UserError(_('目前狀態不允許現場取件。'))
+        with self.env.cr.savepoint():
+            self.write({
+                'state': 'picked_up',
+                'pickup_date': fields.Datetime.now(),
+                'picked_by': self.env.uid,
             })
-            template = self.env.ref(
-                'community_parcel.mail_template_parcel_arrival',
-                raise_if_not_found=False,
+            self.message_post(
+                body=_('現場取件：管理室已核對身分並交付物品，未發送取件通知郵件。'),
+                subtype_xmlid='mail.mt_note',
             )
-            if template:
-                template.send_mail(rec.id, force_send=False)
 
     def action_pickup(self):
         for rec in self:
@@ -145,12 +180,9 @@ class CommunityParcel(models.Model):
             if rec.state != 'notified':
                 raise UserError(_('只有「已通知」的包裹才能標記逾期。'))
             rec.write({'state': 'overdue'})
-            template = self.env.ref(
-                'community_parcel.mail_template_parcel_overdue',
-                raise_if_not_found=False,
+            send_resident_notification(
+                rec, 'community_parcel.mail_template_parcel_overdue',
             )
-            if template:
-                template.send_mail(rec.id, force_send=False)
 
     def action_scrap(self):
         for rec in self:
@@ -170,12 +202,14 @@ class CommunityParcel(models.Model):
             ('state', '=', 'notified'),
             ('notified_date', '<=', threshold),
         ])
-        if overdue_parcels:
-            overdue_parcels.write({'state': 'overdue'})
-            template = self.env.ref(
-                'community_parcel.mail_template_parcel_overdue',
-                raise_if_not_found=False,
-            )
-            if template:
-                for parcel in overdue_parcels:
-                    template.send_mail(parcel.id, force_send=False)
+        for parcel in overdue_parcels:
+            try:
+                # Roll back both the state and any partially queued mail for
+                # this parcel. Failed parcels remain eligible for the next run.
+                with self.env.cr.savepoint():
+                    parcel.action_overdue()
+            except (SerializationFailure, DeadlockDetected):
+                # Let Odoo retry the whole transaction with a fresh snapshot.
+                raise
+            except Exception:
+                _logger.exception('Could not mark parcel %s overdue; continuing batch', parcel.id)

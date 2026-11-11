@@ -242,8 +242,9 @@ class CommunityPortal(CustomerPortal):
         return request.render(
             'community_base.portal_feedback_new',
             {
-                'units': units,
+                'units': units.filtered('active'),
                 'categories': categories,
+                'form_values': {},
                 'page_name': 'feedback_new',
             },
         )
@@ -258,47 +259,39 @@ class CommunityPortal(CustomerPortal):
     )
     def portal_feedback_create(self, **kwargs):
         partner = request.env.user.partner_id
+        units = partner.unit_ids.filtered('active')
+        categories = request.env['community.feedback.category'].search([])
+        form_values = {key: kwargs.get(key, '') for key in
+                       ('unit_id', 'category_id', 'title', 'content')}
+
+        def invalid(message):
+            return request.render('community_base.portal_feedback_new', {
+                'error': message, 'form_values': form_values,
+                'categories': categories, 'units': units,
+                'page_name': 'feedback_new',
+            })
 
         try:
-            unit_id = int(kwargs.get('unit_id') or 0)
+            unit_id = int(form_values['unit_id'] or 0)
+            category_id = int(form_values['category_id'] or 0)
         except (ValueError, TypeError):
-            return request.redirect('/my/feedbacks')
-        unit = request.env['community.unit'].browse(unit_id)
-        if not unit.exists() or partner.id not in unit.resident_ids.ids:
-            return request.redirect('/my/feedbacks')
+            return invalid(_('Please select a valid unit and category.'))
+        if unit_id not in units.ids or category_id not in categories.ids:
+            return invalid(_('Please select a valid unit and category.'))
+        title = form_values['title'].strip()
+        content = form_values['content'].strip()
+        if not title or not content:
+            return invalid(_('Please enter a title and description.'))
 
         try:
-            category_id = int(kwargs.get('category_id') or 0)
-        except (ValueError, TypeError):
-            return request.redirect('/my/feedbacks')
-        if not category_id or not request.env[
-            'community.feedback.category'
-        ].browse(category_id).exists():
-            return request.redirect('/my/feedbacks')
-
-        vals = {
-            'title': kwargs.get('title', ''),
-            'content': kwargs.get('content', ''),
-            'category_id': category_id,
-            'unit_id': unit_id,
-            'partner_id': partner.id,
-        }
-
-        try:
-            feedback = request.env['community.feedback'].sudo().create(vals)
+            with request.env.cr.savepoint():
+                feedback = request.env['community.feedback'].sudo().create({
+                    'title': title, 'content': content,
+                    'category_id': category_id, 'unit_id': unit_id,
+                    'partner_id': partner.id,
+                })
         except (UserError, ValidationError) as e:
-            categories = request.env[
-                'community.feedback.category'
-            ].search([])
-            return request.render(
-                'community_base.portal_feedback_new',
-                {
-                    'error': str(e),
-                    'categories': categories,
-                    'units': partner.unit_ids,
-                    'page_name': 'feedback_new',
-                },
-            )
+            return invalid(str(e))
 
         return request.redirect(f'/my/feedbacks/{feedback.id}')
 

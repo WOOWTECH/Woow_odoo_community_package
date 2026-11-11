@@ -1,4 +1,7 @@
 import logging
+from datetime import datetime
+
+import pytz
 
 from odoo import http, fields, _
 from odoo.exceptions import UserError, ValidationError
@@ -20,17 +23,33 @@ class VisitorPortal(CustomerPortal):
             return float(value)
         value = str(value).strip()
         if ':' in value:
-            parts = value.split(':')
-            return int(parts[0]) + int(parts[1]) / 60.0
+            hours, minutes = value.split(':')
+            hours, minutes = int(hours), int(minutes)
+            if not 0 <= hours <= 23 or not 0 <= minutes <= 59:
+                raise ValueError('Invalid time')
+            return hours + minutes / 60.0
         return float(value)
 
     @staticmethod
-    def _safe_int(value, default=0):
-        """Safely convert *value* to int; return *default* on failure."""
-        try:
-            return int(value)
-        except (ValueError, TypeError):
-            return default
+    def _local_datetime_to_utc(value, timezone):
+        """HTML datetime-local has no offset; interpret it in the displayed zone."""
+        if not value:
+            return False
+        local = datetime.fromisoformat(value)
+        if local.tzinfo is not None:
+            raise ValueError('Expected a local date and time')
+        return pytz.timezone(timezone).localize(local, is_dst=None).astimezone(
+            pytz.utc,
+        ).replace(tzinfo=None)
+
+    def _appointment_form_values(self, values=None, error=None):
+        return {
+            'units': request.env.user.partner_id.unit_ids,
+            'page_name': 'appointment_new',
+            'form_values': values or {},
+            'timezone': request.env.user.tz or 'UTC',
+            'error': error,
+        }
 
     def _prepare_home_portal_values(self, counters):
         values = super()._prepare_home_portal_values(counters)
@@ -115,7 +134,8 @@ class VisitorPortal(CustomerPortal):
                 if not request.env.user._is_public()
                 else None
             )
-            visit.action_confirm(token, partner=partner)
+            with request.env.cr.savepoint():
+                visit.action_confirm(token, partner=partner)
         except (UserError, ValidationError) as e:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
@@ -132,10 +152,13 @@ class VisitorPortal(CustomerPortal):
         type='http',
         auth='public',
         website=True,
-        methods=['POST'],
+        methods=['GET', 'POST'],
         csrf=True,
     )
     def visitor_confirm_reject(self, token, **kwargs):
+        # Previously sent emails linked here. GET only opens the decision page.
+        if request.httprequest.method == 'GET':
+            return self.visitor_confirm_page(token, **kwargs)
         visit = request.env['community.visit'].sudo().search([
             ('confirm_token', '=', token),
         ], limit=1)
@@ -152,7 +175,8 @@ class VisitorPortal(CustomerPortal):
                 if not request.env.user._is_public()
                 else None
             )
-            visit.action_reject(token, partner=partner)
+            with request.env.cr.savepoint():
+                visit.action_reject(token, partner=partner)
         except (UserError, ValidationError) as e:
             return request.render(
                 'community_visitor.portal_visitor_token_error',
@@ -234,7 +258,10 @@ class VisitorPortal(CustomerPortal):
         website=True,
     )
     def portal_visit_detail(self, visit_id, **kwargs):
-        visit = request.env['community.visit'].browse(visit_id)
+        visit = request.env['community.visit'].search([
+            ('id', '=', visit_id),
+            ('unit_id.resident_ids', 'in', [request.env.user.partner_id.id]),
+        ], limit=1)
         if not visit.exists():
             return request.redirect('/my/visitors')
 
@@ -330,9 +357,10 @@ class VisitorPortal(CustomerPortal):
         website=True,
     )
     def portal_appointment_detail(self, appointment_id, **kwargs):
-        appointment = request.env['community.appointment'].browse(
-            appointment_id
-        )
+        appointment = request.env['community.appointment'].search([
+            ('id', '=', appointment_id),
+            ('unit_id.resident_ids', 'in', [request.env.user.partner_id.id]),
+        ], limit=1)
         if not appointment.exists():
             return request.redirect('/my/appointments')
 
@@ -368,15 +396,9 @@ class VisitorPortal(CustomerPortal):
         website=True,
     )
     def portal_appointment_new(self, **kwargs):
-        partner = request.env.user.partner_id
-        units = partner.unit_ids
-
         return request.render(
             'community_visitor.portal_appointment_new',
-            {
-                'units': units,
-                'page_name': 'appointment_new',
-            },
+            self._appointment_form_values(),
         )
 
     @http.route(
@@ -394,47 +416,50 @@ class VisitorPortal(CustomerPortal):
             unit_id = int(kwargs.get('unit_id', 0))
         except (ValueError, TypeError):
             unit_id = 0
-        unit = request.env['community.unit'].browse(unit_id)
-        if not unit.exists() or partner.id not in unit.resident_ids.ids:
-            return request.redirect('/my/appointments')
-
-        valid_until_raw = (kwargs.get('valid_until') or '').replace('T', ' ')
-        vals = {
-            'resident_id': partner.id,
-            'unit_id': unit_id,
-            'visitor_name': kwargs.get('visitor_name', ''),
-            'visitor_phone': kwargs.get('visitor_phone', ''),
-            'valid_from': (kwargs.get('valid_from') or '').replace('T', ' '),
-            'max_entries': self._safe_int(kwargs.get('max_entries'), 1),
-            'appointment_type': kwargs.get('appointment_type', 'one_time'),
-            'purpose': kwargs.get('purpose', ''),
-        }
-        # Only set valid_until if provided (permanent type can omit)
-        if valid_until_raw.strip():
-            vals['valid_until'] = valid_until_raw
-
-        if vals['appointment_type'] == 'recurring':
-            recurring_days = kwargs.get('recurring_days', '')
-            vals['recurring_days'] = recurring_days.strip()
-            vals['recurring_from'] = self._parse_time_to_float(
-                kwargs.get('recurring_from', 0)
-            )
-            vals['recurring_until'] = self._parse_time_to_float(
-                kwargs.get('recurring_until', 0)
+        if unit_id not in partner.unit_ids.ids:
+            return request.render(
+                'community_visitor.portal_appointment_new',
+                self._appointment_form_values(kwargs, _('請選擇您所屬的戶號。')),
             )
 
         try:
-            appointment = request.env['community.appointment'].sudo().create(
-                vals,
-            )
-        except (UserError, ValidationError) as e:
+            timezone = request.env.user.tz or 'UTC'
+            vals = {
+                'resident_id': partner.id,
+                'unit_id': unit_id,
+                'visitor_name': (kwargs.get('visitor_name') or '').strip(),
+                'visitor_phone': (kwargs.get('visitor_phone') or '').strip(),
+                'valid_from': self._local_datetime_to_utc(kwargs.get('valid_from'), timezone),
+                'valid_until': self._local_datetime_to_utc(kwargs.get('valid_until'), timezone),
+                'schedule_tz': timezone,
+                'max_entries': int(kwargs.get('max_entries') or 1),
+                'appointment_type': kwargs.get('appointment_type', 'one_time'),
+                'purpose': kwargs.get('purpose', ''),
+            }
+            if not vals['visitor_name'] or not vals['visitor_phone'] or not vals['valid_from']:
+                raise ValidationError(_('請填寫訪客姓名、電話與有效起始時間。'))
+            if vals['appointment_type'] not in ('one_time', 'recurring', 'permanent'):
+                raise ValidationError(_('請選擇有效的預約類型。'))
+            if vals['appointment_type'] == 'recurring':
+                vals.update({
+                    'recurring_days': (kwargs.get('recurring_days') or '').strip(),
+                    'recurring_from': self._parse_time_to_float(kwargs.get('recurring_from')),
+                    'recurring_until': self._parse_time_to_float(kwargs.get('recurring_until')),
+                })
+            # A caught constraint error must not commit the rejected create.
+            with request.env.cr.savepoint():
+                appointment = request.env['community.appointment'].sudo().create(vals)
+        except (UserError, ValidationError) as exc:
             return request.render(
                 'community_visitor.portal_appointment_new',
-                {
-                    'error': str(e),
-                    'units': partner.unit_ids,
-                    'page_name': 'appointment_new',
-                },
+                self._appointment_form_values(kwargs, str(exc)),
+            )
+        except (ValueError, TypeError, pytz.InvalidTimeError):
+            return request.render(
+                'community_visitor.portal_appointment_new',
+                self._appointment_form_values(
+                    kwargs, _('日期、時間或次數格式不正確；日光節約時間切換時請選擇其他時間。'),
+                ),
             )
 
         return request.redirect(f'/my/appointments/{appointment.id}')
@@ -448,9 +473,10 @@ class VisitorPortal(CustomerPortal):
         csrf=True,
     )
     def portal_appointment_cancel(self, appointment_id, **kwargs):
-        appointment = request.env['community.appointment'].browse(
-            appointment_id
-        )
+        appointment = request.env['community.appointment'].search([
+            ('id', '=', appointment_id),
+            ('unit_id.resident_ids', 'in', [request.env.user.partner_id.id]),
+        ], limit=1)
         if not appointment.exists():
             return request.redirect('/my/appointments')
 

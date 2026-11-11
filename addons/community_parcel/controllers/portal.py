@@ -1,5 +1,5 @@
-from odoo import http, _
-from odoo.exceptions import UserError, ValidationError
+from odoo import fields, http, _
+from odoo.exceptions import UserError
 from odoo.http import request
 from odoo.addons.portal.controllers.portal import CustomerPortal
 from odoo.addons.portal.controllers.portal import pager as portal_pager
@@ -44,13 +44,15 @@ class ParcelPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('Newest First'), 'order': 'received_date desc'},
-            'date_asc': {'label': _('Oldest First'), 'order': 'received_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'received_date desc, id desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'received_date asc, id asc'},
         }
         searchbar_filters = {
             'all': {'label': _('All'), 'domain': []},
             'draft': {'label': _('Pending Notify'), 'domain': [('state', '=', 'draft')]},
             'notified': {'label': _('Notified'), 'domain': [('state', '=', 'notified')]},
+            'returned': {'label': _('Returned'), 'domain': [('state', '=', 'returned')]},
+            'scrapped': {'label': _('Scrapped'), 'domain': [('state', '=', 'scrapped')]},
             'picked_up': {'label': _('Picked Up'), 'domain': [('state', '=', 'picked_up')]},
             'overdue': {'label': _('Overdue'), 'domain': [('state', '=', 'overdue')]},
         }
@@ -100,19 +102,18 @@ class ParcelPortal(CustomerPortal):
         website=True,
     )
     def portal_parcel_detail(self, parcel_id, **kwargs):
-        parcel = request.env['community.parcel'].browse(parcel_id)
-        if not parcel.exists():
-            return request.redirect('/my/parcels')
-
-        # Security: check user belongs to parcel's unit
         partner = request.env.user.partner_id
-        if parcel.unit_id.id not in partner.unit_ids.ids:
+        parcel = request.env['community.parcel'].search([
+            ('id', '=', parcel_id),
+            ('unit_id', 'in', partner.unit_ids.ids),
+        ], limit=1)
+        if not parcel:
             return request.redirect('/my/parcels')
 
         # prev/next navigation
         all_parcels = request.env['community.parcel'].search(
             [('unit_id', 'in', partner.unit_ids.ids)],
-            order='received_date desc',
+            order='received_date desc, id desc',
         )
         p_ids = all_parcels.ids
         idx = p_ids.index(parcel.id) if parcel.id in p_ids else -1
@@ -143,14 +144,15 @@ class ParcelPortal(CustomerPortal):
         domain = [('unit_id', 'in', unit_ids)]
 
         searchbar_sortings = {
-            'date_desc': {'label': _('Newest First'), 'order': 'deposit_date desc'},
-            'date_asc': {'label': _('Oldest First'), 'order': 'deposit_date asc'},
+            'date_desc': {'label': _('Newest First'), 'order': 'deposit_date desc, id desc'},
+            'date_asc': {'label': _('Oldest First'), 'order': 'deposit_date asc, id asc'},
         }
         searchbar_filters = {
             'all': {'label': _('All'), 'domain': []},
             'pending': {'label': _('Pending Receipt'), 'domain': [('state', '=', 'pending')]},
             'storing': {'label': _('In Storage'), 'domain': [('state', '=', 'storing')]},
             'ready': {'label': _('Ready for Pickup'), 'domain': [('state', '=', 'ready')]},
+            'scrapped': {'label': _('Scrapped'), 'domain': [('state', '=', 'scrapped')]},
             'done': {'label': _('Completed'), 'domain': [('state', '=', 'done')]},
         }
 
@@ -199,19 +201,18 @@ class ParcelPortal(CustomerPortal):
         website=True,
     )
     def portal_storage_detail(self, storage_id, **kwargs):
-        item = request.env['community.storage'].browse(storage_id)
-        if not item.exists():
-            return request.redirect('/my/storage')
-
-        # Security: check user belongs to storage's unit
         partner = request.env.user.partner_id
-        if item.unit_id.id not in partner.unit_ids.ids:
+        item = request.env['community.storage'].search([
+            ('id', '=', storage_id),
+            ('unit_id', 'in', partner.unit_ids.ids),
+        ], limit=1)
+        if not item:
             return request.redirect('/my/storage')
 
         # prev/next navigation
         all_items = request.env['community.storage'].search(
             [('unit_id', 'in', partner.unit_ids.ids)],
-            order='deposit_date desc',
+            order='deposit_date desc, id desc',
         )
         s_ids = all_items.ids
         idx = s_ids.index(item.id) if item.id in s_ids else -1
@@ -247,6 +248,8 @@ class ParcelPortal(CustomerPortal):
                 'units': units,
                 'storage_types': storage_types,
                 'page_name': 'storage_new',
+                'form_values': {},
+                'error': False,
             },
         )
 
@@ -261,38 +264,44 @@ class ParcelPortal(CustomerPortal):
     def portal_storage_create(self, **kwargs):
         partner = request.env.user.partner_id
 
-        # Security: validate unit ownership
-        unit_id = int(kwargs.get('unit_id', 0))
-        unit = request.env['community.unit'].browse(unit_id)
-        if not unit.exists() or partner.id not in unit.resident_ids.ids:
-            return request.redirect('/my/storage')
-
-        vals = {
-            'unit_id': unit_id,
-            'item_description': kwargs.get('item_description', ''),
-        }
-
-        # Optional: type_id
-        type_id = int(kwargs.get('type_id', 0) or 0)
-        if type_id and request.env['community.storage.type'].browse(type_id).exists():
-            vals['type_id'] = type_id
-
-        # Optional: expected_pickup
-        expected_pickup = kwargs.get('expected_pickup', '').strip()
-        if expected_pickup:
-            vals['expected_pickup'] = expected_pickup
-
         try:
-            item = request.env['community.storage'].sudo().create(vals)
-        except (UserError, ValidationError) as e:
-            storage_types = request.env['community.storage.type'].search([])
+            unit_id = int(kwargs.get('unit_id') or 0)
+            type_id = int(kwargs.get('type_id') or 0)
+            if unit_id not in partner.unit_ids.ids:
+                raise UserError(_('Please select one of your units.'))
+            storage_type = request.env['community.storage.type'].search(
+                [('id', '=', type_id)], limit=1,
+            )
+            if type_id and not storage_type:
+                raise UserError(_('Please select a valid storage type.'))
+            description = kwargs.get('item_description', '').strip()
+            if not description:
+                raise UserError(_('Please describe the stored items.'))
+            pickup = kwargs.get('expected_pickup', '').strip()
+            pickup_date = fields.Date.to_date(pickup) if pickup else False
+            vals = {
+                'unit_id': unit_id,
+                'type_id': storage_type.id or False,
+                'item_description': description,
+                'expected_pickup': pickup_date,
+                'recipient_name': kwargs.get('recipient_name', '').strip(),
+            }
+            # Keep the existing narrowly scoped sudo create after ownership validation.
+            # A failed create must roll back before rendering the form again.
+            with request.env.cr.savepoint():
+                item = request.env['community.storage'].sudo().create(vals)
+        except (UserError, ValueError, TypeError) as exc:
+            error = str(exc) if isinstance(exc, UserError) else _(
+                'Please check the selected unit, storage type and pickup date.'
+            )
             return request.render(
                 'community_parcel.portal_storage_new',
                 {
-                    'error': str(e),
+                    'error': error,
                     'units': partner.unit_ids,
-                    'storage_types': storage_types,
+                    'storage_types': request.env['community.storage.type'].search([]),
                     'page_name': 'storage_new',
+                    'form_values': kwargs,
                 },
             )
 

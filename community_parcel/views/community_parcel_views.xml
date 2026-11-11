@@ -7,10 +7,14 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="action_pickup_onsite" string="現場取件"
+                            type="object" groups="community_parcel.community_parcel_group_office_staff"
+                            invisible="state != 'draft'"
+                            confirm="請確認已核對戶號、物品及取件人身分並完成現場交付。本操作不寄送取件通知郵件。"/>
                     <button name="action_notify" string="通知住戶"
                             type="object" class="btn-primary"
                             invisible="state != 'draft'"/>
-                    <button name="action_pickup" string="確認取件"
+                    <button confirm="請先核對戶號、物品及取件人身分。條碼僅用於查找物品，不是領取憑證。確認已完成核對並交付？" name="action_pickup" string="確認取件"
                             type="object" class="btn-primary"
                             invisible="state not in ('notified', 'overdue')"/>
                     <button name="action_return" string="退回"
@@ -21,9 +25,9 @@
                             invisible="state != 'notified'"/>
                     <button name="action_scrap" string="報廢"
                             type="object" class="btn-danger"
-                            invisible="state == 'scrapped'"
+                            invisible="state in ('picked_up', 'returned', 'scrapped')"
                             confirm="確定要將此包裹報廢嗎？"/>
-                    <field name="state" widget="statusbar"
+                    <field name="state" readonly="1" widget="statusbar"
                            statusbar_visible="draft,notified,picked_up"/>
                 </header>
                 <sheet>
@@ -33,7 +37,7 @@
                     </div>
                     <group>
                         <group string="包裹資訊">
-                            <field name="barcode"/>
+                            <field name="barcode" placeholder="掃描或輸入快遞條碼"/>
                             <field name="unit_id"/>
                             <field name="type_id"/>
                             <field name="courier"/>
@@ -74,7 +78,7 @@
                 <field name="type_id" widget="badge"/>
                 <field name="office_id"/>
                 <field name="received_date"/>
-                <field name="state" widget="badge"
+                <field name="state" readonly="1" widget="badge"
                        decoration-info="state == 'draft'"
                        decoration-warning="state == 'notified'"
                        decoration-success="state == 'picked_up'"
@@ -89,7 +93,7 @@
         <field name="name">community.parcel.kanban</field>
         <field name="model">community.parcel</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
+            <kanban records_draggable="false" default_group_by="state" class="o_kanban_small_column">
                 <field name="name"/>
                 <field name="barcode"/>
                 <field name="unit_id"/>

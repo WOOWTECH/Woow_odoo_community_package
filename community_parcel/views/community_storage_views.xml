@@ -7,20 +7,24 @@
         <field name="arch" type="xml">
             <form>
                 <header>
+                    <button name="action_pickup_onsite" string="現場取件"
+                            type="object" groups="community_parcel.community_parcel_group_office_staff"
+                            invisible="state != 'storing'"
+                            confirm="請確認已核對戶號、物品及取件人身分並完成現場交付。本操作不寄送取件通知郵件。"/>
                     <button name="action_accept" string="受理"
                             type="object" class="btn-primary"
                             invisible="state != 'pending'"/>
                     <button name="action_ready" string="通知取件"
                             type="object" class="btn-primary"
                             invisible="state != 'storing'"/>
-                    <button name="action_done" string="完成交付"
+                    <button confirm="請先核對戶號、物品及取件人身分。條碼僅用於查找物品，不是領取憑證。確認已完成核對並交付？" name="action_done" string="完成交付"
                             type="object" class="btn-primary"
                             invisible="state != 'ready'"/>
                     <button name="action_scrap" string="報廢"
                             type="object" class="btn-danger"
-                            invisible="state == 'scrapped'"
+                            invisible="state not in ('storing', 'ready')"
                             confirm="確定要將此寄放物品報廢嗎？"/>
-                    <field name="state" widget="statusbar"
+                    <field name="state" readonly="1" widget="statusbar"
                            statusbar_visible="pending,storing,ready,done"/>
                 </header>
                 <sheet>
@@ -40,6 +44,7 @@
                             <field name="deposit_date"/>
                             <field name="expected_pickup"/>
                             <field name="actual_pickup" readonly="1"/>
+                            <field name="picked_by" readonly="1"/>
                         </group>
                     </group>
                     <notebook>
@@ -71,7 +76,7 @@
                 <field name="storage_location"/>
                 <field name="deposit_date"/>
                 <field name="expected_pickup"/>
-                <field name="state" widget="badge"
+                <field name="state" readonly="1" widget="badge"
                        decoration-info="state == 'pending'"
                        decoration-warning="state == 'storing'"
                        decoration-success="state in ('ready', 'done')"
@@ -85,7 +90,7 @@
         <field name="name">community.storage.kanban</field>
         <field name="model">community.storage</field>
         <field name="arch" type="xml">
-            <kanban default_group_by="state" class="o_kanban_small_column">
+            <kanban records_draggable="false" default_group_by="state" class="o_kanban_small_column">
                 <field name="name"/>
                 <field name="unit_id"/>
                 <field name="recipient_name"/>

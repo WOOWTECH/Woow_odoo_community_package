@@ -26,9 +26,13 @@
                     <field name="properties"/>
                     <notebook>
                         <page string="住戶" name="residents">
-                            <field name="resident_ids">
+                            <div class="alert alert-info" role="status">
+                                請確認住戶已勾選「住戶」、填寫有效電子郵件。需要登入住戶入口時，請從聯絡人的「授予入口網站存取權」發送 Odoo 原生邀請。
+                            </div>
+                            <field name="resident_ids" context="{'default_is_resident': True}">
                                 <list>
                                     <field name="name"/>
+                                    <field name="is_resident"/>
                                     <field name="phone"/>
                                     <field name="email"/>
                                 </list>

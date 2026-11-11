@@ -19,29 +19,29 @@
                             <table style="width: 100%; margin: 20px 0;">
                                 <tr>
                                     <td style="padding: 8px 0; color: #666;">訪客姓名：</td>
-                                    <td style="padding: 8px 0;"><strong>{{ object.visitor_id.name }}</strong></td>
+                                    <td style="padding: 8px 0;"><strong><t t-out="object.visitor_id.name"/></strong></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0; color: #666;">來訪目的：</td>
-                                    <td style="padding: 8px 0;">{{ object.purpose_id.name }}</td>
+                                    <td style="padding: 8px 0;"><t t-out="object.purpose_id.name"/></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0; color: #666;">訪問戶號：</td>
-                                    <td style="padding: 8px 0;">{{ object.unit_id.name }}</td>
+                                    <td style="padding: 8px 0;"><t t-out="object.unit_id.name"/></td>
                                 </tr>
                                 <tr>
                                     <td style="padding: 8px 0; color: #666;">登記時間：</td>
-                                    <td style="padding: 8px 0;">{{ object.create_date }}</td>
+                                    <td style="padding: 8px 0;"><t t-out="format_datetime(object.create_date, tz=ctx.get('tz') or user.tz or 'UTC')"/></td>
                                 </tr>
                             </table>
                             <div style="text-align: center; margin: 30px 0;">
-                                <a href="{{ ctx.get('confirm_url', '#') }}"
+                                <a t-att-href="ctx.get('confirm_url', '#')"
                                    style="background-color: #28a745; color: white; padding: 12px 40px;
                                           text-decoration: none; border-radius: 5px; margin: 0 10px;
                                           display: inline-block; font-size: 16px;">
                                     確認放行
                                 </a>
-                                <a href="{{ ctx.get('reject_url', '#') }}"
+                                <a t-att-href="ctx.get('reject_url', '#')"
                                    style="background-color: #dc3545; color: white; padding: 12px 40px;
                                           text-decoration: none; border-radius: 5px; margin: 0 10px;
                                           display: inline-block; font-size: 16px;">
@@ -71,13 +71,13 @@
         <field name="body_html" type="html">
 <div style="margin: 0px; padding: 0px;">
     <p>您好，</p>
-    <p>您的預約訪客 <strong>{{ object.visitor_id.name }}</strong> 已於
-       <strong>{{ object.checkin_time }}</strong> 入場。</p>
+    <p>您的預約訪客 <strong><t t-out="object.visitor_id.name"/></strong> 已於
+       <strong><t t-out="format_datetime(object.checkin_time, tz=ctx.get('tz') or user.tz or 'UTC')"/></strong> 入場。</p>
     <table style="margin: 10px 0;">
         <tr><td style="padding: 4px 8px; color: #666;">戶號：</td>
-            <td style="padding: 4px 8px;">{{ object.unit_id.name }}</td></tr>
+            <td style="padding: 4px 8px;"><t t-out="object.unit_id.name"/></td></tr>
         <tr><td style="padding: 4px 8px; color: #666;">目的：</td>
-            <td style="padding: 4px 8px;">{{ object.purpose_id.name }}</td></tr>
+            <td style="padding: 4px 8px;"><t t-out="object.purpose_id.name"/></td></tr>
     </table>
 </div>
         </field>
@@ -96,13 +96,13 @@
     <p>以下黑名單訪客嘗試進入社區：</p>
     <table style="margin: 10px 0;">
         <tr><td style="padding: 4px 8px; color: #666;">姓名：</td>
-            <td style="padding: 4px 8px;"><strong>{{ object.name }}</strong></td></tr>
+            <td style="padding: 4px 8px;"><strong><t t-out="object.name"/></strong></td></tr>
         <tr><td style="padding: 4px 8px; color: #666;">電話：</td>
-            <td style="padding: 4px 8px;">{{ object.phone }}</td></tr>
+            <td style="padding: 4px 8px;"><t t-out="object.phone"/></td></tr>
         <tr><td style="padding: 4px 8px; color: #666;">黑名單原因：</td>
-            <td style="padding: 4px 8px;">{{ object.blacklist_reason or '未說明' }}</td></tr>
+            <td style="padding: 4px 8px;"><t t-out="object.blacklist_reason or '未說明'"/></td></tr>
         <tr><td style="padding: 4px 8px; color: #666;">列入日期：</td>
-            <td style="padding: 4px 8px;">{{ object.blacklist_date }}</td></tr>
+            <td style="padding: 4px 8px;"><t t-out="object.blacklist_date"/></td></tr>
     </table>
     <p>請即時處理。</p>
 </div>

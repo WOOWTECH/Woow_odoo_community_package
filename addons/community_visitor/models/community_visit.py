@@ -1,8 +1,8 @@
 import secrets
 from datetime import timedelta
 
-from odoo import models, fields, api, _
-from odoo.exceptions import UserError
+from odoo import models, fields, api, tools, _
+from odoo.exceptions import AccessError, UserError
 
 
 class CommunityVisit(models.Model):
@@ -109,37 +109,39 @@ class CommunityVisit(models.Model):
                 vals['name'] = self.env['ir.sequence'].next_by_code(
                     'community.visit'
                 ) or '/'
+        # Lock before INSERT obtains FK key-share locks; concurrent creates
+        # must not both hold key-share and then try to upgrade to FOR UPDATE.
+        badge_ids = sorted({vals['badge_id'] for vals in vals_list if vals.get('badge_id')})
+        if badge_ids:
+            self.env['community.visitor.badge'].browse(badge_ids)._lock_assignment()
         records = super().create(vals_list)
         for rec in records:
-            if rec.badge_id:
+            if rec.badge_id and rec.state not in ('checked_out', 'rejected', 'timeout'):
                 rec.badge_id.action_assign(rec)
         return records
 
+    def _lock_for_transition(self):
+        self.check_access_rights('write')
+        self.check_access_rule('write')
+        self.flush_recordset()
+        self.env.cr.execute(
+            'SELECT id FROM community_visit WHERE id IN %s ORDER BY id FOR UPDATE',
+            [tuple(self.ids)],
+        )
+        self.invalidate_recordset()
+
     def write(self, vals):
         old_badges = {}
-        if 'badge_id' in vals:
-            for rec in self:
-                old_badges[rec.id] = rec.badge_id
-            # B7: Block assigning an in-use badge to another visit
-            if vals['badge_id']:
-                new_badge = self.env['community.visitor.badge'].browse(
-                    vals['badge_id']
-                )
-                if new_badge.state == 'in_use':
-                    current = new_badge.current_visit_id
-                    # Allow re-writing the same badge to the same visit
-                    if not (len(self) == 1 and current.id == self.id):
-                        raise UserError(
-                            _('訪客證 %s 目前使用中，無法重複發放。')
-                            % new_badge.name
-                        )
+        if 'badge_id' in vals and self:
+            self._lock_for_transition()
+            old_badges = {rec.id: rec.badge_id for rec in self}
         res = super().write(vals)
         if 'badge_id' in vals:
             for rec in self:
                 old_badge = old_badges.get(rec.id)
                 if old_badge and old_badge != rec.badge_id:
-                    old_badge.action_release()
-                if rec.badge_id and rec.badge_id.state == 'available':
+                    old_badge._release_for_visit(rec)
+                if rec.badge_id and rec.state not in ('checked_out', 'rejected', 'timeout'):
                     rec.badge_id.action_assign(rec)
         return res
 
@@ -159,31 +161,64 @@ class CommunityVisit(models.Model):
     def action_send_confirmation(self):
         """發送確認請求給戶號內所有住戶"""
         self.ensure_one()
+        self._lock_for_transition()
         if self.state != 'draft':
             raise UserError(_('只有草稿狀態的訪問記錄可以發送確認請求。'))
 
-        token = self._generate_confirm_token()
-        self.write({'state': 'pending_confirm'})
-
-        residents = self.unit_id.resident_ids.filtered('is_resident')
+        residents = self.unit_id.resident_ids.filtered(
+            lambda resident: resident.active and resident.is_resident
+            and tools.email_normalize(resident.email)
+        )
         if not residents:
             raise UserError(_(
-                '戶號 %s 沒有登記住戶，無法發送確認請求。',
+                '戶號 %s 沒有已啟用且具有效電子郵件的住戶，請先補齊住戶資料後再發送確認。',
                 self.unit_id.name,
             ))
-
         template = self.env.ref(
             'community_visitor.mail_template_visit_confirm_request',
             raise_if_not_found=False,
         )
-        if template:
+        if not template:
+            raise UserError(_('找不到訪客確認郵件範本，請聯絡管理員。'))
+
+        with self.env.cr.savepoint():
+            token = self._generate_confirm_token()
+            self.write({'state': 'pending_confirm'})
             for resident in residents:
                 template.with_context(
+                    tz=resident.tz or self.env.user.tz or 'UTC',
+                    lang=resident.lang or self.env.lang or 'en_US',
                     resident_name=resident.name,
-                    resident_email=resident.email or '',
+                    resident_email=resident.email,
                     confirm_url=self._get_confirm_url(token),
                     reject_url=self._get_reject_url(token),
-                ).send_mail(self.id, force_send=False)
+                ).send_mail(self.id, force_send=False, email_values={
+                    'email_to': False,
+                    'email_cc': False,
+                    'recipient_ids': [(6, 0, resident.ids)],
+                })
+
+    def action_request_portal_confirmation(self):
+        """Ask an eligible portal resident to decide; never grant entry here."""
+        self.ensure_one()
+        if not self.env.su and not self.env.user.has_group('community_visitor.group_guard'):
+            raise AccessError(_('只有警衛或管理員可以送出住戶入口確認。'))
+        self._lock_for_transition()
+        if self.state != 'draft':
+            raise UserError(_('只有草稿狀態的訪問記錄可以發送確認請求。'))
+        residents = self.unit_id.resident_ids.sudo().filtered(
+            lambda resident: resident.active and resident.is_resident
+            and any(user.active and user.has_group('base.group_portal') for user in resident.user_ids)
+        )
+        if not residents:
+            raise UserError(_('戶號內沒有已啟用且具住戶入口帳號的住戶，無法送出入口確認。'))
+        with self.env.cr.savepoint():
+            self._generate_confirm_token()
+            self.write({'state': 'pending_confirm'})
+            self.message_post(
+                body=_('已送出住戶入口確認，未寄送電子郵件。請住戶登入入口確認或拒絕；尚未授權入場。'),
+                subtype_xmlid='mail.mt_note',
+            )
 
     def _get_confirm_url(self, token):
         base_url = self.env['ir.config_parameter'].sudo().get_param(
@@ -195,7 +230,7 @@ class CommunityVisit(models.Model):
         base_url = self.env['ir.config_parameter'].sudo().get_param(
             'web.base.url'
         )
-        return f"{base_url}/visitor/confirm/{token}/reject"
+        return f"{base_url}/visitor/confirm/{token}"
 
     def action_confirm(self, token, partner=None):
         """住戶確認訪客入場"""
@@ -207,7 +242,7 @@ class CommunityVisit(models.Model):
         self.invalidate_recordset(['state', 'confirm_token', 'token_expiry'])
         if self.state != 'pending_confirm':
             raise UserError(_('此訪問記錄不在待確認狀態。'))
-        if self.confirm_token != token:
+        if not token or not self.confirm_token or self.confirm_token != token:
             raise UserError(_('無效的確認碼。'))
         if self.token_expiry and fields.Datetime.now() > self.token_expiry:
             raise UserError(_('確認連結已過期。'))
@@ -231,20 +266,23 @@ class CommunityVisit(models.Model):
         self.invalidate_recordset(['state', 'confirm_token', 'token_expiry'])
         if self.state != 'pending_confirm':
             raise UserError(_('此訪問記錄不在待確認狀態。'))
-        if self.confirm_token != token:
+        if not token or not self.confirm_token or self.confirm_token != token:
             raise UserError(_('無效的確認碼。'))
         if self.token_expiry and fields.Datetime.now() > self.token_expiry:
             raise UserError(_('確認連結已過期。'))
 
-        vals = {'state': 'rejected'}
+        vals = {'state': 'rejected', 'resident_confirm_time': fields.Datetime.now()}
         if partner and partner.id in self.unit_id.resident_ids.ids:
             vals['resident_id'] = partner.id
         self.write(vals)
+        if self.badge_id:
+            self.badge_id._release_for_visit(self)
         self._notify_guard('rejected')
 
     def action_checkin(self):
         """警衛確認訪客已入場"""
         self.ensure_one()
+        self._lock_for_transition()
         if self.state != 'confirmed':
             raise UserError(_('只有已確認的訪問記錄可以登記入場。'))
         # Check blacklist before allowing entry
@@ -252,12 +290,8 @@ class CommunityVisit(models.Model):
             raise UserError(
                 _('訪客 %s 已被列入黑名單，無法入場。') % self.visitor_id.name
             )
-        # B7: Check badge is not already in use by another visit
-        if (self.badge_id and self.badge_id.state == 'in_use'
-                and self.badge_id.current_visit_id != self):
-            raise UserError(
-                _('訪客證 %s 目前使用中，無法重複發放。') % self.badge_id.name
-            )
+        if self.badge_id:
+            self.badge_id.action_assign(self)
         self.write({
             'state': 'checked_in',
             'checkin_time': fields.Datetime.now(),
@@ -266,6 +300,7 @@ class CommunityVisit(models.Model):
     def action_checkout(self):
         """離場登記，自動歸還訪客證"""
         self.ensure_one()
+        self._lock_for_transition()
         if self.state != 'checked_in':
             raise UserError(_('只有已入場的訪問記錄可以登記離場。'))
         self.write({
@@ -274,7 +309,7 @@ class CommunityVisit(models.Model):
             'guard_out_id': self.env.user.id,
         })
         if self.badge_id:
-            self.badge_id.action_release()
+            self.badge_id._release_for_visit(self)
 
     # ── Cron ──────────────────────────────────────────────
 
@@ -285,7 +320,12 @@ class CommunityVisit(models.Model):
             ('token_expiry', '<=', fields.Datetime.now()),
         ])
         for visit in timeout_visits:
+            visit._lock_for_transition()
+            if visit.state != 'pending_confirm' or not visit.token_expiry or visit.token_expiry > fields.Datetime.now():
+                continue
             visit.write({'state': 'timeout'})
+            if visit.badge_id:
+                visit.badge_id._release_for_visit(visit)
             visit._notify_guard('timeout')
 
     # ── Notification ──────────────────────────────────────

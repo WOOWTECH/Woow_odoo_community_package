@@ -27,7 +27,9 @@ class ValidateAppointmentWizard(models.TransientModel):
     def action_validate(self):
         """驗證預約通行碼"""
         self.ensure_one()
-        if not self.access_code:
+        if self.state == 'success' and self.visit_id:
+            return self._reopen()
+        if not self.access_code or not self.access_code.strip():
             self.write({
                 'state': 'fail',
                 'result_message': '請輸入驗證碼。',
@@ -51,6 +53,10 @@ class ValidateAppointmentWizard(models.TransientModel):
             self.write({
                 'state': 'fail',
                 'result_message': result.get('error', '驗證失敗。'),
+                'visit_id': False,
+                'visitor_name': False,
+                'unit_name': False,
+                'remaining': False,
             })
 
         return self._reopen()

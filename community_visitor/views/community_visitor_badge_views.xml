@@ -6,10 +6,14 @@
         <field name="model">community.visitor.badge</field>
         <field name="arch" type="xml">
             <form>
+                <header>
+                    <button name="action_release" type="object" string="歸還訪客證"
+                            invisible="state != 'in_use'"/>
+                </header>
                 <sheet>
                     <group>
                         <field name="name"/>
-                        <field name="state" widget="badge"
+                        <field name="state" widget="badge" readonly="1"
                                decoration-success="state == 'available'"
                                decoration-warning="state == 'in_use'"/>
                         <field name="current_visit_id"/>
@@ -25,7 +29,7 @@
         <field name="arch" type="xml">
             <list editable="bottom">
                 <field name="name"/>
-                <field name="state" widget="badge"
+                <field name="state" widget="badge" readonly="1"
                        decoration-success="state == 'available'"
                        decoration-warning="state == 'in_use'"/>
                 <field name="current_visit_id"/>
